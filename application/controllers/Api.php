@@ -97,14 +97,14 @@ class Api extends MY_Controller {
             if (empty($mobileexist)) {
                 $insertVerification = $this->MobileVerification->creater(array('mobile' => $mobile, 'ver_code' => $ver_code, 'user_type' => $user_type, 'created_at' => date('Y-m-d H:i:s')));
                 if ($insertVerification) {
-                    $output = array('status' => 'success', 'message' => array('ver_code' => $ver_code));
+                    $output = array('status' => 'success', 'message' => array(array('ver_code' => $ver_code)));
                 } else {
                     $output = array('status' => 'error', 'message' => "System Error");
                 }
             } else {
                 if ($mobileexist->verified == 0) {
                     $updateVerification = $this->MobileVerification->update(array('mobile' => $mobile, 'ver_code' => $ver_code, 'user_type' => $user_type), $mobile);
-                    $output = array('status' => 'success', 'message' => array('ver_code' => $ver_code));
+                    $output = array('status' => 'success', 'message' => array(array('ver_code' => $ver_code)));
                 } else {
                     $output = array('status' => 'error', 'message' => "Already Verified");
                 }
@@ -188,14 +188,9 @@ class Api extends MY_Controller {
             $userexist = $this->User_model->authenticate($mobile, $password);
 
             if (!empty($userexist)) {
-                $output = array('status' => 'success', 'message' => $userexist);
+                $output = array('status' => 'success', 'message' => array($userexist));
             } else {
-                $companyexist = $this->Company->authenticate($mobile, $password);
-                if (!empty($companyexist)) {
-                    $output = array('status' => 'success', 'message' => $companyexist);
-                } else {
-                    $output = array('status' => 'error', 'message' => "Invalid Username/Password");
-                }
+                $output = array('status' => 'error', 'message' => "Invalid Username/Password");
             }
         } else {
             $output = array('status' => 'error', 'message' => "Please Send Username And Password");
@@ -206,6 +201,7 @@ class Api extends MY_Controller {
     }
 
     public function companyLogin() {
+        $this->load->model('Company');
         if ($this->input->post('mobile') != '' && $this->input->post('password') != '') {
             $mobile = $this->input->post('mobile');
             $password = $this->input->post('password');
@@ -217,7 +213,7 @@ class Api extends MY_Controller {
                 $output = array('status' => 'error', 'message' => "Invalid Username/Password");
             }
         } else {
-            $output = array('status' => 'error', 'message' => "Please Send Username And Password");
+            $output = array('status' => 'error', 'message' => "Please Send Mobile No And Password");
         }
 
         header('content-type: application/json');

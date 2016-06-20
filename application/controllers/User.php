@@ -9,12 +9,19 @@ class User extends MY_Controller {
     }
 
     public function index() {
+        $data = array();
         if ($this->input->post('mobile') != '' && $this->input->post('password') != '') {
             $mobile = $this->input->post('mobile');
             $password = $this->input->post('password');
-            $context = $this->returnContext(array('mobile' => $mobile, 'password' => $password));
-            $response = file_get_contents(API_URL . 'login', FALSE, $context);
-            var_dump($response);
+            //$context = $this->returnContext();
+            $response = $this->CallAPI('POST', API_URL . 'companyLogin', array('mobile' => $mobile, 'password' => $password));
+            //var_dump($response);
+            $response = json_decode($response);
+            if (isset($response->status) && $response->status == 'error') {
+                $data['message'] = $response->message;
+            } elseif (isset($response->status) && $response->status  == 'success') {
+                $data['message'] = $response->message;
+            }
         }
 
         $data = array('title' => 'Login', 'content' => 'User/login', 'view_data' => $data);
