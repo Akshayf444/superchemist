@@ -18,7 +18,7 @@ class Company extends MY_model {
         $this->table_name = 'company_master';
     }
 
-    public function authentication($mobile, $password) {
+    public function authenticate($mobile, $password) {
         $sql = "SELECT * FROM  " . $this->table_name . " WHERE mobile = '" . $mobile . "' AND password = '" . $password . "' AND status = 1 ";
         return $this->returnResult($sql, 'row');
     }
