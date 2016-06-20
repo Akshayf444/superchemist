@@ -13,7 +13,7 @@ class User extends MY_Controller {
             $mobile = $this->input->post('mobile');
             $password = $this->input->post('password');
             $context = $this->returnContext(array('mobile' => $mobile, 'password' => $password));
-            $response = file_get_contents(API_URL . 'login', FALSE, $context);
+            $response = file_get_contents(API_URL . 'companyLogin', FALSE, $context);
             var_dump($response);
         }
 
