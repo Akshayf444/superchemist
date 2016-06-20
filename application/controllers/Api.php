@@ -222,7 +222,7 @@ class Api extends MY_Controller {
 
         header('content-type: application/json');
         echo json_encode($output);
-}}
+}
 // public function  reg(){
 //     if($this->input->post()){
 //         $mobile=$this->input->post('mobile');
@@ -274,4 +274,8 @@ class Api extends MY_Controller {
 //            header('content:application/json');
 //            echo json_encode($output);
 //  }
-//}
+// public function sendveri(){
+//      $mobile=$_GET['mobile'];
+//      
+// }
+}
