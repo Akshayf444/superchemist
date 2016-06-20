@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class User extends MY_Controller {
+class Api extends MY_Controller {
 
     public $alertLabel = 'Doctor';
     public $doctorIds = array();
@@ -175,6 +175,24 @@ class User extends MY_Controller {
             }
         } else {
             $output = array('status' => 'error', 'message' => "Please Send POST Request");
+        }
+        header('content-type: application/json');
+        echo json_encode($output);
+    }
+
+    public function login() {
+        if ($this->input->post('mobile') != '' && $this->input->post('password') != '') {
+            $mobile = $this->input->post('mobile');
+            $password = $this->input->post('password');
+            $userexist = $this->User_model->authenticate($mobile, $password);
+
+            if (!empty($userexist)) {
+                $output = array('status' => 'error', 'message' => json_encode($userexist));
+            } else {
+                $output = array('status' => 'error', 'message' => "Invalid Username/Password");
+            }
+        } else {
+            $output = array('status' => 'error', 'message' => "Please Send Username And Password");
         }
         header('content-type: application/json');
         echo json_encode($output);

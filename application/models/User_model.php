@@ -1,21 +1,28 @@
 <?php
 
-class User_model extends CI_Model {
+class User_model extends MY_model {
+
+    public $table_name;
 
     public function __construct() {
         $this->load->database();
-        $this->table_name = 'tbl_employee_master';
+        $this->table_name = 'users';
     }
 
     public function userexist($mobile) {
-        $sql = "SELECT * FROM users WHERE mobile = '" . $mobile . "'";
-        $query = $this->db->query($sql);
-        return $query->row();
+        $sql = "SELECT * FROM " . $this->table_name . " WHERE mobile = '" . $mobile . "'";
+        return $this->returnResult($sql, 'row');
     }
 
     public function create($data) {
         $this->db->insert('users', $data);
         return $this->db->insert_id();
     }
+
+    public function authentication($mobile, $password) {
+        $sql = "SELECT * FROM  " . $this->table_name . " WHERE mobile = '" . $mobile . "' AND password = '" . $password . "' AND status = 1 ";
+        return $this->returnResult($sql, 'row');
+    }
+    
 
 }
