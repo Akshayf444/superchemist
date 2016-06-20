@@ -14,7 +14,7 @@
                     <?php echo form_open('User/index') ?>
 
                     <div class="form-group">
-                        <input type="text" class="form-control uname" placeholder="Username" name="username"/>
+                        <input type="text" class="form-control uname" placeholder="Mobile" name="mobile"/>
                     </div>
                     <div class="form-group">
                         <div class="input-group">
@@ -32,46 +32,46 @@
             </div>
         </div>
     </div>
-   
-<script>
 
-    $(function () {
+    <script>
+
+        $(function () {
 
 
-        $('#button').click(function () {
+            $('#button').click(function () {
 
-            $('#password').password('toggle');
+                $('#password').password('toggle');
+
+            });
 
         });
 
-    });
+    </script>
 
-</script>
+    <script>
 
-<script>
-
-    $(function () {
-        function show() {
-            var p = document.getElementById('pwd');
-            p.setAttribute('type', 'text');
-        }
-
-        function hide() {
-            var p = document.getElementById('pwd');
-            p.setAttribute('type', 'password');
-        }
-
-        var pwShown = 0;
-
-        document.getElementById("eye").addEventListener("click", function () {
-            if (pwShown == 0) {
-                pwShown = 1;
-                show();
-            } else {
-                pwShown = 0;
-                hide();
+        $(function () {
+            function show() {
+                var p = document.getElementById('pwd');
+                p.setAttribute('type', 'text');
             }
-        }, false);
-    });
 
-</script>
+            function hide() {
+                var p = document.getElementById('pwd');
+                p.setAttribute('type', 'password');
+            }
+
+            var pwShown = 0;
+
+            document.getElementById("eye").addEventListener("click", function () {
+                if (pwShown == 0) {
+                    pwShown = 1;
+                    show();
+                } else {
+                    pwShown = 0;
+                    hide();
+                }
+            }, false);
+        });
+
+    </script>

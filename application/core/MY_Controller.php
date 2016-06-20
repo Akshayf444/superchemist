@@ -14,15 +14,6 @@ class MY_Controller extends CI_Controller {
 
     function __construct() {
         parent::__construct();
-        $this->Emp_Id = $this->session->userdata('Emp_Id');
-        $this->TM_Emp_Id = $this->session->userdata('TM_Emp_Id');
-        $this->BM_Emp_Id = $this->session->userdata('BM_Emp_Id');
-        $this->SM_Emp_Id = $this->session->userdata('SM_Emp_Id');
-        $this->SSM_Emp_Id = $this->session->userdata('SSM_Emp_Id');
-        $this->Reporting_Id = $this->session->userdata('Reporting_Id');
-        $this->Designation = strtoupper($this->session->userdata('Designation'));
-        $this->Full_Name = $this->session->userdata('Full_Name');
-        $this->smswayid = $this->session->userdata('smswayid');
     }
 
     function is_logged_in($Profile = "") {
@@ -38,24 +29,39 @@ class MY_Controller extends CI_Controller {
     }
 
     function logout() {
-        $this->session->unset_userdata('Emp_Id');
-        $this->session->unset_userdata('TM_Emp_Id');
-        $this->session->unset_userdata('BM_Emp_Id');
-        $this->session->unset_userdata('SM_Emp_Id');
-        $this->session->unset_userdata('SSM_Emp_Id');
-        $this->session->unset_userdata('Reporting_Id');
-        $this->session->unset_userdata('Designation');
-        $this->session->unset_userdata('Full_Name');
+        
+    }
 
-        $this->Emp_Id = null;
-        $this->TM_Emp_Id = null;
-        $this->BM_Emp_Id = null;
-        $this->SM_Emp_Id = null;
-        $this->SSM_Emp_Id = null;
-        $this->Reporting_Id = null;
-        $this->Designation = null;
-        $this->Full_Name = null;
-        redirect('User/index', 'refresh');
+    function CallAPI($method, $url, $data = false) {
+        $curl = curl_init();
+
+        switch ($method) {
+            case "POST":
+                curl_setopt($curl, CURLOPT_POST, 1);
+
+                if ($data)
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                break;
+            case "PUT":
+                curl_setopt($curl, CURLOPT_PUT, 1);
+                break;
+            default:
+                if ($data)
+                    $url = sprintf("%s?%s", $url, http_build_query($data));
+        }
+
+        // Optional Authentication:
+        curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($curl, CURLOPT_USERPWD, "username:password");
+
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+
+        $result = curl_exec($curl);
+
+        curl_close($curl);
+
+        return $result;
     }
 
 }
