@@ -159,6 +159,10 @@ class Api extends MY_Controller {
                     'pincode' => $this->input->post('pincode'),
                     'password' => $this->input->post('password'),
                     'email' => $this->input->post('email'),
+                    'device_id' => $this->input->post('device_id'),
+                    'user_type' => $this->input->post('user_type'),
+                    'status' => 1,
+                    'created_at' => date('Y-m-d H:i:s')
                 );
 
                 $user_id = $this->User_model->create($data);
@@ -168,7 +172,7 @@ class Api extends MY_Controller {
                     $output = array('status' => 'error', 'message' => "System Erroor");
                 }
             } else {
-                $output = array('status' => 'error', 'message' => "User With Same Mobile No Already Exist");
+                $output = array('status' => 'error', 'message' => "User Already Exist");
             }
         } else {
             $output = array('status' => 'error', 'message' => "Please Send POST Request");
@@ -192,6 +196,25 @@ class Api extends MY_Controller {
                 } else {
                     $output = array('status' => 'error', 'message' => "Invalid Username/Password");
                 }
+            }
+        } else {
+            $output = array('status' => 'error', 'message' => "Please Send Username And Password");
+        }
+
+        header('content-type: application/json');
+        echo json_encode($output);
+    }
+
+    public function companyLogin() {
+        if ($this->input->post('mobile') != '' && $this->input->post('password') != '') {
+            $mobile = $this->input->post('mobile');
+            $password = $this->input->post('password');
+            $userexist = $this->Company->authenticate($mobile, $password);
+
+            if (!empty($userexist)) {
+                $output = array('status' => 'success', 'message' => $userexist);
+            } else {
+                $output = array('status' => 'error', 'message' => "Invalid Username/Password");
             }
         } else {
             $output = array('status' => 'error', 'message' => "Please Send Username And Password");

@@ -9,7 +9,7 @@ class Sms extends CI_Model {
         // echo $mobile.' '.$messages;
         $authKey = "78106A1u8VLmCC054cb666b";
         $mobileNumber = $mobile;
-        $senderId = "JBPRTL";
+        $senderId = "SPRCHM";
         $message = $messages;
         $finalmessage = rawurlencode($message);
         $smsUser = 'manish';
