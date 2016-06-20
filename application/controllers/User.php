@@ -149,8 +149,35 @@ class User extends MY_Controller {
 
     public function register() {
         if ($this->input->post()) {
-            
+            $mobile = $this->input->post('mobile');
+            $userexist = $this->User_model->userexist($mobile);
+            if (empty($userexist)) {
+                $data = array(
+                    'full_name' => $this->input->post('full_name'),
+                    'address' => $this->input->post('address'),
+                    'city' => $this->input->post('city'),
+                    'state' => $this->input->post('state'),
+                    'mobile' => $this->input->post('mobile'),
+                    'business_name' => $this->input->post('business_name'),
+                    'pincode' => $this->input->post('pincode'),
+                    'password' => $this->input->post('password'),
+                    'email' => $this->input->post('email'),
+                );
+
+                $user_id = $this->User_model->create($data);
+                if ($user_id > 0) {
+                    $output = array('status' => 'success', 'message' => "User Added Successfully");
+                } else {
+                    $output = array('status' => 'error', 'message' => "System Erroor");
+                }
+            } else {
+                $output = array('status' => 'error', 'message' => "User With Same Mobile No Already Exist");
+            }
+        } else {
+            $output = array('status' => 'error', 'message' => "Please Send POST Request");
         }
+        header('content-type: application/json');
+        echo json_encode($output);
     }
 
 }
