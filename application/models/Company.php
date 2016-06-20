@@ -15,7 +15,7 @@ class Company extends MY_model {
 
     public function __construct() {
         parent::__construct();
-        $this->table_name = 'company_account';
+        $this->table_name = 'company_master';
     }
 
     public function authentication($mobile, $password) {

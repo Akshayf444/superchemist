@@ -5,9 +5,6 @@ if (!defined('BASEPATH'))
 
 class Api extends MY_Controller {
 
-    public $alertLabel = 'Doctor';
-    public $doctorIds = array();
-
     public function __construct() {
         parent::__construct();
         $this->load->helper();
