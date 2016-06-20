@@ -184,13 +184,19 @@ class Api extends MY_Controller {
             $userexist = $this->User_model->authenticate($mobile, $password);
 
             if (!empty($userexist)) {
-                $output = array('status' => 'success', 'message' => json_encode($userexist));
+                $output = array('status' => 'success', 'message' => $userexist);
             } else {
-                $output = array('status' => 'error', 'message' => "Invalid Username/Password");
+                $companyexist = $this->Company->authenticate($mobile, $password);
+                if (!empty($companyexist)) {
+                    $output = array('status' => 'success', 'message' => $companyexist);
+                } else {
+                    $output = array('status' => 'error', 'message' => "Invalid Username/Password");
+                }
             }
         } else {
             $output = array('status' => 'error', 'message' => "Please Send Username And Password");
         }
+
         header('content-type: application/json');
         echo json_encode($output);
     }
