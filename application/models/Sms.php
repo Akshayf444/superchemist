@@ -1,23 +1,12 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- * Description of Sms
- *
- * @author Admin
- */
 class Sms extends CI_Model {
 
     protected $table_name = 'sms';
     protected $fillable = array('mobile', 'message', 'count', 'created');
 
     function sendsms($mobile, $messages, $medical_id = 0) {
-       // echo $mobile.' '.$messages;
+        // echo $mobile.' '.$messages;
         $authKey = "78106A1u8VLmCC054cb666b";
         $mobileNumber = $mobile;
         $senderId = "JBPRTL";

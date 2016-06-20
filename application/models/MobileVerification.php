@@ -1,32 +1,25 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+class MobileVerification extends MY_model {
 
-/**
- * Description of MobileVerification
- *
- * @author Admin
- */
-class MobileVerification extends CI_Model {
+    public function __construct() {
+        parent::__construct();
+        $this->table_name = 'mobileverification';
+    }
 
     public function creater($data) {
-        $this->db->insert('mobileverification', $data);
+        $this->db->insert($this->table_name, $data);
         return $this->db->insert_id();
     }
 
     public function update($data, $id) {
         $this->db->where('mobile', $id);
-        $this->db->update('mobileverification', $data);
+        $this->db->update($this->table_name, $data);
     }
 
     public function mobileexist($mobile) {
-        $sql = "SELECT * FROM mobileverification WHERE mobile = '" . $mobile . "' ";
-        $query = $this->db->query($sql);
-        return $query->row();
+        $sql = "SELECT * FROM " . $this->table_name . " WHERE mobile = '" . $mobile . "' ";
+        return $this->returnResult($sql, 'row');
     }
 
 }

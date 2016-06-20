@@ -5,7 +5,7 @@ class User_model extends MY_model {
     public $table_name;
 
     public function __construct() {
-        $this->load->database();
+        parent::__construct();
         $this->table_name = 'users';
     }
 
