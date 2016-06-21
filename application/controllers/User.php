@@ -101,4 +101,82 @@ class User extends MY_Controller {
         $this->load->view('template3', $data);
     }
 
+    public function update_brand() {
+         $this->load->model('Brand');
+        $id = $_GET['id'];
+        $data['rows'] = $this->Brand->find_by_brand($id);
+        if ($this->input->post()) {
+            $data = array(
+                'name' => $this->input->post('name'),
+                'form' => $this->input->post('form'),
+                'mrp' => $this->input->post('mrp'),
+                'packing' => $this->input->post('packing'),
+                'strength' => $this->input->post('strength'),
+                'is_active' => 1,
+            );
+            $this->Brand->brand_updation($this->input->post('id'), $data);
+            redirect('User/brandList', 'refresh');
+        }
+          $data = array('title' => 'Update', 'content' => 'User/edit_doc', 'page_title' => 'Update Brand', 'view_data' => $data);
+        $this->load->view('template3', $data);
+    }
+
+    public function delete_brand() {
+        $this->load->model('Brand');
+        $id = $_GET['id'];
+        $data = array('status' => 0);
+        $this->Brand->brand_updation($id, $data);
+        redirect('User/brandList', 'refresh');
+    }
+ public function update_division() {
+        $this->load->model('Division');
+         $this->load->model('Company');
+        $id = $_GET['id'];
+        $data['rows'] = $this->Division->find_by_division($id);
+        if ($this->input->post()) {
+            $data = array(
+                'name' => $this->input->post('name'),
+                'form' => $this->input->post('form'),
+                'mrp' => $this->input->post('mrp'),
+                'packing' => $this->input->post('packing'),
+                'strength' => $this->input->post('strength'),
+                'is_active' => 1,
+            );
+            $this->Division->division_updation($this->input->post('id'), $data);
+            redirect('User/brandList', 'refresh');
+        }
+          $data = array('title' => 'Update', 'content' => 'Division/edit_division', 'page_title' => 'Update Brand', 'view_data' => $data);
+        $this->load->view('template3', $data);
+    }
+
+    public function delete_division() {
+        $this->load->model('Division');
+        $id = $_GET['id'];
+        $data = array('status' => 0);
+        $this->Division->division_updation($id, $data);
+        redirect('User/brandList', 'refresh');
+    }
+    
+    public function addDivision() {
+
+        $this->load->model('Division');
+        $this->load->model('Company');
+        $companyList = $this->Company->get();
+
+        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
+        if ($this->input->post()) {
+            $data = array(
+                'name' => $this->input->post('name'),
+                'company_id' => $this->input->post('company_id'),
+                'status' => 1,
+                'created_at' => date('Y-m-d H:i:s'),
+                'email' => $this->input->post('email'),
+                'password' => $this->input->post('password'),
+            );
+
+            $this->Division->insert($data);
+        }
+        $data = array('title' => 'Login', 'content' => 'Division/add', 'page_title' => 'Add Division', 'view_data' => $data);
+        $this->load->view('template3', $data);
+    }
 }
