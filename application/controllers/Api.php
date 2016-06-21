@@ -185,7 +185,8 @@ class Api extends MY_Controller {
         if ($this->input->post('mobile') != '' && $this->input->post('password') != '') {
             $mobile = $this->input->post('mobile');
             $password = $this->input->post('password');
-            $userexist = $this->User_model->authenticate($mobile, $password);
+            $userexist = $this->User_model->authenticate($mobile, $password); 
+             echo $userexist;
 
             if (!empty($userexist)) {
                 $output = array('status' => 'success', 'message' => array($userexist));
@@ -249,6 +250,7 @@ class Api extends MY_Controller {
 //     }
 //     header('content type:application/json');
 //     echo json_encode($ouput);
+//      
 // }
 //  function log(){
 //      if($this->input->post('mobile')!=''&& $this->input->post('password')!= ''){
@@ -274,4 +276,4 @@ class Api extends MY_Controller {
 //      $mobile=$_GET['mobile'];
 //      
 // }
-}
+//}
