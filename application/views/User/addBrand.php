@@ -15,7 +15,11 @@ echo form_open('User/addBrand', $attribute);
         </div>
         <div class="form-group">
             Form
-            <input type="text" class="form-control" value="" name="form" placeholder="Form" /> </div>
+            <select class="form-control" name="form">
+                <option>Select Form</option>
+                <?php echo $form; ?>
+            </select> 
+        </div>
         <div class="form-group">
             MRP
             <input type="text" class="form-control" value="" name="mrp" placeholder="MRP "/> </div>

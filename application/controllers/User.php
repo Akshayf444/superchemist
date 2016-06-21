@@ -76,8 +76,9 @@ class User extends MY_Controller {
         $this->load->model('Company');
 
         $companyList = $this->Company->get(array('status = 1'));
-        
+
         $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
+        $data['form'] = $this->Master_Model->generateDropdown($this->Brand->getForm(), 'form', 'form');
 
         if ($this->input->post()) {
             $data = array(
@@ -91,9 +92,9 @@ class User extends MY_Controller {
             );
 
             $this->Brand->insert($data);
-            redirect('User/brandList','refresh');
+            redirect('User/brandList', 'refresh');
         }
-        
+
         $data = array('title' => 'Add Brand', 'content' => 'User/addBrand', 'page_title' => 'Add Brand', 'view_data' => $data);
         $this->load->view('template3', $data);
     }

@@ -25,4 +25,9 @@ class Brand extends MY_model {
         return $this->returnResult($sql);
     }
 
+    function getForm() {
+        $sql = "SELECT DISTINCT(form) as form FROM " . $this->table_name;
+        return $this->returnResult($sql);
+    }
+
 }
