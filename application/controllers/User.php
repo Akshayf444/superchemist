@@ -71,6 +71,31 @@ class User extends MY_Controller {
         $this->load->view('template3', $data);
     }
 
+    public function addBrand() {
+        $this->load->model('Brand');
+        $this->load->model('Company');
+
+        $companyList = $this->Company->get(array('status = 1'));
+
+        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
+
+        if ($this->input->post()) {
+            $data = array(
+                'name' => $this->input->post('name'),
+                'form' => $this->input->post('form'),
+                'status' => 1,
+                'mrp' => $this->input->post('mrp'),
+                'packing' => $this->input->post('packing'),
+                'company' => $this->input->post('company'),
+                'strength' => $this->input->post('strength'),
+            );
+
+            $this->Brand->insert($data);
+        }
+        $data = array('title' => 'Add Brand', 'content' => 'User/addBrand', 'page_title' => 'Add Brand', 'view_data' => $data);
+        $this->load->view('template3', $data);
+    }
+
     public function Division() {
         $this->load->model('Division');
         $data['response'] = $this->Division->getDivision(array('d.status = 1 ', 'cm.status = 1'));
@@ -82,7 +107,7 @@ class User extends MY_Controller {
 
         $this->load->model('Division');
         $this->load->model('Company');
-        $companyList = $this->Company->get();
+        $companyList = $this->Company->get(array('status = 1'));
 
         $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
         if ($this->input->post()) {

@@ -10,62 +10,30 @@ echo form_open('User/addDoctor', $attribute);
 <div class="row" >
     <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
         <div class="form-group">
-            Doctor Name
-            <input type="text" class="form-control" value="" name="Doctor_Name" placeholder="Doctor Name" />
+            Brand Name
+            <input type="text" class="form-control" value="" name="brand_name" placeholder="Brand Name" />
         </div>
         <div class="form-group">
-            MSL Code
-            <input type="text" class="form-control" value="" name="MSL_Code" placeholder="MSL Code" /> </div>
+            Form
+            <input type="text" class="form-control" value="" name="form" placeholder="Form" /> </div>
         <div class="form-group">
-            Clinic Address
-            <textarea name="address" placeholder="Clinic Address" class="form-control" ></textarea></div>
+            MRP
+            <input type="text" class="form-control" value="" name="mrp" placeholder="MRP "/> </div>
         <div class="form-group">
-            Mobile Number
-            <input type="text" class="form-control" value="" name="Mobile_Number" placeholder="Mobile "/> </div>
+            Packing
+            <input type="text" class="form-control" value="" name="packing" placeholder="Packing"/> </div>
         <div class="form-group">
-            Email
-            <input type="text" class="form-control" value="" name="email" placeholder="Email"/> </div>
-        <div class="form-group">
-            Degree
-            <input type="text"  class="form-control" name="Degree" placeholder="Degree" >
+            Company
+            <select name="company" class="form-control">
+                <option>Select Company</option>
+                <?php echo $company; ?>
+            </select>
         </div>	    
         <div class="form-group">
-            Passout College
-            <input type="text"  class="form-control" name="Passoutcollege" required="" placeholder=" Passout College" >
+            Strength
+            <input type="text"  class="form-control" name="strength" required="" placeholder="Strength" >
         </div>	
-        <div class="form-group">
-            Region
-            <input type="text"  class="form-control" name="Region" placeholder="Region" >
-        </div>	
-        <div class="form-group">
-            State
-            <input type="text"  class="form-control" name="State" placeholder="State" >
-        </div>	
-        <div class="form-group">
-            Years Of Practice
-            <select  class="form-control" name="Years_Practice" >
-                <option value="">Select Years Of Practice</option>
-                <option>0</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-            </select> 
-        </div>
-        <div class="form-group">
-            Date Of Birth
-            <input type="text" class="form-control" value="" id="date" name="DOB" placeholder="Date Of Birth"/></div>
-        <div class="form-group">
-            Clinic Anniversary
-            <input type="text" class="form-control" value="" id="date1" name="ANNIVERSARY" placeholder="Clinic Anniversary"/></div>
-        <div class="form-group">
-            Name Of Clipa Services
-            <input type="text" class="form-control" value="" name="ClipaSerice" placeholder=" Name Of Clipa Services"/> </div>
-        <div class="form-group">
-            FITB DONE &nbsp; <input type="radio" name="FITB" value="Yes" />Yes
-            <input type="radio" name="FITB" value="No" /> No
-        </div>
+
         <button class="btn btn-block btn-success " type="submit">SAVE</button>
     </div>
 </div>
