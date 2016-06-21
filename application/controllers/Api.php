@@ -13,73 +13,6 @@ class Api extends MY_Controller {
         $this->load->model('MobileVerification');
     }
 
-    public function index() {
-        $data = array();
-        $message = '';
-        if ($this->input->post()) {
-            if ($this->input->post('username') == $this->input->post('password')) {
-                $username = $this->input->post('username');
-                $password = $this->input->post('password');
-                $tmexist = $this->User_model->tmauthentication($username, $password);
-                if (!empty($tmexist)) {
-                    $this->session->set_userdata('Emp_Id', $tmexist['TM_Emp_Id']);
-                    $this->session->set_userdata('smswayid', $tmexist['smsWayID']);
-                    $this->session->set_userdata('Full_Name', $tmexist['TM_Name']);
-                    $this->session->set_userdata('TM_Emp_Id', $tmexist['TM_Emp_Id']);
-                    $this->session->set_userdata('BM_Emp_Id', $tmexist['BM_Emp_Id']);
-                    $this->session->set_userdata('SM_Emp_Id', $tmexist['SM_Emp_Id']);
-                    $this->session->set_userdata('SSM_Emp_Id', $tmexist['SSM_Emp_Id']);
-                    $this->session->set_userdata('Reporting_Id', $tmexist['BM_Emp_Id']);
-                    $this->session->set_userdata('Designation', 'TM');
-                    redirect('User/dashboard', 'refresh');
-                } else {
-                    $bmexist = $this->User_model->bmauthentication($username, $password);
-                    if (!empty($bmexist)) {
-                        $this->session->set_userdata('Emp_Id', $bmexist['BM_Emp_Id']);
-                        $this->session->set_userdata('TM_Emp_Id', $bmexist['TM_Emp_Id']);
-                        $this->session->set_userdata('BM_Emp_Id', $bmexist['BM_Emp_Id']);
-                        $this->session->set_userdata('SM_Emp_Id', $bmexist['SM_Emp_Id']);
-                        $this->session->set_userdata('SSM_Emp_Id', $bmexist['SSM_Emp_Id']);
-                        $this->session->set_userdata('Reporting_Id', $bmexist['SM_Emp_Id']);
-                        $this->session->set_userdata('Full_Name', $bmexist['BM_Name']);
-                        $this->session->set_userdata('smswayid', $bmexist['smsWayID']);
-                        $this->session->set_userdata('Designation', 'BM');
-                        redirect('User/dashboard', 'refresh');
-                    } else {
-                        $smexist = $this->User_model->smauthentication($username, $password);
-                        if (!empty($smexist)) {
-                            $this->session->set_userdata('Emp_Id', $smexist['SM_Emp_Id']);
-                            $this->session->set_userdata('TM_Emp_Id', $smexist['TM_Emp_Id']);
-                            $this->session->set_userdata('BM_Emp_Id', $smexist['BM_Emp_Id']);
-                            $this->session->set_userdata('SM_Emp_Id', $smexist['SM_Emp_Id']);
-                            $this->session->set_userdata('SSM_Emp_Id', $smexist['SSM_Emp_Id']);
-                            $this->session->set_userdata('Reporting_Id', $smexist['SSM_Emp_Id']);
-                            $this->session->set_userdata('Full_Name', $smexist['SM_Name']);
-                            $this->session->set_userdata('smswayid', $smexist['smsWayID']);
-                            $this->session->set_userdata('Designation', 'SM');
-                            redirect('User/dashboard', 'refresh');
-                        } else {
-                            $adminexist = $this->User_model->adminauthentication($username, $password);
-                            if (!empty($adminexist)) {
-                                $this->session->set_userdata('admin_id', $adminexist['admin_id']);
-                                $this->session->set_userdata('Full_Name', $adminexist['name']);
-
-                                $this->session->set_userdata('Designation', 'admin');
-                                redirect('User/dashboard', 'refresh');
-                            } else {
-                                $this->session->set_userdata('message', $this->Master_Model->DisplayAlert('Incorrect Username/Password', 'danger'));
-                            }
-                        }
-                    }
-                }
-            } else {
-                $this->session->set_userdata('message', $this->Master_Model->DisplayAlert('Incorrect Username/Password', 'danger'));
-            }
-        }
-        $data = array('title' => 'Login', 'content' => 'User/login', 'view_data' => $data);
-        $this->load->view('template1', $data);
-    }
-
     public function sendVerification() {
         //var_dump($request);
 
@@ -203,15 +136,24 @@ class Api extends MY_Controller {
 
     public function companyLogin() {
         $this->load->model('Company');
+        $this->load->model('Superadmin');
         if ($this->input->post('mobile') != '' && $this->input->post('password') != '') {
+            //var_dump($_POST);
             $mobile = $this->input->post('mobile');
+
             $password = $this->input->post('password');
             $userexist = $this->Company->authenticate($mobile, $password);
-
+            //var_dump($userexist);
             if (!empty($userexist)) {
                 $output = array('status' => 'success', 'message' => $userexist);
             } else {
-                $output = array('status' => 'error', 'message' => "Invalid Username/Password");
+                $userexist = $this->Superadmin->authenticate($mobile, $password);
+                //var_dump($userexist);
+                if (!empty($userexist)) {
+                    $output = array('status' => 'success', 'message' => $userexist);
+                } else {
+                    $output = array('status' => 'error', 'message' => "Invalid Username/Password");
+                }
             }
         } else {
             $output = array('status' => 'error', 'message' => "Please Send Mobile No And Password");
@@ -219,6 +161,27 @@ class Api extends MY_Controller {
 
         header('content-type: application/json');
         echo json_encode($output);
+
+    }
+
+    public function getBrandList() {
+        $this->load->model('Brand');
+        $condition = array();
+        if ($this->input->get('company_id')) {
+            $company_id = $this->input->get('company_id');
+            $condition[] = "company = '" . $company_id . "'";
+        }
+        
+        $brandlist = $this->Brand->getBrands($condition,20,20);
+        if (!empty($brandlist)) {
+            $output = array('status' => 'success', 'message' => array($brandlist));
+        } else {
+            $output = array('status' => 'error', 'message' => 'Data Not Found');
+        }
+        header('content-type: application/json');
+        echo json_encode($output);
+    }
+
 }
 // public function  reg(){
 //     if($this->input->post()){
