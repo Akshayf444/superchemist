@@ -87,48 +87,23 @@
                     <!-- Sidebar user panel -->
                     <ul class="sidebar-menu">
                         <li>
-                            <a href="<?php echo site_url('User/dashboard'); ?>"><i class="fa fa-dashboard"></i> Dashboard</a>
+                            <a href="<?php echo site_url('User/brandList'); ?>"><i class="fa fa-dashboard"></i> Brand List</a>
                         </li>
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-user-md"></i> <span>Young Doctor</span> <i class="fa fa-angle-left pull-right"></i>
-                            </a>
-                            <ul class="treeview-menu" style="display: none;">
-                                <?php
-                                if ($this->session->userdata('Designation') == 'TM') {
-                                    echo '<li><a href="' . site_url('User/addDoctor') . '"><i class="fa fa-circle-o"></i> Add Doctor</a></li>';
-                                }
-                                ?>
-
-                                <li class=""><a href="<?php echo site_url('User/view_doctor'); ?>"><i class="fa fa-circle-o"></i>  View Doctor</a></li>
-                            </ul>
+                        <li>
+                            <a href="<?php echo site_url('User/Division'); ?>"><i class="fa fa-dashboard"></i> Division</a>
                         </li>
-
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-user-md"></i> <span>PG Doctor</span> <i class="fa fa-angle-left pull-right"></i>
-                            </a>
-                            <ul class="treeview-menu" style="display: none;">
-                                <?php
-                                if ($this->session->userdata('Designation') == 'TM') {
-                                    echo '<li><a href="' . site_url('User/addpgDoctor') . '"><i class="fa fa-circle-o"></i> Add Doctor</a></li>';
-                                }
-                                ?>
-                                <li class=""><a href="<?php echo site_url('User/view_pgdoctor'); ?>"><i class="fa fa-circle-o"></i>  View Doctor</a></li>
-                            </ul>
+                        <li>
+                            <a href="<?php //echo site_url('User/brandList');  ?>"><i class="fa fa-dashboard"></i> Bonus Offer</a>
                         </li>
-                        <?php if ($this->session->userdata('Designation') == 'TM') { ?>
-                            <li class="treeview">
-                                <a href="#">
-                                    <i class="fa fa-institution"></i> <span>Institute</span> <i class="fa fa-angle-left pull-right"></i>
-                                </a>
-                                <ul class="treeview-menu" style="display: none;">
-                                    <li><a href="<?php echo site_url('User/addinstitute'); ?>"><i class="fa fa-circle-o"></i> Add Institute</a></li>
-                                    <li class=""><a href="<?php echo site_url('User/viewinstitute'); ?>"><i class="fa fa-circle-o"></i>  View Institute</a></li>
-                                </ul>
-                            </li>
-                        <?php }
-                        ?>
+                        <li>
+                            <a href="<?php //echo site_url('User/brandList');  ?>"><i class="fa fa-dashboard"></i> Hot Deal</a>
+                        </li>
+                        <li>
+                            <a href="<?php //echo site_url('User/brandList');  ?>"><i class="fa fa-dashboard"></i> Brand Image</a>
+                        </li>
+                        <li>
+                            <a href="<?php //echo site_url('User/brandList');  ?>"><i class="fa fa-dashboard"></i> Settings</a>
+                        </li>
 
                     </ul>
                 </section>

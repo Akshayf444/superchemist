@@ -135,20 +135,47 @@ class Api extends MY_Controller {
 
     public function companyLogin() {
         $this->load->model('Company');
+        $this->load->model('Superadmin');
         if ($this->input->post('mobile') != '' && $this->input->post('password') != '') {
+            //var_dump($_POST);
             $mobile = $this->input->post('mobile');
+
             $password = $this->input->post('password');
             $userexist = $this->Company->authenticate($mobile, $password);
-
+            //var_dump($userexist);
             if (!empty($userexist)) {
                 $output = array('status' => 'success', 'message' => $userexist);
             } else {
-                $output = array('status' => 'error', 'message' => "Invalid Username/Password");
+                $userexist = $this->Superadmin->authenticate($mobile, $password);
+                //var_dump($userexist);
+                if (!empty($userexist)) {
+                    $output = array('status' => 'success', 'message' => $userexist);
+                } else {
+                    $output = array('status' => 'error', 'message' => "Invalid Username/Password");
+                }
             }
         } else {
             $output = array('status' => 'error', 'message' => "Please Send Mobile No And Password");
         }
 
+        header('content-type: application/json');
+        echo json_encode($output);
+    }
+
+    public function getBrandList() {
+        $this->load->model('Brand');
+        $condition = array();
+        if ($this->input->get('company_id')) {
+            $company_id = $this->input->get('company_id');
+            $condition[] = "company = '" . $company_id . "'";
+        }
+        
+        $brandlist = $this->Brand->getBrands($condition,20,20);
+        if (!empty($brandlist)) {
+            $output = array('status' => 'success', 'message' => array($brandlist));
+        } else {
+            $output = array('status' => 'error', 'message' => 'Data Not Found');
+        }
         header('content-type: application/json');
         echo json_encode($output);
     }

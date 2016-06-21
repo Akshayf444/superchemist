@@ -2,10 +2,9 @@
 
 class User extends MY_Controller {
 
-    const API_URL = '';
-
     public function __construct() {
         parent::__construct();
+        $this->load->model('Master_Model');
     }
 
     public function index() {
@@ -15,12 +14,22 @@ class User extends MY_Controller {
             $password = $this->input->post('password');
             //$context = $this->returnContext();
             $response = $this->CallAPI('POST', API_URL . 'companyLogin', array('mobile' => $mobile, 'password' => $password));
+            $response = json_decode($response, TRUE);
             //var_dump($response);
-            $response = json_decode($response);
-            if (isset($response->status) && $response->status == 'error') {
-                $data['message'] = $response->message;
-            } elseif (isset($response->status) && $response->status  == 'success') {
-                $data['message'] = $response->message;
+            if (isset($response['status']) && $response['status'] == 'error') {
+                $data['message'] = $response['message'];
+            } elseif (isset($response['status']) && $response['status'] == 'success') {
+
+                if (isset($response['message']['admin_id']) && $response['message']['admin_id'] > 0) {
+                    $this->full_name = $response['message']['name'];
+                    $this->company_id = $response['message']['admin_id'];
+                    $this->type = 1;
+                } elseif (isset($response['message']['company_id']) && $response['message']['company_id'] > 0) {
+                    $this->full_name = $response['message']['company_name'];
+                    $this->company_id = $response['message']['company_id'];
+                    $this->type = 2;
+                }
+                redirect('User/brandList', 'refresh');
             }
         }
 
@@ -41,6 +50,50 @@ class User extends MY_Controller {
             )
         );
         return stream_context_create($opts);
+    }
+
+    public function dashboard() {
+        
+    }
+
+    public function brandList() {
+        $company_id = $this->company_id;
+        $response = $this->CallAPI('GET', API_URL . 'getBrandList');
+        $response = json_decode($response, true);
+        //var_dump($response);
+        $data['response'] = $response['message'];
+        $data = array('title' => 'Login', 'content' => 'User/view_brand', 'page_title' => 'Brand List', 'view_data' => $data);
+        $this->load->view('template3', $data);
+    }
+
+    public function Division() {
+        $this->load->model('Division');
+        $data['response'] = $this->Division->getDivision(array('d.status = 1 ', 'cm.status = 1'));
+        $data = array('title' => 'Login', 'content' => 'Division/list', 'page_title' => 'Division List', 'view_data' => $data);
+        $this->load->view('template3', $data);
+    }
+
+    public function addDivision() {
+
+        $this->load->model('Division');
+        $this->load->model('Company');
+        $companyList = $this->Company->get();
+
+        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
+        if ($this->input->post()) {
+            $data = array(
+                'name' => $this->input->post('name'),
+                'company_id' => $this->input->post('company_id'),
+                'status' => 1,
+                'created_at' => date('Y-m-d H:i:s'),
+                'email' => $this->input->post('email'),
+                'password' => $this->input->post('password'),
+            );
+
+            $this->Division->insert($data);
+        }
+        $data = array('title' => 'Login', 'content' => 'Division/add', 'page_title' => 'Add Division', 'view_data' => $data);
+        $this->load->view('template3', $data);
     }
 
 }
