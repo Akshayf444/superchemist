@@ -62,7 +62,7 @@ class User extends MY_Controller {
         $data['page'] = $page;
         if ($response['status'] == 'success') {
             $data['total_pages'] = $response['totalpages'];
-            $data['response'] = $response['message'][0];
+            $data['response'] = $response['message'];
         } else {
             $data['message'] = $response['message'];
         }

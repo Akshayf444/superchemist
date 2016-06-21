@@ -178,7 +178,7 @@ class Api extends MY_Controller {
 
         $brandlist = $this->Brand->getBrands($condition, $per_page, $offset);
         if (!empty($brandlist)) {
-            $output = array('status' => 'success', 'message' => array($brandlist), 'totalpages' => $totalpages, 'page' => $page);
+            $output = array('status' => 'success', 'message' => $brandlist, 'totalpages' => $totalpages, 'page' => $page);
         } else {
             $output = array('status' => 'error', 'message' => 'Data Not Found');
         }
