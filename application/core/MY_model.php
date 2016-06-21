@@ -15,4 +15,9 @@ class MY_model extends CI_Model {
         return !empty($result) ? $result : FALSE;
     }
 
+    public function authenticate($mobile, $password) {
+        $sql = "SELECT * FROM  " . $this->table_name . " WHERE mobile = '" . $mobile . "' AND password = '" . $password . "' AND status = 1 ";
+        return $this->returnResult($sql, 'row');
+    }
+
 }
