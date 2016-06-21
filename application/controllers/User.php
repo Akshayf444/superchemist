@@ -56,12 +56,17 @@ class User extends MY_Controller {
         
     }
 
-    public function brandList() {
-        $company_id = $this->company_id;
-        $response = $this->CallAPI('GET', API_URL . 'getBrandList');
+    public function brandList($page = 1) {
+        $response = $this->CallAPI('GET', API_URL . 'getBrandList/' . $page);
         $response = json_decode($response, true);
-        //var_dump($response);
-        $data['response'] = $response['message'];
+        $data['page'] = $page;
+        if ($response['status'] == 'success') {
+            $data['total_pages'] = $response['totalpages'];
+            $data['response'] = $response['message'][0];
+        } else {
+            $data['message'] = $response['message'];
+        }
+
         $data = array('title' => 'Login', 'content' => 'User/view_brand', 'page_title' => 'Brand List', 'view_data' => $data);
         $this->load->view('template3', $data);
     }

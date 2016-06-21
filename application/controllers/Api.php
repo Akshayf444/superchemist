@@ -162,17 +162,21 @@ class Api extends MY_Controller {
         echo json_encode($output);
     }
 
-    public function getBrandList() {
+    public function getBrandList($page = 1) {
         $this->load->model('Brand');
+        $per_page = 500;
+        $totalpages = ceil(69371 / $per_page);
+        $offset = ($page - 1) * $per_page;
+
         $condition = array();
         if ($this->input->get('company_id')) {
             $company_id = $this->input->get('company_id');
             $condition[] = "company = '" . $company_id . "'";
         }
-        
-        $brandlist = $this->Brand->getBrands($condition,20,20);
+
+        $brandlist = $this->Brand->getBrands($condition, $per_page, $offset);
         if (!empty($brandlist)) {
-            $output = array('status' => 'success', 'message' => array($brandlist));
+            $output = array('status' => 'success', 'message' => array($brandlist), 'totalpages' => $totalpages, 'page' => $page);
         } else {
             $output = array('status' => 'error', 'message' => 'Data Not Found');
         }

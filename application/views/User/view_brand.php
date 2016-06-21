@@ -15,7 +15,7 @@
             <tbody>
                 <?php
                 $count = 1;
-                if (!empty($response)) {
+                if (isset($response) && !empty($response)) {
                     foreach ($response as $row) :
                         ?><tr>  
                             <td data-title="Sr"><?php echo $count++; ?></td>
@@ -32,9 +32,21 @@
             </tbody>
         </table>
     </div>
-
-
-
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <?php
+        if (isset($total_pages)) {
+            for ($i = 1; $i <= $total_pages; $i++) {
+                if (isset($page) && $page == $i) {
+                    echo '<a href="' . site_url('User/brandList/' . $i) . '" name="page" class="btn btn-sm btn-primary" >' . $i . '</a>';
+                } else {
+                    echo '<a href="' . site_url('User/brandList/' . $i) . '" name="page" class="btn btn-sm " >' . $i . '</a>';
+                }
+            }
+        }
+        ?>
+    </div>
 </div>
 <script>
     function deletedoc(url) {
