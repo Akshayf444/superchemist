@@ -15,19 +15,19 @@ class User extends MY_Controller {
             //$context = $this->returnContext();
             $response = $this->CallAPI('POST', API_URL . 'companyLogin', array('mobile' => $mobile, 'password' => $password));
             $response = json_decode($response, TRUE);
-            var_dump($response);
+            //var_dump($response);
             if (isset($response['status']) && $response['status'] == 'error') {
                 $data['message'] = $response['message'];
             } elseif (isset($response['status']) && $response['status'] == 'success') {
 
                 if (isset($response['message']['admin_id']) && $response['message']['admin_id'] > 0) {
-                    $this->full_name = $response['message']['name'];
-                    $this->company_id = $response['message']['admin_id'];
-                    $this->type = 1;
+                    $this->session->set_userdata('full_name', $response['message']['name']);
+                    $this->session->set_userdata('company_id', $response['message']['admin_id']);
+                    $this->session->set_userdata('type', 1);
                 } elseif (isset($response['message']['company_id']) && $response['message']['company_id'] > 0) {
-                    $this->full_name = $response['message']['company_name'];
-                    $this->company_id = $response['message']['company_id'];
-                    $this->type = 2;
+                    $this->session->set_userdata('full_name', $response['message']['company_name']);
+                    $this->session->set_userdata('company_id', $response['message']['company_id']);
+                    $this->session->set_userdata('type', 2);
                 }
                 redirect('User/brandList', 'refresh');
             }

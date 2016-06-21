@@ -8,6 +8,9 @@ class MY_Controller extends CI_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->type = $this->session->userdata('type');
+        $this->company_id = $this->session->userdata('company_id');
+        $this->full_name = $this->session->userdata('full_name');
     }
 
     function is_logged_in($Profile = "") {
@@ -49,7 +52,7 @@ class MY_Controller extends CI_Controller {
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
-        var_dump(curl_getinfo($curl));
+        //var_dump(curl_getinfo($curl));
         $result = curl_exec($curl);
 
         curl_close($curl);
