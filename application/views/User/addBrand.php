@@ -5,13 +5,13 @@
 </style>
 <?php
 $attribute = array('id' => 'valid');
-echo form_open('User/addDoctor', $attribute);
+echo form_open('User/addBrand', $attribute);
 ?>
 <div class="row" >
     <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
         <div class="form-group">
             Brand Name
-            <input type="text" class="form-control" value="" name="brand_name" placeholder="Brand Name" />
+            <input type="text" class="form-control" value="" name="name" placeholder="Brand Name" />
         </div>
         <div class="form-group">
             Form
@@ -24,7 +24,7 @@ echo form_open('User/addDoctor', $attribute);
             <input type="text" class="form-control" value="" name="packing" placeholder="Packing"/> </div>
         <div class="form-group">
             Company
-            <select name="company" class="form-control">
+            <select name="company" class="chosen-select">
                 <option>Select Company</option>
                 <?php echo $company; ?>
             </select>

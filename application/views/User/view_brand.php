@@ -1,4 +1,9 @@
 <div class="row">
+    <div class="col-lg-12" >
+        <a href="<?php echo site_url('User/addBrand'); ?>" class="btn btn-primary pull-right">Add</a>
+    </div>
+</div>
+<div class="row">
     <div class="col-lg-12 table-responsive" >
         <table class="table table-bordered table-hover panel" id="datatable">
             <thead>
