@@ -15,7 +15,7 @@ class User extends MY_Controller {
             //$context = $this->returnContext();
             $response = $this->CallAPI('POST', API_URL . 'companyLogin', array('mobile' => $mobile, 'password' => $password));
             $response = json_decode($response, TRUE);
-            //var_dump($response);
+            var_dump($response);
             if (isset($response['status']) && $response['status'] == 'error') {
                 $data['message'] = $response['message'];
             } elseif (isset($response['status']) && $response['status'] == 'success') {

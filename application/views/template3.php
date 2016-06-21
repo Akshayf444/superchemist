@@ -58,7 +58,7 @@
                                 <!-- Menu Toggle Button -->
 
                                 <?php $CI = & get_instance(); ?>
-                                <p style="padding-top: 10px;color: #FFFFFF" ><span class=""><?php echo isset($CI->Full_Name) ? $CI->Full_Name . "&nbsp" : ''; ?></span>
+                                <p style="padding-top: 10px;color: #FFFFFF" ><span class=""><?php echo isset($CI->full_name) ? $CI->full_name . "&nbsp" : ''; ?></span>
                                     <a class="text-aqua" href="<?php echo site_url('User/logout'); ?>">
                                         <span style="font-size: 20px" class="fa fa-power-off">  </span>
                                     </a>

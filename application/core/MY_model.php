@@ -11,7 +11,7 @@ class MY_model extends CI_Model {
 
     public function returnResult($sql, $type = 'result') {
         $query = $this->db->query($sql);
-        $result = $type == 'row' ? $query->row : $query->result();
+        $result = $type == 'row' ? $query->row() : $query->result();
         return !empty($result) ? $result : FALSE;
     }
 
