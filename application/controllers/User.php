@@ -117,10 +117,12 @@ class User extends MY_Controller {
             $data = array(
                 'name' => $this->input->post('name'),
                 'company_id' => $this->input->post('company_id'),
+                'contact_person' => $this->input->post('contact_person'),
                 'status' => 1,
                 'created_at' => date('Y-m-d H:i:s'),
                 'email' => $this->input->post('email'),
                 'password' => $this->input->post('password'),
+                'mobile' => $this->input->post('mobile'),
             );
 
             $this->Division->insert($data);

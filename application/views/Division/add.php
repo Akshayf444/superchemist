@@ -30,6 +30,10 @@ echo form_open('User/addDivision', $attribute);
             Password
             <input type="password"  class="form-control" name="password" placeholder="Password" >
         </div>	    
+        <div class="form-group">
+            Mobile
+            <input type="password"  class="form-control" name="mobile" placeholder="Mobile" >
+        </div>	    
 
         <button class="btn btn-block btn-success " type="submit">SAVE</button>
     </div>
