@@ -140,12 +140,12 @@ class User extends MY_Controller {
 
     public function update_brand() {
         $this->load->model('Brand');
-         $this->load->model('Company');
+        $this->load->model('Company');
         $id = $_GET['id'];
         $data['rows'] = $this->Brand->find_by_brand($id);
         $companyList = $this->Company->get(array('status = 1'));
 
-        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name',   $data['rows']['company']);
+        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name', $data['rows']['company']);
         if ($this->input->post()) {
             $data = array(
                 'name' => $this->input->post('name'),
@@ -177,14 +177,14 @@ class User extends MY_Controller {
         $data['rows'] = $this->Division->find_by_division($id);
         $companyList = $this->Company->get(array('status = 1'));
 
-        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name',   $data['rows']['company_id']);
+        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name', $data['rows']['company_id']);
         if ($this->input->post()) {
             $data = array(
                 'name' => $this->input->post('name'),
                 'contact_person' => $this->input->post('contact_person'),
                 'email' => $this->input->post('email'),
                 'company_id' => $this->input->post('company_id'),
-                'mobile' => $this->input->post('strength'),
+                'mobile' => $this->input->post('mobile'),
                 'status' => 1,
             );
             $this->Division->division_updation($this->input->post('id'), $data);
@@ -203,8 +203,6 @@ class User extends MY_Controller {
     }
 
     public function addCompany() {
-
-
         $this->load->model('Company');
         $companyList = $this->Company->get();
 
@@ -221,7 +219,17 @@ class User extends MY_Controller {
 
             $this->Division->insert($data);
         }
-        $data = array('title' => 'Login', 'content' => 'Division/add', 'page_title' => 'Add Division', 'view_data' => $data);
+        $data = array('title' => 'Login', 'content' => 'Company/add', 'page_title' => 'Add Division', 'view_data' => $data);
+        $this->load->view('template3', $data);
+    }
+
+    public function editCompany($company_id) {
+        $companyList = $this->Company->get(array('company_id = ' . $company_id));
+        $companyList = array_shift($companyList);
+        if ($this->input->post()) {
+            
+        }
+        $data = array('title' => 'Login', 'content' => 'Company/edit', 'page_title' => 'Add Division', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
 

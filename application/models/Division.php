@@ -23,14 +23,16 @@ class Division extends MY_model {
         $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";
         return $this->returnResult($sql);
     }
-public function find_by_division($id){
-    $sql="select * from divisions d INNER JOIN company_master cm ON d.company_id = cm.company_id  where d.div_id = $id and d.status='1' ";
-    $query=$this->db->query($sql);
-    return $query->row_array();
-}
-    
-     public  function division_updation($id,$data){
-         $this->db->where(array('div_id'=>$id,'status'=>1));
-         $this->db->update('divisions',$data);
-     }
+
+    public function find_by_division($id) {
+        $sql = "select d.* from divisions d INNER JOIN company_master cm ON d.company_id = cm.company_id  where d.div_id = $id and d.status='1' ";
+        $query = $this->db->query($sql);
+        return $query->row_array();
+    }
+
+    public function division_updation($id, $data) {
+        $this->db->where(array('div_id' => $id, 'status' => 1));
+        $this->db->update('divisions', $data);
+    }
+
 }
