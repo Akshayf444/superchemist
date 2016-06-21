@@ -67,7 +67,7 @@ class User extends MY_Controller {
             $data['message'] = $response['message'];
         }
 
-        $data = array('title' => 'Login', 'content' => 'User/view_brand', 'page_title' => 'Brand List', 'view_data' => $data);
+        $data = array('title' => 'Brand List', 'content' => 'User/view_brand', 'page_title' => 'Brand List', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
 

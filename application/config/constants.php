@@ -38,7 +38,7 @@ define('FOPEN_WRITE_CREATE', 'ab');
 define('FOPEN_READ_WRITE_CREATE', 'a+b');
 define('FOPEN_WRITE_CREATE_STRICT', 'xb');
 define('FOPEN_READ_WRITE_CREATE_STRICT', 'x+b');
-define('API_URL', 'http://127.0.0.1:8888/superchemist/index.php/Api/');
+define('API_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/superchemist/index.php/Api/');
 
 
 /* End of file constants.php */
