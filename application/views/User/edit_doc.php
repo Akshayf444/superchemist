@@ -15,6 +15,14 @@ echo form_open('User/update?id=' . $rows['id'], $attribute);
         <div class="form-group">
           MRP
             <input type="text" class="form-control" value="<?php echo $rows['mrp']; ?>" name="mrp" placeholder="MRP"/> </div>
+              <div class="form-group">
+            Company
+            <select name="company_id" class="form-control">
+                <option value="">Select Company</option>
+
+                <?php echo $company; ?>
+            </select>
+        </div>
         <div class="form-group">
             Packing
             <input type="text" class="form-control" value="<?php echo $rows['packing']; ?>" name="packing"placeholder="Packing "/> </div>

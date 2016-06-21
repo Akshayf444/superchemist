@@ -20,7 +20,7 @@ echo form_open('User/update_division?id=' . $rows['div_id'], $attribute);
             Company
             <select name="company_id" class="form-control">
                 <option value="">Select Company</option>
-                <option><?php echo $rows['company_name']; ?></option>
+
                 <?php echo $company; ?>
             </select>
         </div>

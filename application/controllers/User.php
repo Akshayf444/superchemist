@@ -106,6 +106,13 @@ class User extends MY_Controller {
         $this->load->view('template3', $data);
     }
 
+    public function CompanyList() {
+        $this->load->model('Company');
+        $data['response'] = $this->Company->get(array('status = 1'));
+        $data = array('title' => 'Company', 'content' => 'Company/list', 'page_title' => 'Company List', 'view_data' => $data);
+        $this->load->view('template3', $data);
+    }
+
     public function addDivision() {
 
         $this->load->model('Division');
@@ -132,9 +139,13 @@ class User extends MY_Controller {
     }
 
     public function update_brand() {
-         $this->load->model('Brand');
+        $this->load->model('Brand');
+         $this->load->model('Company');
         $id = $_GET['id'];
         $data['rows'] = $this->Brand->find_by_brand($id);
+        $companyList = $this->Company->get(array('status = 1'));
+
+        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name',   $data['rows']['company']);
         if ($this->input->post()) {
             $data = array(
                 'name' => $this->input->post('name'),
@@ -145,9 +156,9 @@ class User extends MY_Controller {
                 'is_active' => 1,
             );
             $this->Brand->brand_updation($this->input->post('id'), $data);
-            redirect('User/brandList', 'refresh');
+            redirect('User/division', 'refresh');
         }
-          $data = array('title' => 'Update', 'content' => 'User/edit_doc', 'page_title' => 'Update Brand', 'view_data' => $data);
+        $data = array('title' => 'Update', 'content' => 'User/edit_doc', 'page_title' => 'Update Brand', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
 
@@ -158,24 +169,28 @@ class User extends MY_Controller {
         $this->Brand->brand_updation($id, $data);
         redirect('User/brandList', 'refresh');
     }
- public function update_division() {
+
+    public function update_division() {
         $this->load->model('Division');
-         $this->load->model('Company');
+        $this->load->model('Company');
         $id = $_GET['id'];
         $data['rows'] = $this->Division->find_by_division($id);
+        $companyList = $this->Company->get(array('status = 1'));
+
+        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name',   $data['rows']['company_id']);
         if ($this->input->post()) {
             $data = array(
                 'name' => $this->input->post('name'),
-                'form' => $this->input->post('form'),
-                'mrp' => $this->input->post('mrp'),
-                'packing' => $this->input->post('packing'),
-                'strength' => $this->input->post('strength'),
-                'is_active' => 1,
+                'contact_person' => $this->input->post('contact_person'),
+                'email' => $this->input->post('email'),
+                'company_id' => $this->input->post('company_id'),
+                'mobile' => $this->input->post('strength'),
+                'status' => 1,
             );
             $this->Division->division_updation($this->input->post('id'), $data);
-            redirect('User/brandList', 'refresh');
+            redirect('User/Division', 'refresh');
         }
-          $data = array('title' => 'Update', 'content' => 'Division/edit_division', 'page_title' => 'Update Brand', 'view_data' => $data);
+        $data = array('title' => 'Update', 'content' => 'Division/edit_division', 'page_title' => 'Update Division', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
 
@@ -186,10 +201,10 @@ class User extends MY_Controller {
         $this->Division->division_updation($id, $data);
         redirect('User/brandList', 'refresh');
     }
-    
+
     public function addCompany() {
 
-        $this->load->model('Division');
+
         $this->load->model('Company');
         $companyList = $this->Company->get();
 
@@ -209,4 +224,5 @@ class User extends MY_Controller {
         $data = array('title' => 'Login', 'content' => 'Division/add', 'page_title' => 'Add Division', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
+
 }

@@ -22,7 +22,7 @@ echo form_open('User/addcompany', $attribute);
             <input type="text" class="form-control" value="" name="city" placeholder=" City "/> </div>
               <div class="form-group">
           Pincode
-            <input type="text" class="form-control" value="" name="pincode" placeholder=" Pincode "/> </div>
+            <input type="text" class="form-control" value="" name="pin_code" placeholder=" Pincode "/> </div>
              <div class="form-group">
             Contact Person
             <input type="text" class="form-control" value="" name="contact_person" placeholder="Contact Person "/> </div>
