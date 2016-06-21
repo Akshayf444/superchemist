@@ -40,6 +40,8 @@
             for (var selector in config) {
                 $(selector).chosen(config[selector]);
             }
+
+
         </script>
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -49,7 +51,6 @@
         <![endif]-->
 
     </head>
-
     <body class="skin-blue">
         <div class="wrapper">
 
@@ -93,16 +94,16 @@
                             <a href="<?php echo site_url('User/Division'); ?>"><i class="fa fa-dashboard"></i> Division</a>
                         </li>
                         <li>
-                            <a href="<?php //echo site_url('User/brandList');  ?>"><i class="fa fa-dashboard"></i> Bonus Offer</a>
+                            <a href="<?php //echo site_url('User/brandList');      ?>"><i class="fa fa-dashboard"></i> Bonus Offer</a>
                         </li>
                         <li>
-                            <a href="<?php //echo site_url('User/brandList');  ?>"><i class="fa fa-dashboard"></i> Hot Deal</a>
+                            <a href="<?php //echo site_url('User/brandList');      ?>"><i class="fa fa-dashboard"></i> Hot Deal</a>
                         </li>
                         <li>
-                            <a href="<?php //echo site_url('User/brandList');  ?>"><i class="fa fa-dashboard"></i> Brand Image</a>
+                            <a href="<?php //echo site_url('User/brandList');      ?>"><i class="fa fa-dashboard"></i> Brand Image</a>
                         </li>
                         <li>
-                            <a href="<?php //echo site_url('User/brandList');  ?>"><i class="fa fa-dashboard"></i> Settings</a>
+                            <a href="<?php //echo site_url('User/brandList');      ?>"><i class="fa fa-dashboard"></i> Settings</a>
                         </li>
 
                     </ul>
@@ -129,9 +130,19 @@
                     <?php $this->load->view($content, $view_data); ?>
                 </section>
             </div>
-            <script src="<?php echo asset_url() ?>dashboard/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-            <script src='<?php echo asset_url() ?>js/jquery.bootstrap-growl.min.js' type='text/javascript'></script>
-            <!-- AdminLTE App -->
-            <script src="<?php echo asset_url() ?>dashboard/dist/js/app.min.js" type="text/javascript"></script>
+        </div>
+        <script src="<?php echo asset_url() ?>dashboard/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src='<?php echo asset_url() ?>js/jquery.bootstrap-growl.min.js' type='text/javascript'></script>
+        <!-- AdminLTE App -->
+        <script src="<?php echo asset_url() ?>dashboard/dist/js/app.min.js" type="text/javascript"></script>
+        <script>
+        $('document').ready(function () {
+            var oTable = $('#datatable').dataTable({
+                "bPaginate": false,
+                "bInfo": false,
+                "info": false,
+            });
+        });
+        </script>
     </body>
 </html>
