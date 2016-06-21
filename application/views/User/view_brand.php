@@ -14,6 +14,7 @@
                     <th>MRP</th>
                     <th>Packing</th>
                     <th>Strength</th>
+                    <th>Action</th>
 
                 </tr>
             </thead>
@@ -29,6 +30,10 @@
                             <td data-title="Doctor Name"><?php echo $row['mrp']; ?></td>  
                             <td data-title="MSL Code"><?php echo $row['packing']; ?> </td> 
                             <td data-title="Address"><?php echo $row['strength']; ?></td>  
+                            <td data-title="Action">
+                                <a class="fa fa-trash btn-danger btn-xs" onclick=" deletedoc('<?php echo site_url('User/delete_brand?id=') . $row['id']; ?>');"></a> 
+                            <a class="fa fa-pencil btn-success btn-xs" onclick="window.location= '<?php echo site_url('User/update_brand?id=').$row['id'] ;?>';"></a>
+                            </td>
                         </tr>
                         <?php
                     endforeach;

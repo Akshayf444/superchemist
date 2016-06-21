@@ -11,5 +11,8 @@ class Company extends MY_model {
         parent::__construct();
         $this->table_name = 'company_master';
     }
-
+  public function create($data) {
+        $this->db->insert('company_master', $data);
+        return $this->db->insert_id();
+    }
 }

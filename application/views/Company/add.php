@@ -1,28 +1,43 @@
+<style>
+    .content-wrapper{
+        min-height: 775px;
+    }    
+</style>
 <?php
 $attribute = array('id' => 'valid');
-echo form_open('User/update?id=' . $rows['id'], $attribute);
+echo form_open('User/addcompany', $attribute);
 ?>
-<div class="row">
+<div class="row" >
     <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
         <div class="form-group">
-            Name
-            <input type="hidden" class="form-control" value="<?php echo $rows['id'] ?>" name="id"  />
-            <input type="text" class="form-control" value="<?php echo $rows['name'] ?>" name="name" placeholder="Name" />
+           Company Name
+            <input type="text" class="form-control" value="" name="company_name" placeholder="Company Name" />
         </div>
+        
         <div class="form-group">
-            Form
-            <input type="text" class="form-control" value="<?php echo $rows['form']; ?>" name="form" placeholder="Form" /> </div>
+           Address
+            <input type="text" class="form-control" value="" name="address" placeholder=" Address "/> </div>
+              <div class="form-group">
+          City
+            <input type="text" class="form-control" value="" name="city" placeholder=" City "/> </div>
+              <div class="form-group">
+          Pincode
+            <input type="text" class="form-control" value="" name="pincode" placeholder=" Pincode "/> </div>
+             <div class="form-group">
+            Contact Person
+            <input type="text" class="form-control" value="" name="contact_person" placeholder="Contact Person "/> </div>
+            <div class="form-group">
+            Mobile
+            <input type="text" class="form-control" value="" name="mobile" placeholder="Mobile"/> </div>
         <div class="form-group">
-          MRP
-            <input type="text" class="form-control" value="<?php echo $rows['mrp']; ?>" name="mrp" placeholder="MRP"/> </div>
+            Email
+            <input type="text" class="form-control" value="" name="email" placeholder="Email"/> </div>
         <div class="form-group">
-            Packing
-            <input type="text" class="form-control" value="<?php echo $rows['packing']; ?>" name="packing"placeholder="Packing "/> </div>
-        <div class="form-group">
-      Strength
-            <input type="text" class="form-control" value="<?php echo $rows['strength']; ?>" name="strength" placeholder="Strength"/> </div>
-        <div class="form-group">
-                    <button class="btn btn-block btn-success " type="submit">UPDATE</button>
+            Password
+            <input type="password"  class="form-control" name="password" placeholder="Password" >
+        </div>	    
+
+        <button class="btn btn-block btn-success " type="submit">SAVE</button>
     </div>
 </div>
 </form>
@@ -66,19 +81,19 @@ echo form_open('User/update?id=' . $rows['id'], $attribute);
                 address: {
                     validators: {
                         notEmpty: {
-                            message: 'The  Address is required'
+                            message: 'The Address is required'
                         }
                     }
                 },
                 Mobile_Number: {
                     validators: {
                         notEmpty: {
-                            message: 'Moblie_Number is required'
+                            message: 'Moblie Number is required'
                         },
                         integer: {
                             message: 'Please Enter Digits'
                         }
-                    }
+                    },
                 },
                 email: {
                     validators: {
@@ -90,21 +105,21 @@ echo form_open('User/update?id=' . $rows['id'], $attribute);
                 Years_Practice: {
                     validators: {
                         notEmpty: {
-                            message: 'The Years_Practice is required'
+                            message: 'The Years Of Practice is required'
                         }
                     }
                 },
                 DOB: {
                     validators: {
                         notEmpty: {
-                            message: 'The DOB is required'
+                            message: 'Date Of Birth is required'
                         }
                     }
                 },
                 ANNIVERSARY: {
                     validators: {
                         notEmpty: {
-                            message: 'The ANNIVERSARY is required'
+                            message: 'Date Of Anniversary is required'
                         }
                     }
                 },
