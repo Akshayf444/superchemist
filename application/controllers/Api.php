@@ -174,6 +174,7 @@ class Api extends MY_Controller {
         if ($this->input->get('company_id')) {
             $company_id = $this->input->get('company_id');
             $condition[] = "company = '" . $company_id . "'";
+            $condition[] = "status = 1";
         }
 
         $brandlist = $this->Brand->getBrands($condition, $per_page, $offset);

@@ -24,6 +24,7 @@ class Brand extends MY_model {
         $sql .= " LIMIT {$limit} OFFSET {$offset} ";
         return $this->returnResult($sql);
     }
+
 public function find_by_brand($id){
     $sql="select * from brands where id=$id and status='1' ";
     $query=$this->db->query($sql);
@@ -34,4 +35,12 @@ public function find_by_brand($id){
          $this->db->where(array('id'=>$id,'status'=>1));
          $this->db->update('brands',$data);
      }
+
+
+    function getForm() {
+        $sql = "SELECT DISTINCT(form) as form FROM " . $this->table_name;
+        return $this->returnResult($sql);
+    }
+
+
 }

@@ -11,7 +11,7 @@ class MY_model extends CI_Model {
 
     public function returnResult($sql, $type = 'result') {
         $query = $this->db->query($sql);
-        $result = $type == 'row' ? $query->row : $query->result();
+        $result = $type == 'row' ? $query->row() : $query->result();
         return !empty($result) ? $result : FALSE;
     }
 
@@ -28,6 +28,8 @@ class MY_model extends CI_Model {
     public function get($condition = array()) {
         $sql = "SELECT * FROM  " . $this->table_name;
         $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";
+        
+        //echo $sql;
         return $this->returnResult($sql);
     }
 

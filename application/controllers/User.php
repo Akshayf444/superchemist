@@ -15,7 +15,7 @@ class User extends MY_Controller {
             //$context = $this->returnContext();
             $response = $this->CallAPI('POST', API_URL . 'companyLogin', array('mobile' => $mobile, 'password' => $password));
             $response = json_decode($response, TRUE);
-            //var_dump($response);
+            var_dump($response);
             if (isset($response['status']) && $response['status'] == 'error') {
                 $data['message'] = $response['message'];
             } elseif (isset($response['status']) && $response['status'] == 'success') {
@@ -71,6 +71,34 @@ class User extends MY_Controller {
         $this->load->view('template3', $data);
     }
 
+    public function addBrand() {
+        $this->load->model('Brand');
+        $this->load->model('Company');
+
+        $companyList = $this->Company->get(array('status = 1'));
+
+        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
+        $data['form'] = $this->Master_Model->generateDropdown($this->Brand->getForm(), 'form', 'form');
+
+        if ($this->input->post()) {
+            $data = array(
+                'name' => $this->input->post('name'),
+                'form' => $this->input->post('form'),
+                'status' => 1,
+                'mrp' => $this->input->post('mrp'),
+                'packing' => $this->input->post('packing'),
+                'company' => $this->input->post('company'),
+                'strength' => $this->input->post('strength'),
+            );
+
+            $this->Brand->insert($data);
+            redirect('User/brandList', 'refresh');
+        }
+
+        $data = array('title' => 'Add Brand', 'content' => 'User/addBrand', 'page_title' => 'Add Brand', 'view_data' => $data);
+        $this->load->view('template3', $data);
+    }
+
     public function Division() {
         $this->load->model('Division');
         $data['response'] = $this->Division->getDivision(array('d.status = 1 ', 'cm.status = 1'));
@@ -82,17 +110,19 @@ class User extends MY_Controller {
 
         $this->load->model('Division');
         $this->load->model('Company');
-        $companyList = $this->Company->get();
+        $companyList = $this->Company->get(array('status = 1'));
 
         $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
         if ($this->input->post()) {
             $data = array(
                 'name' => $this->input->post('name'),
                 'company_id' => $this->input->post('company_id'),
+                'contact_person' => $this->input->post('contact_person'),
                 'status' => 1,
                 'created_at' => date('Y-m-d H:i:s'),
                 'email' => $this->input->post('email'),
                 'password' => $this->input->post('password'),
+                'mobile' => $this->input->post('mobile'),
             );
 
             $this->Division->insert($data);
@@ -157,7 +187,7 @@ class User extends MY_Controller {
         redirect('User/brandList', 'refresh');
     }
     
-    public function addDivision() {
+    public function addCompany() {
 
         $this->load->model('Division');
         $this->load->model('Company');
