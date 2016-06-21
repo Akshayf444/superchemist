@@ -5,7 +5,7 @@
 </style>
 <?php
 $attribute = array('id' => 'valid');
-echo form_open('User/addcompany', $attribute);
+echo form_open('User/addCompany', $attribute);
 ?>
 <div class="row" >
     <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
@@ -25,7 +25,7 @@ echo form_open('User/addcompany', $attribute);
             <input type="text" class="form-control" value="" name="pin_code" placeholder=" Pincode "/> </div>
              <div class="form-group">
             Contact Person
-            <input type="text" class="form-control" value="" name="contact_person" placeholder="Contact Person "/> </div>
+            <input type="text" class="form-control" value="" name="contact_person_name" placeholder="Contact Person "/> </div>
             <div class="form-group">
             Mobile
             <input type="text" class="form-control" value="" name="mobile" placeholder="Mobile"/> </div>

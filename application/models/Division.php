@@ -24,7 +24,7 @@ class Division extends MY_model {
         return $this->returnResult($sql);
     }
 public function find_by_division($id){
-    $sql="select * from divisions d INNER JOIN company_master cm ON d.company_id = cm.company_id  where d.div_id = $id and d.status='1' ";
+    $sql="select d.* from divisions d INNER JOIN company_master cm ON d.company_id = cm.company_id  where d.div_id = $id and d.status='1' ";
     $query=$this->db->query($sql);
     return $query->row_array();
 }

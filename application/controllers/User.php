@@ -184,7 +184,7 @@ class User extends MY_Controller {
                 'contact_person' => $this->input->post('contact_person'),
                 'email' => $this->input->post('email'),
                 'company_id' => $this->input->post('company_id'),
-                'mobile' => $this->input->post('strength'),
+                'mobile' => $this->input->post('mobile'),
                 'status' => 1,
             );
             $this->Division->division_updation($this->input->post('id'), $data);
@@ -206,22 +206,25 @@ class User extends MY_Controller {
 
 
         $this->load->model('Company');
-        $companyList = $this->Company->get();
-
-        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
+       
         if ($this->input->post()) {
             $data = array(
-                'name' => $this->input->post('name'),
-                'company_id' => $this->input->post('company_id'),
+                'company_name' => $this->input->post('company_name'),
+                'address' => $this->input->post('address'),
+                'city' => $this->input->post('city'),
+                'pin_code' => $this->input->post('pin_code'),
+                'contact_person_name' => $this->input->post('contact_person_name'),
+                'mobile' => $this->input->post('mobile'),
+                
                 'status' => 1,
-                'created_at' => date('Y-m-d H:i:s'),
+                
                 'email' => $this->input->post('email'),
                 'password' => $this->input->post('password'),
             );
 
-            $this->Division->insert($data);
+            $this->Company->insert($data);
         }
-        $data = array('title' => 'Login', 'content' => 'Division/add', 'page_title' => 'Add Division', 'view_data' => $data);
+        $data = array('title' => 'Add Company', 'content' => 'Company/add', 'page_title' => 'Add Company', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
 
