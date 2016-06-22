@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-lg-12">
-        <a href="<?php echo site_url('User/addCompany'); ?>" class="btn btn-primary">Add</a>
+        <a href="<?php echo site_url('User/addCompany'); ?>" class="btn btn-primary pull-right">Add</a>
     </div>
 </div>
 <div class="row">
@@ -39,8 +39,8 @@
 
 
                             <td data-title="Action">
-                                <a class="fa fa-trash btn-danger btn-xs" onclick=" deletedoc('<?php echo site_url('User/delete_company?id=') . $row->company_id;  ?>');"></a> 
-                                <a class="fa fa-pencil btn-success btn-xs" onclick="window.location = '<?php echo site_url('User/editCompany/'. $row->company_id) ; ?>';"></a>
+                                <a class="fa fa-trash btn-danger btn-xs" onclick=" deletedoc('<?php echo site_url('User/delete_company?id=') . $row->company_id; ?>');"></a> 
+                                <a class="fa fa-pencil btn-success btn-xs" onclick="window.location = '<?php echo site_url('User/editCompany/' . $row->company_id); ?>';"></a>
                             </td>
                         </tr>
                         <?php

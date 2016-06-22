@@ -154,12 +154,13 @@ class User extends MY_Controller {
                 'name' => $this->input->post('name'),
                 'form' => $this->input->post('form'),
                 'mrp' => $this->input->post('mrp'),
+                'company' => $this->input->post('company_id'),
                 'packing' => $this->input->post('packing'),
                 'strength' => $this->input->post('strength'),
                 'is_active' => 1,
             );
             $this->Brand->brand_updation($this->input->post('id'), $data);
-            redirect('User/division', 'refresh');
+            redirect('User/brandList', 'refresh');
         }
         $data = array('title' => 'Update', 'content' => 'User/edit_doc', 'page_title' => 'Update Brand', 'view_data' => $data);
         $this->load->view('template3', $data);

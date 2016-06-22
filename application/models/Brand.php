@@ -22,6 +22,7 @@ class Brand extends MY_model {
         $sql = "SELECT * FROM brands ";
         $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";
         $sql .= " LIMIT {$limit} OFFSET {$offset} ";
+        echo $sql;
         return $this->returnResult($sql);
     }
 

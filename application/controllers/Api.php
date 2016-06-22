@@ -118,8 +118,8 @@ class Api extends MY_Controller {
         if ($this->input->post('mobile') != '' && $this->input->post('password') != '') {
             $mobile = $this->input->post('mobile');
             $password = $this->input->post('password');
-            $userexist = $this->User_model->authenticate($mobile, $password); 
-             echo $userexist;
+            $userexist = $this->User_model->authenticate($mobile, $password);
+            echo $userexist;
 
             if (!empty($userexist)) {
                 $output = array('status' => 'success', 'message' => array($userexist));
@@ -161,7 +161,6 @@ class Api extends MY_Controller {
 
         header('content-type: application/json');
         echo json_encode($output);
-
     }
 
     public function getBrandList($page = 1) {
@@ -171,10 +170,10 @@ class Api extends MY_Controller {
         $offset = ($page - 1) * $per_page;
 
         $condition = array();
+        $condition[] = "status = 1";
         if ($this->input->get('company_id')) {
             $company_id = $this->input->get('company_id');
             $condition[] = "company = '" . $company_id . "'";
-            $condition[] = "status = 1";
         }
 
         $brandlist = $this->Brand->getBrands($condition, $per_page, $offset);
@@ -188,6 +187,7 @@ class Api extends MY_Controller {
     }
 
 }
+
 // public function  reg(){
 //     if($this->input->post()){
 //         $mobile=$this->input->post('mobile');

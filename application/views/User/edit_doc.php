@@ -1,6 +1,6 @@
 <?php
 $attribute = array('id' => 'valid');
-echo form_open('User/update?id=' . $rows['id'], $attribute);
+echo form_open('User/update_brand?id=' . $rows['id'], $attribute);
 ?>
 <div class="row">
     <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
@@ -13,9 +13,9 @@ echo form_open('User/update?id=' . $rows['id'], $attribute);
             Form
             <input type="text" class="form-control" value="<?php echo $rows['form']; ?>" name="form" placeholder="Form" /> </div>
         <div class="form-group">
-          MRP
+            MRP
             <input type="text" class="form-control" value="<?php echo $rows['mrp']; ?>" name="mrp" placeholder="MRP"/> </div>
-              <div class="form-group">
+        <div class="form-group">
             Company
             <select name="company_id" class="form-control">
                 <option value="">Select Company</option>
@@ -27,12 +27,12 @@ echo form_open('User/update?id=' . $rows['id'], $attribute);
             Packing
             <input type="text" class="form-control" value="<?php echo $rows['packing']; ?>" name="packing"placeholder="Packing "/> </div>
         <div class="form-group">
-      Strength
+            Strength
             <input type="text" class="form-control" value="<?php echo $rows['strength']; ?>" name="strength" placeholder="Strength"/> </div>
         <div class="form-group">
-                    <button class="btn btn-block btn-success " type="submit">UPDATE</button>
+            <button class="btn btn-block btn-success " type="submit">UPDATE</button>
+        </div>
     </div>
-</div>
 </form>
 <script>
     $(function () {
