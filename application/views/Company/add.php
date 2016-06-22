@@ -1,6 +1,7 @@
 <style>
     .content-wrapper{
         min-height: 775px;
+          
     }    
 </style>
 <?php

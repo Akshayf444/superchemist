@@ -102,7 +102,7 @@
             </aside>   
 
             <!-- Content Wrapper. Contains page content -->
-            <div class="content-wrapper" >
+            <div class="content-wrapper"  style="  background-color: white;" >
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>
