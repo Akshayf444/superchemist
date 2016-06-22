@@ -21,6 +21,7 @@ class Division extends MY_model {
     public function getDivision($condition = array()) {
         $sql = " SELECT d.*,cm.company_name FROM " . $this->table_name . " d INNER JOIN company_master cm ON d.company_id = cm.company_id ";
         $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";
+//         echo $sql;
         return $this->returnResult($sql);
     }
 

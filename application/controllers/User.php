@@ -119,7 +119,13 @@ class User extends MY_Controller {
 
     public function Division() {
         $this->load->model('Division');
+         if($this->type==2){
+            
+        $id=$this->company_id;
+             $data['response'] = $this->Division->getDivision(array('d.company_id='.$id.'','d.status = 1 ', 'cm.status = 1'));
+         }else{
         $data['response'] = $this->Division->getDivision(array('d.status = 1 ', 'cm.status = 1'));
+         }
         $data = array('title' => 'Login', 'content' => 'Division/list', 'page_title' => 'Division List', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
@@ -241,9 +247,6 @@ class User extends MY_Controller {
         }
 
         $data = array('title' => 'Add Company', 'content' => 'Company/add', 'page_title' => 'Add Company', 'view_data' => 'blank');
-
-
-
         $this->load->view('template3', $data);
     }
 
@@ -265,8 +268,6 @@ class User extends MY_Controller {
             $this->Company->update($data, $company_id);
             redirect('User/CompanyList');
         }
-
-
         $data['rows'] = $companyList;
         $data = array('title' => 'Login', 'content' => 'Company/edit', 'page_title' => 'Edit Company', 'view_data' => $data);
 

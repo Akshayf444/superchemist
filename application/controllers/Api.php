@@ -166,8 +166,7 @@ class Api extends MY_Controller {
     public function getBrandList($page = 1) {
         $this->load->model('Brand');
         $per_page = 500;
-        $totalpages = ceil(69371 / $per_page);
-        $offset = ($page - 1) * $per_page;
+
 
         $condition = array();
         $condition[] = "status = 1";
@@ -175,8 +174,14 @@ class Api extends MY_Controller {
             $company_id = $this->input->get('company_id');
             $condition[] = "company = '" . $company_id . "'";
         }
+        ///Paging
+        $totalcount = $this->Brand->countBrands($condition);
+
+        $totalpages = ceil($totalcount->totalcount / $per_page);
+        $offset = ($page - 1) * $per_page;
 
         $brandlist = $this->Brand->getBrands($condition, $per_page, $offset);
+
         if (!empty($brandlist)) {
             $output = array('status' => 'success', 'message' => $brandlist, 'totalpages' => $totalpages, 'page' => $page);
         } else {
