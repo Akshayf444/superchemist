@@ -202,7 +202,7 @@ class User extends MY_Controller {
         $id = $_GET['id'];
         $data = array('status' => 0);
         $this->Division->division_updation($id, $data);
-        redirect('User/brandList', 'refresh');
+        redirect('User/Division', 'refresh');
     }
 
     public function addCompany() {
@@ -252,9 +252,15 @@ class User extends MY_Controller {
 
 
         $data['rows'] = $companyList;
-        $data = array('title' => 'Login', 'content' => 'Company/edit', 'page_title' => 'Edit Division', 'view_data' => $data);
+        $data = array('title' => 'Login', 'content' => 'Company/edit', 'page_title' => 'Edit Company', 'view_data' => $data);
 
         $this->load->view('template3', $data);
     }
-
+  public function delete_company() {
+       $this->load->model('Company');
+        $id = $_GET['id'];
+        $data = array('status' => 0);
+        $this->Company->update( $data,$id);
+        redirect('User/CompanyList', 'refresh');
+    }
 }

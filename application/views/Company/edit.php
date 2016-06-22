@@ -28,6 +28,10 @@ echo form_open('User/editCompany/' . $rows->company_id, $attribute);
         <div class="form-group">
             Pincode
             <input type="text" class="form-control" value="<?php echo $rows->mobile ?>" name="pin_code" placeholder="Pincode"/> </div>
+            <div class="form-group">
+            Address
+            <input type="text" class="form-control" value="<?php echo $rows->address ?>" name="address" placeholder="Address"/> </div>
+
         <div class="form-group">
             <button class="btn btn-block btn-success " type="submit">UPDATE</button>
         </div>
