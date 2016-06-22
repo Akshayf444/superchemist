@@ -5,28 +5,28 @@
 </style>
 <?php
 $attribute = array('id' => 'valid');
-echo form_open('User/addcompany', $attribute);
+echo form_open('User/addCompany', $attribute);
 ?>
 <div class="row" >
     <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
         <div class="form-group">
-           Company Name
+            Company Name
             <input type="text" class="form-control" value="" name="company_name" placeholder="Company Name" />
         </div>
-        
+
         <div class="form-group">
-           Address
+            Address
             <input type="text" class="form-control" value="" name="address" placeholder=" Address "/> </div>
-              <div class="form-group">
-          City
+        <div class="form-group">
+            City
             <input type="text" class="form-control" value="" name="city" placeholder=" City "/> </div>
-              <div class="form-group">
-          Pincode
+        <div class="form-group">
+            Pincode
             <input type="text" class="form-control" value="" name="pin_code" placeholder=" Pincode "/> </div>
-             <div class="form-group">
+        <div class="form-group">
             Contact Person
-            <input type="text" class="form-control" value="" name="contact_person" placeholder="Contact Person "/> </div>
-            <div class="form-group">
+            <input type="text" class="form-control" value="" name="contact_person_name" placeholder="Contact Person "/> </div>
+        <div class="form-group">
             Mobile
             <input type="text" class="form-control" value="" name="mobile" placeholder="Mobile"/> </div>
         <div class="form-group">

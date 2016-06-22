@@ -7,7 +7,7 @@ echo form_open('User/editCompany/' . $rows->company_id, $attribute);
         <div class="form-group">
             Name
             <input type="hidden" class="form-control" value="<?php echo $rows->company_id ?>" name="company_id"  />
-            <input type="text" class="form-control" value="<?php echo $rows->company_name ?>" name="name" placeholder="Name" />
+            <input type="text" class="form-control" value="<?php echo $rows->company_name ?>" name="company_name" placeholder="Name" />
         </div>
         <div class="form-group">
             Contact Person
@@ -21,7 +21,7 @@ echo form_open('User/editCompany/' . $rows->company_id, $attribute);
             <input type="text" class="form-control" value="<?php echo $rows->mobile ?>" name="mobile" placeholder="Mobile"/> </div>
         <div class="form-group">
             Password
-            <input type="text" class="form-control" value="<?php echo $rows->mobile ?>" name="password" placeholder="Password"/> </div>
+            <input type="text" class="form-control" value="<?php echo $rows->password ?>" name="password" placeholder="Password"/> </div>
         <div class="form-group">
             City
             <input type="text" class="form-control" value="<?php echo $rows->city ?>" name="city" placeholder="City"/> </div>
