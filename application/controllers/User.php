@@ -232,9 +232,6 @@ class User extends MY_Controller {
         }
 
         $data = array('title' => 'Add Company', 'content' => 'Company/add', 'page_title' => 'Add Company', 'view_data' => 'blank');
-
-
-
         $this->load->view('template3', $data);
     }
 
@@ -256,8 +253,6 @@ class User extends MY_Controller {
             $this->Company->update($data, $company_id);
             redirect('User/CompanyList');
         }
-
-
         $data['rows'] = $companyList;
         $data = array('title' => 'Login', 'content' => 'Company/edit', 'page_title' => 'Edit Company', 'view_data' => $data);
 

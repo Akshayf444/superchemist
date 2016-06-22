@@ -22,8 +22,15 @@ class Brand extends MY_model {
         $sql = "SELECT * FROM brands ";
         $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";
         $sql .= " LIMIT {$limit} OFFSET {$offset} ";
-        echo $sql;
+        //echo $sql;
         return $this->returnResult($sql);
+    }
+
+    public function countBrands($condition = array()) {
+        $sql = "SELECT COUNT(*) AS totalcount FROM brands ";
+        $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";
+        //echo $sql;
+        return $this->returnResult($sql, 'row');
     }
 
     public function find_by_brand($id) {
