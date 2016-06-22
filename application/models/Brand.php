@@ -22,26 +22,24 @@ class Brand extends MY_model {
         $sql = "SELECT * FROM brands ";
         $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";
         $sql .= " LIMIT {$limit} OFFSET {$offset} ";
-        echo $sql;
+        // echo $sql;
         return $this->returnResult($sql);
     }
 
-public function find_by_brand($id){
-    $sql="select * from brands where id=$id and status='1' ";
-    $query=$this->db->query($sql);
-    return $query->row_array();
-}
-    
-     public  function brand_updation($id,$data){
-         $this->db->where(array('id'=>$id,'status'=>1));
-         $this->db->update('brands',$data);
-     }
+    public function find_by_brand($id) {
+        $sql = "select * from brands where id=$id and status='1' ";
+        $query = $this->db->query($sql);
+        return $query->row_array();
+    }
 
+    public function brand_updation($id, $data) {
+        $this->db->where(array('id' => $id, 'status' => 1));
+        $this->db->update('brands', $data);
+    }
 
     function getForm() {
         $sql = "SELECT DISTINCT(form) as form FROM " . $this->table_name;
         return $this->returnResult($sql);
     }
-
 
 }

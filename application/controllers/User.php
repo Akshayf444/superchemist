@@ -68,8 +68,17 @@ class User extends MY_Controller {
             $data['response'] = $response['message'];
         } else {
             $data['message'] = $response['message'];
-        }
+        } if($this->type==2){
+             $per_page = 500;
+        $totalpages = ceil(69371 / $per_page);
+        $offset = ($page - 1) * $per_page;
 
+        $condition = array();
+        $condition[] = "company = '" . $this->company_id. "'";
+            $this->Brand->getBrands($condition, $per_page, $offset);
+            
+        }
+        
         $data = array('title' => 'Brand List', 'content' => 'User/view_brand', 'page_title' => 'Brand List', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
