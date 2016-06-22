@@ -10,13 +10,13 @@ echo form_open('User/update_division?id=' . $rows['div_id'], $attribute);
             <input type="text" class="form-control" value="<?php echo $rows['name'] ?>" name="name" placeholder="Name" />
         </div>
         <div class="form-group">
-           Contact Person
+            Contact Person
             <input type="text" class="form-control" value="<?php echo $rows['contact_person']; ?>" name="contact_person" placeholder="Contact Person" /> </div>
         <div class="form-group">
-          Email
+            Email
             <input type="text" class="form-control" value="<?php echo $rows['email']; ?>" name="email" placeholder="Email"/> </div>
-            
-            <div class="form-group">
+
+        <div class="form-group">
             Company
             <select name="company_id" class="form-control">
                 <option value="">Select Company</option>
@@ -24,14 +24,14 @@ echo form_open('User/update_division?id=' . $rows['div_id'], $attribute);
                 <?php echo $company; ?>
             </select>
         </div>
-      
- <div class="form-group">
-           Mobile
+
+        <div class="form-group">
+            Mobile
             <input type="text" class="form-control" value="<?php echo $rows['mobile']; ?>" name="mobile" placeholder="Mobile"/> </div>
         <div class="form-group">
-                    <button class="btn btn-block btn-success " type="submit">UPDATE</button>
+            <button class="btn btn-block btn-success " type="submit">UPDATE</button>
+        </div>
     </div>
-</div>
 </form>
 <script>
     $(function () {

@@ -5,6 +5,9 @@ class User extends MY_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('Master_Model');
+        $this->load->model('Company');
+        $this->load->model('Brand');
+        $this->load->model('Division');
     }
 
     public function index() {
@@ -140,12 +143,12 @@ class User extends MY_Controller {
 
     public function update_brand() {
         $this->load->model('Brand');
-         $this->load->model('Company');
+        $this->load->model('Company');
         $id = $_GET['id'];
         $data['rows'] = $this->Brand->find_by_brand($id);
         $companyList = $this->Company->get(array('status = 1'));
 
-        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name',   $data['rows']['company']);
+        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name', $data['rows']['company']);
         if ($this->input->post()) {
             $data = array(
                 'name' => $this->input->post('name'),
@@ -177,7 +180,7 @@ class User extends MY_Controller {
         $data['rows'] = $this->Division->find_by_division($id);
         $companyList = $this->Company->get(array('status = 1'));
 
-        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name',   $data['rows']['company_id']);
+        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name', $data['rows']['company_id']);
         if ($this->input->post()) {
             $data = array(
                 'name' => $this->input->post('name'),
@@ -203,10 +206,8 @@ class User extends MY_Controller {
     }
 
     public function addCompany() {
-
-
         $this->load->model('Company');
-       
+
         if ($this->input->post()) {
             $data = array(
                 'company_name' => $this->input->post('company_name'),
@@ -215,16 +216,44 @@ class User extends MY_Controller {
                 'pin_code' => $this->input->post('pin_code'),
                 'contact_person_name' => $this->input->post('contact_person_name'),
                 'mobile' => $this->input->post('mobile'),
-                
                 'status' => 1,
-                
                 'email' => $this->input->post('email'),
                 'password' => $this->input->post('password'),
             );
 
             $this->Company->insert($data);
         }
+
         $data = array('title' => 'Add Company', 'content' => 'Company/add', 'page_title' => 'Add Company', 'view_data' => 'blank');
+
+
+     
+        $this->load->view('template3', $data);
+    }
+
+    public function editCompany($company_id) {
+        $companyList = $this->Company->get(array('company_id = ' . $company_id));
+        $companyList = array_shift($companyList);
+        if ($this->input->post()) {
+            $data = array(
+                'company_name' => $this->input->post('company_name'),
+                'address' => $this->input->post('address'),
+                'city' => $this->input->post('city'),
+                'pin_code' => $this->input->post('pin_code'),
+                'contact_person_name' => $this->input->post('contact_person_name'),
+                'mobile' => $this->input->post('mobile'),
+                'status' => 1,
+                'email' => $this->input->post('email'),
+                'password' => $this->input->post('password'),
+            );
+            $this->Company->update($data, $company_id);
+            redirect('User/CompanyList');
+        }
+
+
+        $data['rows'] = $companyList;
+        $data = array('title' => 'Login', 'content' => 'Company/edit', 'page_title' => 'Edit Division', 'view_data' => $data);
+
         $this->load->view('template3', $data);
     }
 
