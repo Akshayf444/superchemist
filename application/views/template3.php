@@ -80,9 +80,11 @@
                         <li>
                             <a href="<?php echo site_url('User/Division'); ?>"><i class="fa fa-dashboard"></i> Division</a>
                         </li>
+                     <?php   if( $this->type==1){ ?>
                         <li>
                             <a href="<?php echo site_url('User/CompanyList');       ?>"><i class="fa fa-dashboard"></i> Company</a>
                         </li>
+                     <?php } ?>
                         <li>
                             <a href="<?php //echo site_url('User/brandList');       ?>"><i class="fa fa-dashboard"></i> Bonus Offer</a>
                         </li>
