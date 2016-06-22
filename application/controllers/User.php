@@ -60,7 +60,13 @@ class User extends MY_Controller {
     }
 
     public function brandList($page = 1) {
-        $response = $this->CallAPI('GET', API_URL . 'getBrandList/' . $page);
+
+        if ($this->type == 2) {
+            $response = $this->CallAPI('GET', API_URL . 'getBrandList/' . $page . '?company_id=' . $this->company_id);
+        } else {
+            $response = $this->CallAPI('GET', API_URL . 'getBrandList/' . $page);
+        }
+
         $response = json_decode($response, true);
         $data['page'] = $page;
         if ($response['status'] == 'success') {
@@ -228,7 +234,7 @@ class User extends MY_Controller {
         $data = array('title' => 'Add Company', 'content' => 'Company/add', 'page_title' => 'Add Company', 'view_data' => 'blank');
 
 
-     
+
         $this->load->view('template3', $data);
     }
 
@@ -257,11 +263,13 @@ class User extends MY_Controller {
 
         $this->load->view('template3', $data);
     }
-  public function delete_company() {
-       $this->load->model('Company');
+
+    public function delete_company() {
+        $this->load->model('Company');
         $id = $_GET['id'];
         $data = array('status' => 0);
-        $this->Company->update( $data,$id);
+        $this->Company->update($data, $id);
         redirect('User/CompanyList', 'refresh');
     }
+
 }
