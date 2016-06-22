@@ -84,7 +84,7 @@
                         <li>
                             <a href="<?php echo site_url('User/CompanyList');       ?>"><i class="fa fa-dashboard"></i> Company</a>
                         </li>
-                     <?php } ?>
+                   
                         <li>
                             <a href="<?php //echo site_url('User/brandList');       ?>"><i class="fa fa-dashboard"></i> Bonus Offer</a>
                         </li>
@@ -97,7 +97,7 @@
                         <li>
                             <a href="<?php //echo site_url('User/brandList');       ?>"><i class="fa fa-dashboard"></i> Settings</a>
                         </li>
-
+  <?php } ?>
                     </ul>
                 </section>
                 <!-- /.sidebar -->
