@@ -98,6 +98,11 @@
                             <a href="<?php //echo site_url('User/brandList');       ?>"><i class="fa fa-dashboard"></i> Settings</a>
                         </li>
   <?php } ?>
+                        
+                        
+                        
+                        
+                        
                     </ul>
                 </section>
                 <!-- /.sidebar -->

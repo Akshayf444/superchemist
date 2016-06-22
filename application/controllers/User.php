@@ -74,17 +74,16 @@ class User extends MY_Controller {
             $data['response'] = $response['message'];
         } else {
             $data['message'] = $response['message'];
-        } if($this->type==2){
-             $per_page = 500;
-        $totalpages = ceil(69371 / $per_page);
-        $offset = ($page - 1) * $per_page;
+        } if ($this->type == 2) {
+            $per_page = 500;
+            $totalpages = ceil(69371 / $per_page);
+            $offset = ($page - 1) * $per_page;
 
-        $condition = array();
-        $condition[] = "company = '" . $this->company_id. "'";
+            $condition = array();
+            $condition[] = "company = '" . $this->company_id . "'";
             $this->Brand->getBrands($condition, $per_page, $offset);
-            
         }
-        
+
         $data = array('title' => 'Brand List', 'content' => 'User/view_brand', 'page_title' => 'Brand List', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
@@ -94,24 +93,37 @@ class User extends MY_Controller {
         $this->load->model('Company');
 
         $companyList = $this->Company->get(array('status = 1'));
-
-        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
+                $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
         $data['form'] = $this->Master_Model->generateDropdown($this->Brand->getForm(), 'form', 'form');
+        
+        if ($this->input->post()){
+                    $name = $this->input->post('name');
+        $form = $this->input->post('form');
+        $mrp = $this->input->post('mrp');
+        $pack = $this->input->post('packing');
+        $comp = $this->input->post('company');
+        $strength = $this->input->post('strength');
 
-        if ($this->input->post()) {
-            $data = array(
-                'name' => $this->input->post('name'),
-                'form' => $this->input->post('form'),
-                'status' => 1,
-                'mrp' => $this->input->post('mrp'),
-                'packing' => $this->input->post('packing'),
-                'company' => $this->input->post('company'),
-                'strength' => $this->input->post('strength'),
-            );
+        for ($i = 0; $i < count($name); $i++) {
+            if ($name[$i] != "") {
 
-            $this->Brand->insert($data);
-            redirect('User/brandList', 'refresh');
+                $data = array(
+                    'name' => $name[$i],
+                    'form' => $form[$i],
+                    'status' => '1',
+                    'mrp' => $mrp[$i],
+                    'packing' => $pack[$i],
+                    'company' => $comp[$i],
+                    'strength' => $strength[$i],
+                );
+
+                $this->Brand->insert($data);
+            }
         }
+
+  redirect('User/brandList', 'refresh');
+        }
+
 
         $data = array('title' => 'Add Brand', 'content' => 'User/addBrand', 'page_title' => 'Add Brand', 'view_data' => $data);
         $this->load->view('template3', $data);
@@ -119,13 +131,13 @@ class User extends MY_Controller {
 
     public function Division() {
         $this->load->model('Division');
-         if($this->type==2){
-            
-        $id=$this->company_id;
-             $data['response'] = $this->Division->getDivision(array('d.company_id='.$id.'','d.status = 1 ', 'cm.status = 1'));
-         }else{
-        $data['response'] = $this->Division->getDivision(array('d.status = 1 ', 'cm.status = 1'));
-         }
+        if ($this->type == 2) {
+
+            $id = $this->company_id;
+            $data['response'] = $this->Division->getDivision(array('d.company_id=' . $id . '', 'd.status = 1 ', 'cm.status = 1'));
+        } else {
+            $data['response'] = $this->Division->getDivision(array('d.status = 1 ', 'cm.status = 1'));
+        }
         $data = array('title' => 'Login', 'content' => 'Division/list', 'page_title' => 'Division List', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
