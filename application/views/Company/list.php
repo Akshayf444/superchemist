@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-lg-12">
-        <a href="<?php echo site_url('User/addDivision'); ?>" class="btn btn-primary">Add</a>
+        <a href="<?php echo site_url('User/addCompany'); ?>" class="btn btn-primary">Add</a>
     </div>
 </div>
 <div class="row">

@@ -224,7 +224,7 @@ class User extends MY_Controller {
 
             $this->Company->insert($data);
         }
-        $data = array('title' => 'Add Company', 'content' => 'Company/add', 'page_title' => 'Add Company', 'view_data' => $data);
+        $data = array('title' => 'Add Company', 'content' => 'Company/add', 'page_title' => 'Add Company', 'view_data' => 'blank');
         $this->load->view('template3', $data);
     }
 
