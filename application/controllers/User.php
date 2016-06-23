@@ -74,17 +74,16 @@ class User extends MY_Controller {
             $data['response'] = $response['message'];
         } else {
             $data['message'] = $response['message'];
-        } if($this->type==2){
-             $per_page = 500;
-        $totalpages = ceil(69371 / $per_page);
-        $offset = ($page - 1) * $per_page;
+        } if ($this->type == 2) {
+            $per_page = 500;
+            $totalpages = ceil(69371 / $per_page);
+            $offset = ($page - 1) * $per_page;
 
-        $condition = array();
-        $condition[] = "company = '" . $this->company_id. "'";
+            $condition = array();
+            $condition[] = "company = '" . $this->company_id . "'";
             $this->Brand->getBrands($condition, $per_page, $offset);
-            
         }
-        
+
         $data = array('title' => 'Brand List', 'content' => 'User/view_brand', 'page_title' => 'Brand List', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
@@ -119,13 +118,13 @@ class User extends MY_Controller {
 
     public function Division() {
         $this->load->model('Division');
-         if($this->type==2){
-            
-        $id=$this->company_id;
-             $data['response'] = $this->Division->getDivision(array('d.company_id='.$id.'','d.status = 1 ', 'cm.status = 1'));
-         }else{
-        $data['response'] = $this->Division->getDivision(array('d.status = 1 ', 'cm.status = 1'));
-         }
+        if ($this->type == 2) {
+
+            $id = $this->company_id;
+            $data['response'] = $this->Division->getDivision(array('d.company_id=' . $id . '', 'd.status = 1 ', 'cm.status = 1'));
+        } else {
+            $data['response'] = $this->Division->getDivision(array('d.status = 1 ', 'cm.status = 1'));
+        }
         $data = array('title' => 'Login', 'content' => 'Division/list', 'page_title' => 'Division List', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
@@ -280,6 +279,54 @@ class User extends MY_Controller {
         $data = array('status' => 0);
         $this->Company->update($data, $id);
         redirect('User/CompanyList', 'refresh');
+    }
+
+    public function addBonus() {
+        $this->load->model('Bonus');
+        $data['state'] = $this->Master_Model->generateDropdown($this->Bonus->getState(), 'id', 'state');
+
+        if ($this->input->post()) {
+            //var_dump($_POST);
+
+            $bonustitle['title'] = $this->input->post('title');
+            $bonus_id = $this->Bonus->createTitle($bonustitle);
+
+            $brand_name = $this->input->post('brand_name');
+            $brand_id = $this->input->post('brand_id');
+            $bonus_ratio = $this->input->post('bonus_ratio');
+            $title = $this->input->post('title');
+            $start_date = $this->input->post('start_date');
+            $end_date = $this->input->post('end_date');
+
+
+
+            for ($i = 0; $i < count($brand_name); $i++) {
+                $state = $this->input->post('state' . $i);
+                if (!empty($state)){
+                    $final_state = join(",", $state);
+                }  else {
+                    $final_state = '';
+                }
+                
+                if ($brand_id[$i] > 0 && $brand_name[$i] != '') {
+                    $field_array = array(
+                        'bonus_id' => $bonus_id,
+                        'title' => $bonustitle['title'],
+                        'brand_id' => $brand_id[$i],
+                        'brand_name' => $brand_name[$i],
+                        'bonus_ratio' => $bonus_ratio[$i],
+                        'start_date' => $start_date[$i],
+                        'end_date' => $end_date[$i],
+                        'state' => $final_state,
+                    );
+                    //var_dump($field_array);
+                    $this->Bonus->insert($field_array);
+                }
+            }
+        }
+
+        $data = array('title' => 'Login', 'content' => 'Bonus/add', 'page_title' => 'Add Bonus', 'view_data' => $data);
+        $this->load->view('template3', $data);
     }
 
 }

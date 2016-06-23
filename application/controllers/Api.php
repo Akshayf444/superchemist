@@ -140,7 +140,6 @@ class Api extends MY_Controller {
         if ($this->input->post('mobile') != '' && $this->input->post('password') != '') {
             //var_dump($_POST);
             $mobile = $this->input->post('mobile');
-
             $password = $this->input->post('password');
             $userexist = $this->Company->authenticate($mobile, $password);
             //var_dump($userexist);
@@ -170,10 +169,17 @@ class Api extends MY_Controller {
 
         $condition = array();
         $condition[] = "status = 1";
-        if ($this->input->get('company_id')) {
+
+        if ($this->input->get('company_id') > 0) {
             $company_id = $this->input->get('company_id');
             $condition[] = "company = '" . $company_id . "'";
         }
+
+        if ($this->input->get('brand_name') != '') {
+            $company_id = $this->input->get('brand_name');
+            $condition[] = "name like '" . $company_id . "%'";
+        }
+
         ///Paging
         $totalcount = $this->Brand->countBrands($condition);
 
@@ -191,62 +197,52 @@ class Api extends MY_Controller {
         echo json_encode($output);
     }
 
-}
+    public function getBonusBrandList($page = 1) {
+        $this->load->model('Brand');
+        $per_page = 500;
 
-// public function  reg(){
-//     if($this->input->post()){
-//         $mobile=$this->input->post('mobile');
-//           $userexist = $this->User_model->userexist($mobile);
-//           if(empty($userexist)){
-//               $data=array(
-//                    'full_name' => $this->input->post('full_name'),
-//                    'address' => $this->input->post('address'),
-//                    'city' => $this->input->post('city'),
-//                    'state' => $this->input->post('state'),
-//                    'mobile' => $this->input->post('mobile'),
-//                    'business_name' => $this->input->post('business_name'),
-//                    'pincode' => $this->input->post('pincode'),
-//                    'password' => $this->input->post('password'),
-//                    'email' => $this->input->post('email'),
-//                );
-//               $id=$this->User_model->create($data);
-//               if($id>0){
-//                   $output= array('status'=>'success','message'=>'your are  registerd');
-//               }
-//               else{
-//                   $ouput=array('Status'=>'error','message'=>'error');
-//               }
-//           }
-//           else{
-//                   $ouput=array('Status'=>'error','message'=>'You are not  exit');
-//               }
-//     }
-//     header('content type:application/json');
-//     echo json_encode($ouput);
-//      
-// }
-//  function log(){
-//      if($this->input->post('mobile')!=''&& $this->input->post('password')!= ''){
-//          $mobile=$this->input->post('mobile');
-//          $password=$this->input->post('password');
-//           $exit=$this->User_model->authenticate($mobile,$password);
-//            if(!empty($exit)){
-//                $output=array('Status'=>'Success','message'=>  json_encode($userexit));
-//                
-//            } else{
-//                $output=array('Status'=>'error','message'=>'not valid user');
-//            }
-//            
-//           
-//      }
-//      else{
-//                $output=array('Status'=>'error','message'=>'put the value of mobile');
-//            }
-//            header('content:application/json');
-//            echo json_encode($output);
-//  }
-// public function sendveri(){
-//      $mobile=$_GET['mobile'];
-//      
-// }
-//}
+
+        $condition = array();
+        $condition[] = "status = 1";
+
+        if ($this->input->get('company_id') > 0) {
+            $company_id = $this->input->get('company_id');
+            $condition[] = "company = '" . $company_id . "'";
+        }
+
+        if ($this->input->get('brand_name') != '') {
+            $company_id = $this->input->get('brand_name');
+            $condition[] = "name like '" . $company_id . "%'";
+        }
+
+        ///Paging
+        $totalcount = $this->Brand->countBrands($condition);
+
+        $totalpages = ceil($totalcount->totalcount / $per_page);
+        $offset = ($page - 1) * $per_page;
+
+        $brandlist = $this->Brand->getBrands($condition, $per_page, $offset);
+
+        if (!empty($brandlist)) {
+            $content = array();
+            foreach ($brandlist as $value) {
+                $output[] = array(
+                    'label' => $value->name,                    
+                    'category' => '',
+                    'id' => $value->id
+                );
+            }
+            header('content-type: application/json');
+            echo json_encode($output);
+        }
+    }
+
+    function renderOutput($output) {
+        if (!is_array($output)) {
+            $output = array('status' => 'error', 'message' => 'Oops Something Went Wrong');
+        }
+        header('content-type: application/json');
+        echo json_encode($output);
+    }
+
+}
