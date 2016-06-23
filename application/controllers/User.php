@@ -298,29 +298,28 @@ class User extends MY_Controller {
             $start_date = $this->input->post('start_date');
             $end_date = $this->input->post('end_date');
 
-
-
             for ($i = 0; $i < count($brand_name); $i++) {
                 $state = $this->input->post('state' . $i);
-                if (!empty($state)){
-                    $final_state = join(",", $state);
-                }  else {
-                    $final_state = '';
-                }
-                
-                if ($brand_id[$i] > 0 && $brand_name[$i] != '') {
-                    $field_array = array(
-                        'bonus_id' => $bonus_id,
-                        'title' => $bonustitle['title'],
-                        'brand_id' => $brand_id[$i],
-                        'brand_name' => $brand_name[$i],
-                        'bonus_ratio' => $bonus_ratio[$i],
-                        'start_date' => $start_date[$i],
-                        'end_date' => $end_date[$i],
-                        'state' => $final_state,
-                    );
-                    //var_dump($field_array);
-                    $this->Bonus->insert($field_array);
+                if (!empty($state)) {
+                    $finalState = join(",", $state);
+                    foreach ($state as $item) {
+                        if ($brand_id[$i] > 0 && $brand_name[$i] != '') {
+                            $field_array = array(
+                                'bonus_id' => $bonus_id,
+                                'title' => $bonustitle['title'],
+                                'brand_id' => $brand_id[$i],
+                                'brand_name' => $brand_name[$i],
+                                'bonus_ratio' => $bonus_ratio[$i],
+                                'start_date' => $start_date[$i],
+                                'end_date' => $end_date[$i],
+                                'state' => $item,
+                                'states' => $finalState,
+                                'status' => 1
+                            );
+                            //var_dump($field_array);
+                            $this->Bonus->insert($field_array);
+                        }
+                    }
                 }
             }
         }
