@@ -294,4 +294,51 @@ class User extends MY_Controller {
         redirect('User/CompanyList', 'refresh');
     }
 
+    public function addBonus() {
+        $this->load->model('Bonus');
+        $data['state'] = $this->Master_Model->generateDropdown($this->Bonus->getState(), 'id', 'state');
+
+        if ($this->input->post()) {
+            //var_dump($_POST);
+
+            $bonustitle['title'] = $this->input->post('title');
+            $bonus_id = $this->Bonus->createTitle($bonustitle);
+
+            $brand_name = $this->input->post('brand_name');
+            $brand_id = $this->input->post('brand_id');
+            $bonus_ratio = $this->input->post('bonus_ratio');
+            $title = $this->input->post('title');
+            $start_date = $this->input->post('start_date');
+            $end_date = $this->input->post('end_date');
+
+            for ($i = 0; $i < count($brand_name); $i++) {
+                $state = $this->input->post('state' . $i);
+                if (!empty($state)) {
+                    $finalState = join(",", $state);
+                    foreach ($state as $item) {
+                        if ($brand_id[$i] > 0 && $brand_name[$i] != '') {
+                            $field_array = array(
+                                'bonus_id' => $bonus_id,
+                                'title' => $bonustitle['title'],
+                                'brand_id' => $brand_id[$i],
+                                'brand_name' => $brand_name[$i],
+                                'bonus_ratio' => $bonus_ratio[$i],
+                                'start_date' => $start_date[$i],
+                                'end_date' => $end_date[$i],
+                                'state' => $item,
+                                'states' => $finalState,
+                                'status' => 1
+                            );
+                            //var_dump($field_array);
+                            $this->Bonus->insert($field_array);
+                        }
+                    }
+                }
+            }
+        }
+
+        $data = array('title' => 'Login', 'content' => 'Bonus/add', 'page_title' => 'Add Bonus', 'view_data' => $data);
+        $this->load->view('template3', $data);
+    }
+
 }

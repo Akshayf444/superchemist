@@ -132,6 +132,7 @@
         <script src='<?php echo asset_url() ?>js/jquery.bootstrap-growl.min.js' type='text/javascript'></script>
         <!-- AdminLTE App -->
         <script src="<?php echo asset_url() ?>dashboard/dist/js/app.min.js" type="text/javascript"></script>
+        <script src="<?php echo asset_url() ?>js/datepicker.js" type="text/javascript"></script>
         <script>
             $('document').ready(function () {
                 var oTable = $('#datatable').dataTable({
