@@ -74,14 +74,6 @@ class User extends MY_Controller {
             $data['response'] = $response['message'];
         } else {
             $data['message'] = $response['message'];
-        } if ($this->type == 2) {
-            $per_page = 500;
-            $totalpages = ceil(69371 / $per_page);
-            $offset = ($page - 1) * $per_page;
-
-            $condition = array();
-            $condition[] = "company = '" . $this->company_id . "'";
-            $this->Brand->getBrands($condition, $per_page, $offset);
         }
 
         $data = array('title' => 'Brand List', 'content' => 'User/view_brand', 'page_title' => 'Brand List', 'view_data' => $data);
@@ -93,35 +85,35 @@ class User extends MY_Controller {
         $this->load->model('Company');
 
         $companyList = $this->Company->get(array('status = 1'));
-                $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
+        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
         $data['form'] = $this->Master_Model->generateDropdown($this->Brand->getForm(), 'form', 'form');
-        
-        if ($this->input->post()){
-                    $name = $this->input->post('name');
-        $form = $this->input->post('form');
-        $mrp = $this->input->post('mrp');
-        $pack = $this->input->post('packing');
-        $comp = $this->input->post('company');
-        $strength = $this->input->post('strength');
 
-        for ($i = 0; $i < count($name); $i++) {
-            if ($name[$i] != "") {
+        if ($this->input->post()) {
+            $name = $this->input->post('name');
+            $form = $this->input->post('form');
+            $mrp = $this->input->post('mrp');
+            $pack = $this->input->post('packing');
+            $comp = $this->input->post('company');
+            $strength = $this->input->post('strength');
 
-                $data = array(
-                    'name' => $name[$i],
-                    'form' => $form[$i],
-                    'status' => '1',
-                    'mrp' => $mrp[$i],
-                    'packing' => $pack[$i],
-                    'company' => $comp[$i],
-                    'strength' => $strength[$i],
-                );
+            for ($i = 0; $i < count($name); $i++) {
+                if ($name[$i] != "") {
 
-                $this->Brand->insert($data);
+                    $data = array(
+                        'name' => $name[$i],
+                        'form' => $form[$i],
+                        'status' => '1',
+                        'mrp' => $mrp[$i],
+                        'packing' => $pack[$i],
+                        'company' => $comp[$i],
+                        'strength' => $strength[$i],
+                    );
+
+                    $this->Brand->insert($data);
+                }
             }
-        }
 
-  redirect('User/brandList', 'refresh');
+            redirect('User/brandList', 'refresh');
         }
 
 
@@ -294,16 +286,43 @@ class User extends MY_Controller {
         redirect('User/CompanyList', 'refresh');
     }
 
+    public function bonus($page = 1) {
+        if ($this->type == 2) {
+            $response = $this->CallAPI('GET', API_URL . 'getBonusOffer/' . $page . '/500?company_id=' . $this->company_id);
+        } else {
+            $response = $this->CallAPI('GET', API_URL . 'getBonusOffer/' . $page . '/500');
+        }
+
+        $response = json_decode($response, true);
+        $data['page'] = $page;
+        if ($response['status'] == 'success') {
+            $data['total_pages'] = $response['totalpages'];
+            $data['response'] = $response['message'];
+        } else {
+            $data['message'] = $response['message'];
+        }
+
+        $data = array('title' => 'Bonus Offer', 'content' => 'Bonus/list', 'page_title' => 'Bonus Offer', 'view_data' => $data);
+        $this->load->view('template3', $data);
+    }
+
     public function addBonus() {
         $this->load->model('Bonus');
+        $companyList = $this->Company->get(array('status = 1'));
+        if ($this->type == 1) {
+            $data['disable'] = '';
+            $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
+        } else {
+            $data['disable'] = 'disable="disable"';
+            $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name', $this->company_id);
+        }
+
         $data['state'] = $this->Master_Model->generateDropdown($this->Bonus->getState(), 'id', 'state');
 
         if ($this->input->post()) {
             //var_dump($_POST);
 
-            $bonustitle['title'] = $this->input->post('title');
-            $bonus_id = $this->Bonus->createTitle($bonustitle);
-
+            $company_id = $this->input->post('company_id');
             $brand_name = $this->input->post('brand_name');
             $brand_id = $this->input->post('brand_id');
             $bonus_ratio = $this->input->post('bonus_ratio');
@@ -315,30 +334,48 @@ class User extends MY_Controller {
                 $state = $this->input->post('state' . $i);
                 if (!empty($state)) {
                     $finalState = join(",", $state);
-                    foreach ($state as $item) {
-                        if ($brand_id[$i] > 0 && $brand_name[$i] != '') {
-                            $field_array = array(
-                                'bonus_id' => $bonus_id,
-                                'title' => $bonustitle['title'],
-                                'brand_id' => $brand_id[$i],
-                                'brand_name' => $brand_name[$i],
-                                'bonus_ratio' => $bonus_ratio[$i],
-                                'start_date' => $start_date[$i],
-                                'end_date' => $end_date[$i],
-                                'state' => $item,
-                                'states' => $finalState,
-                                'status' => 1
-                            );
-                            //var_dump($field_array);
-                            $this->Bonus->insert($field_array);
+
+                    if ($brand_id[$i] > 0 && $brand_name[$i] != '') {
+                        $field_array = array(
+                            'company_id' => $company_id,
+                            'brand_id' => $brand_id[$i],
+                            'brand_name' => $brand_name[$i],
+                            'bonus_ratio' => $bonus_ratio[$i],
+                            'start_date' => $start_date[$i],
+                            'end_date' => $end_date[$i],
+                            'states' => $finalState,
+                            'status' => 1
+                        );
+                        //var_dump($field_array);
+                        $bonus_id = $this->Bonus->insert($field_array);
+
+                        foreach ($state as $item) {
+                            $this->db->insert('bonus_state', array('state_id' => $item, 'bonus_id' => $bonus_id, 'created_at' => date('Y-m-d H:i:s')));
                         }
                     }
                 }
             }
+
+            redirect('User/addBonus', 'refresh');
         }
 
         $data = array('title' => 'Login', 'content' => 'Bonus/add', 'page_title' => 'Add Bonus', 'view_data' => $data);
         $this->load->view('template3', $data);
+    }
+
+    public function calculateBonusDays() {
+        $date = date('Y-m-d');
+        $sql = "UPDATE 
+                `bonus_info` b1 
+                INNER JOIN `bonus_info` b2 
+                  ON b1.`id` = b2.`id` SET b1.`starting_days` = DATEDIFF(b2.`start_date`,'$date'),
+                b1.`ending_days` = DATEDIFF( b2.`end_date`,'$date') ";
+        $this->db->query($sql);
+    }
+
+    public function closedBonus() {
+        $sql = "UPDATE bonus_info SET status = 0 WHERE ending_days <= 0";
+        $this->db->query($sql);
     }
 
 }

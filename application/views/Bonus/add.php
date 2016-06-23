@@ -11,10 +11,19 @@ echo form_open('User/addBonus', $attribute);
     }
 </style>
 <div class="row" >
-    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
-        <label>Bonus Title</label>
-        <input type="text" class="form-control" required name="title" placeholder=" Title "/><br>
-
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">        
+        <div class="row">
+            <div class="col-lg-4">
+                <label>Company</label>
+                <select name="company_id" <?php echo $disable; ?> class="chosen-select"> 
+                    <option value="">Select Company</option>
+                    <?php echo $company; ?>
+                </select>
+            </div>
+            <?php if ($this->type == 2) { ?>
+                <input type="hidden" name="company_id" value="<?php echo $this->company_id; ?>">
+            <?php } ?>
+        </div><br/>
         <table class="table table-bordered">
             <tr>
                 <th>Brand Name</th>
@@ -45,6 +54,8 @@ echo form_open('User/addBonus', $attribute);
             numberDisplayed: 1,
             enableFiltering: true
         });
+
+        $(".chosen-select").attr('disabled', true).trigger("chosen:updated")
     });
 
     $.widget("custom.catcomplete", $.ui.autocomplete, {
