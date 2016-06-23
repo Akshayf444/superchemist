@@ -232,7 +232,7 @@ class Api extends MY_Controller {
             $content = array();
             foreach ($brandlist as $value) {
                 $output[] = array(
-                    'label' => $value->name,                    
+                    'label' => $value->name,
                     'category' => '',
                     'id' => $value->id
                 );
@@ -275,6 +275,97 @@ class Api extends MY_Controller {
         }
         header('content-type: application/json');
         echo json_encode($output);
+    }
+
+    function getBonusOffer($page = 1, $perpage = 20) {
+        $this->load->model('Bonus');
+        $condition = array();
+
+        $type = $this->input->get('type');
+
+        if ($type == 'starting') {
+            $condition[] = 'starting_days <= 30 AND starting_days >= 0';
+        } elseif ($type == 'closing') {
+            $condition[] = 'ending_days < 30';
+        } elseif ($type == 'continuous') {
+            $condition[] = 'starting_days > 0 AND  ending_days > 30';
+        }
+
+        if ($this->input->get('brand_name') != '') {
+            $brand_name = $this->input->get('brand_name');
+            $condition[] = "brand_name LIKE '" . $brand_name . "%'";
+        }
+        if ($this->input->get('company_id') > 0) {
+            $brand_name = $this->input->get('company_id');
+            $condition[] = "company_id = {$brand_name} ";
+        }
+
+        $totalCount = $this->Bonus->countBonus($condition);
+        $totalCount = $totalCount->bonusCount;
+        $paging = $this->calculatePaging($perpage, $totalCount, $page);
+
+        $bonus_info = $this->Bonus->getBonus($condition, $perpage, $paging[1]);
+
+        if (!empty($bonus_info)) {
+            $data = array();
+            foreach ($bonus_info as $item) {
+                if ($type == 'starting') {
+                    $available = 'yes';
+                    $date = $item->start_date;
+                    $bonus_ratio = $item->bonus_ratio;
+                } elseif ($type == 'closing') {
+                    $available = 'yes';
+                    $date = $item->end_date;
+                    $bonus_ratio = $item->bonus_ratio;
+                } elseif ($type == 'continuous') {
+                    $available = 'yes';
+                    $date = 'Till Stock Last';
+                    $bonus_ratio = $item->bonus_ratio;
+                } else {
+                    if ($item->starting_days <= 30 && $item->starting_days > 0) {
+                        $available = 'yes';
+                        $date = $item->start_date;
+                        $bonus_ratio = $item->bonus_ratio;
+                    } elseif ($item->ending_days < 30) {
+                        $available = 'yes';
+                        $date = $item->end_date;
+                        $bonus_ratio = $item->bonus_ratio;
+                    } elseif ($item->starting_days > 0 && $item->ending_days > 30) {
+                        $available = 'yes';
+                        $date = 'Till Stock Last';
+                        $bonus_ratio = $item->bonus_ratio;
+                    } else {
+                        $available = 'no';
+                        $date = null;
+                        $bonus_ratio = null;
+                    }
+                    $type = null;
+                }
+
+                $data[] = array(
+                    'product_id' => $item->brand_id,
+                    'product_name' => $item->name,
+                    'company' => $item->company_name,
+                    'bonus_available' => $available,
+                    'bonus_type' => $type,
+                    'bonus_ratio' => $bonus_ratio,
+                    'date' => $date,
+                    'start_date' => $item->start_date,
+                    'end_date' => $item->end_date,
+                );
+            }
+
+            $content = array('status' => 'success', 'message' => $data, 'totalpages' => $paging[0], 'page' => $page);
+        } else {
+            $content = array('status' => 'error', 'message' => 'Data Not Found');
+        }
+        $this->renderOutput($content);
+    }
+
+    public function calculatePaging($per_page = 1, $total = 0, $page = 1) {
+        $totalpages = ceil($total / $per_page);
+        $offset = ($page - 1) * $per_page;
+        return array($totalpages, $offset);
     }
 
 }
