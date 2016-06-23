@@ -179,6 +179,11 @@ class Api extends MY_Controller {
             $company_id = $this->input->get('brand_name');
             $condition[] = "name like '" . $company_id . "%'";
         }
+         if((int)$this->input->get('brand_id')>0){
+             $brand_id=  $this->input->get('brand_id');
+             $condition[]="id='".$brand_id."'";
+             
+         }
 
         ///Paging
         $totalcount = $this->Brand->countBrands($condition);
@@ -240,6 +245,33 @@ class Api extends MY_Controller {
     function renderOutput($output) {
         if (!is_array($output)) {
             $output = array('status' => 'error', 'message' => 'Oops Something Went Wrong');
+        }
+        header('content-type: application/json');
+        echo json_encode($output);
+    }
+     public function getcompanyList($page = 1) {
+        $this->load->model('Company');
+        $per_page = 20;
+
+
+        $condition = array();
+        $condition[] = "status = 1";
+
+       
+
+      
+        ///Paging
+        $totalcount = $this->Company->countCompany($condition);
+
+        $totalpages = ceil($totalcount->totalcount / $per_page);
+        $offset = ($page - 1) * $per_page;
+
+        $Companylist = $this->Company->getcompany($condition, $per_page, $offset);
+
+        if (!empty($Companylist)) {
+            $output = array('status' => 'success', 'message' => $Companylist, 'totalpages' => $totalpages, 'page' => $page);
+        } else {
+            $output = array('status' => 'error', 'message' => 'Data Not Found');
         }
         header('content-type: application/json');
         echo json_encode($output);

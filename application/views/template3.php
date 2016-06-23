@@ -80,6 +80,11 @@
                         <li>
                             <a href="<?php echo site_url('User/Division'); ?>"><i class="fa fa-dashboard"></i> Division</a>
                         </li>
+                         <?php   if( $this->type==2){ ?>
+                         <li>
+                            <a href="<?php echo site_url('User/Image_list'); ?>"><i class="fa fa-file-image-o"></i> Image</a>
+                        </li>
+                         <?php } ?>
                      <?php   if( $this->type==1){ ?>
                         <li>
                             <a href="<?php echo site_url('User/CompanyList');       ?>"><i class="fa fa-dashboard"></i> Company</a>

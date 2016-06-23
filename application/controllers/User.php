@@ -93,35 +93,35 @@ class User extends MY_Controller {
         $this->load->model('Company');
 
         $companyList = $this->Company->get(array('status = 1'));
-                $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
+        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
         $data['form'] = $this->Master_Model->generateDropdown($this->Brand->getForm(), 'form', 'form');
-        
-        if ($this->input->post()){
-                    $name = $this->input->post('name');
-        $form = $this->input->post('form');
-        $mrp = $this->input->post('mrp');
-        $pack = $this->input->post('packing');
-        $comp = $this->input->post('company');
-        $strength = $this->input->post('strength');
 
-        for ($i = 0; $i < count($name); $i++) {
-            if ($name[$i] != "") {
+        if ($this->input->post()) {
+            $name = $this->input->post('name');
+            $form = $this->input->post('form');
+            $mrp = $this->input->post('mrp');
+            $pack = $this->input->post('packing');
+            $comp = $this->input->post('company');
+            $strength = $this->input->post('strength');
 
-                $data = array(
-                    'name' => $name[$i],
-                    'form' => $form[$i],
-                    'status' => '1',
-                    'mrp' => $mrp[$i],
-                    'packing' => $pack[$i],
-                    'company' => $comp[$i],
-                    'strength' => $strength[$i],
-                );
+            for ($i = 0; $i < count($name); $i++) {
+                if ($name[$i] != "") {
 
-                $this->Brand->insert($data);
+                    $data = array(
+                        'name' => $name[$i],
+                        'form' => $form[$i],
+                        'status' => '1',
+                        'mrp' => $mrp[$i],
+                        'packing' => $pack[$i],
+                        'company' => $comp[$i],
+                        'strength' => $strength[$i],
+                    );
+
+                    $this->Brand->insert($data);
+                }
             }
-        }
 
-  redirect('User/brandList', 'refresh');
+            redirect('User/brandList', 'refresh');
         }
 
 
@@ -339,6 +339,52 @@ class User extends MY_Controller {
 
         $data = array('title' => 'Login', 'content' => 'Bonus/add', 'page_title' => 'Add Bonus', 'view_data' => $data);
         $this->load->view('template3', $data);
+    }
+
+    public function Image_list() {
+        $this->load->model('Company');
+        if ($this->type == 2) {
+
+            $id = $this->company_id;
+            $data['response'] = $this->Company->getimage(array('company_id=' . $id . '', 'status = 1 '));
+        }
+        $data = array('title' => 'Image List', 'content' => 'Company/image_list', 'page_title' => 'Image List', 'view_data' => $data);
+        $this->load->view('template3', $data);
+    }
+
+    public function image_add() {
+        $this->load->model('Company');
+        if ($this->input->post()) {
+            $name = $_FILES['file']['name'];
+            $tmp = $_FILES['file']['tmp_name'];
+            $date = date('Y-m-d ');
+            $image = move_uploaded_file($tmp, "./images/" . $name);
+
+            $data = array('image_name' => $name,
+                'status' => 1,
+                'company_id' => $this->company_id,
+                'created_at' => $date,
+                'image_path' => "/images/" . $name
+            );
+            $this->Company->image_add($data);
+            redirect('User/image_list', 'refresh');
+        }
+    }
+
+    public function active_image() {
+        $this->load->model('Company');
+        $id = $_GET['id'];
+        $data = array('status' => 1);
+        $this->Company->update_image($id, $data);
+        redirect('User/Division', 'refresh');
+    }
+
+    public function inactive_image() {
+        $this->load->model('Company');
+        $id = $_GET['id'];
+        $data = array('status' => 0);
+        $this->Company->update_image($id, $data);
+        redirect('User/Division', 'refresh');
     }
 
 }
