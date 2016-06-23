@@ -31,8 +31,8 @@
                             <td data-title="Company"><?php echo $row->company_name; ?> </td> 
                               <td data-title="Mobile"><?php echo $row->mobile; ?> </td> 
                              <td data-title="Action">
-                                <a class="fa fa-trash btn-danger btn-xs" onclick=" deletedoc('<?php // echo site_url('User/delete_division?id=') . $row->div_id; ?>');"></a> 
-                            <a class="fa fa-pencil btn-success btn-xs" onclick="window.location= '<?php // echo site_url('User/update_division?id=').$row->div_id ;?>';"></a>
+                                <a class="fa fa-trash btn-danger btn-xs" onclick=" deletedoc('<?php echo site_url('User/delete_division?id=') . $row->div_id; ?>');"></a> 
+                            <a class="fa fa-pencil btn-success btn-xs" onclick="window.location= '<?php  echo site_url('User/update_division?id=').$row->div_id ;?>';"></a>
                             </td>
                         </tr>
                         <?php
