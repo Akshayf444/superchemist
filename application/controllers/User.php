@@ -93,24 +93,37 @@ class User extends MY_Controller {
         $this->load->model('Company');
 
         $companyList = $this->Company->get(array('status = 1'));
-
-        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
+                $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
         $data['form'] = $this->Master_Model->generateDropdown($this->Brand->getForm(), 'form', 'form');
+        
+        if ($this->input->post()){
+                    $name = $this->input->post('name');
+        $form = $this->input->post('form');
+        $mrp = $this->input->post('mrp');
+        $pack = $this->input->post('packing');
+        $comp = $this->input->post('company');
+        $strength = $this->input->post('strength');
 
-        if ($this->input->post()) {
-            $data = array(
-                'name' => $this->input->post('name'),
-                'form' => $this->input->post('form'),
-                'status' => 1,
-                'mrp' => $this->input->post('mrp'),
-                'packing' => $this->input->post('packing'),
-                'company' => $this->input->post('company'),
-                'strength' => $this->input->post('strength'),
-            );
+        for ($i = 0; $i < count($name); $i++) {
+            if ($name[$i] != "") {
 
-            $this->Brand->insert($data);
-            redirect('User/brandList', 'refresh');
+                $data = array(
+                    'name' => $name[$i],
+                    'form' => $form[$i],
+                    'status' => '1',
+                    'mrp' => $mrp[$i],
+                    'packing' => $pack[$i],
+                    'company' => $comp[$i],
+                    'strength' => $strength[$i],
+                );
+
+                $this->Brand->insert($data);
+            }
         }
+
+  redirect('User/brandList', 'refresh');
+        }
+
 
         $data = array('title' => 'Add Brand', 'content' => 'User/addBrand', 'page_title' => 'Add Brand', 'view_data' => $data);
         $this->load->view('template3', $data);
