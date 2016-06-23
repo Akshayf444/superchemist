@@ -45,7 +45,7 @@ echo form_open('User/addBrand', $attribute);
              <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2">
         <div class="form-group">
             Strength
-            <input type="text"  class="form-control" name="strength[]" required="" placeholder="Strength" >
+            <input type="text"  class="form-control" name="strength[]"  placeholder="Strength" >
         </div>
              </div>
 <?php
