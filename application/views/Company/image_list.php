@@ -24,8 +24,8 @@
                             <td data-title="Sr"><?php echo $count++; ?></td>
                             <td data-title="Image"><img src="<?php echo base_url() . $row->image_path; ?>" height="50px" width="50px"></td>
                             <td data-title="Action">
-                                <a class="btn btn-danger "  onclick="window.location = '<?php echo site_url('User/inactive_image/' . $row->image_id); ?>';" >Inactive</a> 
-                                <a class=" btn  btn-success " onclick="window.location = '<?php echo site_url('User/active_image/' . $row->image_id); ?>';">Active</a>
+                                <a class="btn btn-danger "  onclick="window.location = '<?php // echo site_url('User/inactive_image/' . $row->image_id); ?>';" >Inactive</a> 
+                                <a class=" btn  btn-success " onclick="window.location = '<?php // echo site_url('User/active_image/' . $row->image_id); ?>';">Active</a>
                             </td>
                         </tr>
                         <?php
