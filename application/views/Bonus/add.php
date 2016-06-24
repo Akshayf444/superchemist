@@ -19,7 +19,7 @@ echo form_open('User/addBonus', $attribute);
                 </div>
             <?php } ?>
         </div><br/>
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="bonustable">
             <tr>
                 <th>Brand Name</th>
                 <th>Ratio</th>
@@ -33,13 +33,14 @@ echo form_open('User/addBonus', $attribute);
                     <td><input type="text" class="form-control" value="" name="bonus_ratio[]" placeholder=" Bonus Ratio "/><input type="hidden" class="rate" value="" name="brand_id[]"></td>
                     <td><input type="text" autocomplete="off" class="form-control datepicker" value="" name="start_date[]" placeholder=" Start Date "/></td>
                     <td><input type="text" autocomplete="off"  class="form-control datepicker" value="<?php echo '31-03-' . (date('Y') + 1) ?>" name="end_date[]" placeholder=" End Date "/></td>
-                    <td><select name="state<?php echo $i; ?>[]" multiple class="form-control multiselect"><?php echo $state; ?></select></td>
+                    <td><select name="state<?php echo $i; ?>[]" multiple id="<?php echo $i; ?>" class="form-control state multiselect"><?php echo $state; ?></select></td>
                 </tr>
                 <?php
             }
             ?>
         </table>
-        <button class="btn btn-block btn-success " type="submit">SAVE</button>
+        <input type="button" class="btn btn-primary btn-xs pull-right" value="Add More" id="addMore">
+        <button class="btn btn-success " type="submit">SAVE</button>
     </div>
 </div>
 </form>
@@ -52,6 +53,17 @@ echo form_open('User/addBonus', $attribute);
         });
 
         $(".chosen-select").attr('disabled', true).trigger("chosen:updated")
+
+        $("#addMore").click(function () {
+            var count = $('.state').length;
+            $("#bonustable").append('<tr><td><input type="text"  class="form-control brandname" value="" name="brand_name[]" placeholder=" Brand Name "/></td><td><input type="text" class="form-control" value="" name="bonus_ratio[]" placeholder=" Bonus Ratio "/><input type="hidden" class="rate" value="" name="brand_id[]"></td><td><input type="text" autocomplete="off" class="form-control datepicker" value="" name="start_date[]" placeholder=" Start Date "/></td><td><input type="text" autocomplete="off"  class="form-control datepicker" value="<?php echo '31-03-' . (date('Y') + 1) ?>" name="end_date[]" placeholder=" End Date "/></td><td><select name="state' + count + '[]" id="' + count + '" multiple class="form-control state multiselect"><?php echo $state; ?></select></td></tr>');
+
+            $("#" + count).multiselect({
+                numberDisplayed: 1,
+                enableFiltering: true,
+                includeSelectAllOption: true
+            });
+        });
     });
 
     $.widget("custom.catcomplete", $.ui.autocomplete, {

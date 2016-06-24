@@ -105,8 +105,7 @@ class User extends MY_Controller {
             $unit = $this->input->post('unit');
 
             for ($i = 0; $i < count($name); $i++) {
-                if ($name[$i] != "") {
-
+                if ($name[$i] != "" && $generic_id[$i] > 0) {
                     $data = array(
                         'name' => $name[$i],
                         'form' => $form[$i],
@@ -128,8 +127,7 @@ class User extends MY_Controller {
 
             redirect('User/brandList', 'refresh');
         }
-
-
+        
         $data = array('title' => 'Add Brand', 'content' => 'User/addBrand', 'page_title' => 'Add Brand', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
@@ -356,7 +354,7 @@ class User extends MY_Controller {
                 if (!empty($state)) {
                     $finalState = join(",", $state);
 
-                    if ($brand_id[$i] > 0 && $brand_name[$i] != '' && $generic_id[$i] > 0) {
+                    if ($brand_id[$i] > 0 && $brand_name[$i] != '') {
                         $field_array = array(
                             'company_id' => $company_id,
                             'brand_id' => $brand_id[$i],
