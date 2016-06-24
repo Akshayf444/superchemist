@@ -26,9 +26,31 @@ echo form_open('User/update_brand?id=' . $rows['id'], $attribute);
         <div class="form-group">
             Packing
             <input type="text" class="form-control" value="<?php echo $rows['packing']; ?>" name="packing"placeholder="Packing "/> </div>
+            <div class="form-group">
+            Division
+            <select name="division[]" class="form-control">
+                <option value="">Select Division</option>
+                <?php echo $division; ?>
+            </select>
+         </div>
         <div class="form-group">
+           
             Strength
-            <input type="text" class="form-control" value="<?php echo $rows['strength']; ?>" name="strength" placeholder="Strength"/> </div>
+            <input type="text" class="form-control" value="<?php echo $rows['strength']; ?>" name="strength" placeholder="Strength"/>
+           &nbsp
+           
+          <select name="unit[]" class="btn btn-default">
+              <option>Select Option</option>
+              
+               
+                    <option value="mg"<?php if($rows['unit']== 'mg'){  echo 'selected' ;}?>> mg </option>
+                    <option value="g"<?php if($rows['unit']== 'g'){  echo 'selected' ;}?>> g </option>
+                    <option value="%"<?php if($rows['unit']== '%'){  echo 'selected' ;}?>> % </option>
+                </select>
+            </div>
+        
+         
+        
         <div class="form-group">
             <button class="btn btn-block btn-success " type="submit">UPDATE</button>
         </div>
