@@ -6,6 +6,7 @@
         padding: 1px 3px;
         height: 26px;
         font-size: 12px;
+        border-radius: 1px;
     }
     .btn-default{
         padding: 1px 3px;
@@ -23,6 +24,9 @@
     .chosen-container .chosen-results li {
         padding: 2px 3px;
     }
+    .chosen-container-single .chosen-single div b {
+        background: no-repeat 0 2px;
+    }
 </style>
 <?php
 $attribute = array('id' => 'valid');
@@ -30,12 +34,12 @@ echo form_open('User/addBrand', $attribute);
 ?> 
 <table class="table table-bordered">
     <tr>
-        <th>Brand Name</th>
+        <th style="width: 20%">Brand Name</th>
         <th>Strength</th>
-        <th>Composition</th>
+        <th style="width: 28%">Composition</th>
         <th>Form</th>
-        <th>MRP</th>
-        <th>Packing</th>
+        <th style="width: 7%">MRP</th>
+        <th style="width: 5%">Packing</th>
         <th>Division</th>
     </tr>
     <?php for ($i = 1; $i <= 10; $i++) { ?>
@@ -44,7 +48,7 @@ echo form_open('User/addBrand', $attribute);
                 <input type="text"  class="form-control" value="" name="name[]" placeholder="Brand Name" />
             </td>
             <td>
-                <input type="number"  class="btn btn-default" name="strength[]"  placeholder="Strength" >
+                <input type="number" style="width: 45%"  class="btn btn-default" name="strength[]"  placeholder="Strength" >
                 <select name="unit[]" class="btn btn-default">
                     <option value="mg">mg</option>
                     <option value="g">g</option>

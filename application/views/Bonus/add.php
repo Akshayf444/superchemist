@@ -7,15 +7,16 @@ echo form_open('User/addBonus', $attribute);
 <div class="row" >
     <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">        
         <div class="row">
-            <div class="col-lg-4">
-                <label>Company</label>
-                <select name="company_id" <?php echo $disable; ?> class="chosen-select"> 
-                    <option value="">Select Company</option>
-                    <?php echo $company; ?>
-                </select>
-            </div>
             <?php if ($this->type == 2) { ?>
                 <input type="hidden" name="company_id" value="<?php echo $this->company_id; ?>">
+            <?php } else { ?>
+                <div class="col-lg-4">
+                    <label>Company</label>
+                    <select name="company_id" <?php echo $disable; ?> class="chosen-select"> 
+                        <option value="">Select Company</option>
+                        <?php echo $company; ?>
+                    </select>
+                </div>
             <?php } ?>
         </div><br/>
         <table class="table table-bordered">
@@ -26,12 +27,12 @@ echo form_open('User/addBonus', $attribute);
                 <th>End Date</th>
                 <th>Shown State</th>
             </tr>
-            <?php for ($i = 0; $i < 10; $i++) { ?>
+            <?php for ($i = 0; $i < 5; $i++) { ?>
                 <tr>
                     <td><input type="text" class="form-control brandname" value="" name="brand_name[]" placeholder=" Brand Name "/></td>
                     <td><input type="text" class="form-control" value="" name="bonus_ratio[]" placeholder=" Bonus Ratio "/><input type="hidden" class="rate" value="" name="brand_id[]"></td>
                     <td><input type="text" autocomplete="off" class="form-control datepicker" value="" name="start_date[]" placeholder=" Start Date "/></td>
-                    <td><input type="text" autocomplete="off"  class="form-control datepicker" value="" name="end_date[]" placeholder=" End Date "/></td>
+                    <td><input type="text" autocomplete="off"  class="form-control datepicker" value="<?php echo '31-03-' . (date('Y') + 1) ?>" name="end_date[]" placeholder=" End Date "/></td>
                     <td><select name="state<?php echo $i; ?>[]" multiple class="form-control multiselect"><?php echo $state; ?></select></td>
                 </tr>
                 <?php
@@ -46,7 +47,8 @@ echo form_open('User/addBonus', $attribute);
     $("document").ready(function () {
         $('.multiselect').multiselect({
             numberDisplayed: 1,
-            enableFiltering: true
+            enableFiltering: true,
+            includeSelectAllOption: true
         });
 
         $(".chosen-select").attr('disabled', true).trigger("chosen:updated")

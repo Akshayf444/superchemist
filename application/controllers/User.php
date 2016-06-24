@@ -98,6 +98,11 @@ class User extends MY_Controller {
             $pack = $this->input->post('packing');
             $comp = $this->input->post('company');
             $strength = $this->input->post('strength');
+            $generic_id = $this->input->post('generic_id');
+            $composition = $this->input->post('composition');
+            $is_combination = $this->input->post('is_combination');
+            $division = $this->input->post('division');
+            $unit = $this->input->post('unit');
 
             for ($i = 0; $i < count($name); $i++) {
                 if ($name[$i] != "") {
@@ -110,6 +115,11 @@ class User extends MY_Controller {
                         'packing' => $pack[$i],
                         'company' => $comp[$i],
                         'strength' => $strength[$i],
+                        'generic_id' => $generic_id[$i],
+                        'composition' => $composition[$i],
+                        'is_combination' => $is_combination[$i],
+                        'division' => $division[$i],
+                        'unit' => $unit[$i],
                     );
 
                     $this->Brand->insert($data);
@@ -147,9 +157,18 @@ class User extends MY_Controller {
 
         $this->load->model('Division');
         $this->load->model('Company');
-        $companyList = $this->Company->get(array('status = 1'));
+        if ($this->type == 1) {
+            $companyList = $this->Company->get(array('status = 1'));
+            $company_id = 0;
+        } elseif ($this->type == 2) {
+            $companyList = $this->Company->get(array('status = 1', 'company_id = ' . $this->company_id));
+            $company_id = $this->company_id;
+        } else {
+            $this->logout();
+        }
 
-        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
+
+        $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name', $company_id);
         if ($this->input->post()) {
             $data = array(
                 'name' => $this->input->post('name'),
@@ -164,7 +183,7 @@ class User extends MY_Controller {
 
             $this->Division->insert($data);
         }
-        $data = array('title' => 'Login', 'content' => 'Division/add', 'page_title' => 'Add Division', 'view_data' => $data);
+        $data = array('title' => 'Add Division', 'content' => 'Division/add', 'page_title' => 'Add Division', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
 
@@ -331,11 +350,6 @@ class User extends MY_Controller {
             $title = $this->input->post('title');
             $start_date = $this->input->post('start_date');
             $end_date = $this->input->post('end_date');
-            $generic_id = $this->input->post('generic_id');
-            $composition = $this->input->post('composition');
-            $is_combination = $this->input->post('is_combination');
-            $division = $this->input->post('division');
-            $unit = $this->input->post('unit');
 
             for ($i = 0; $i < count($brand_name); $i++) {
                 $state = $this->input->post('state' . $i);
@@ -348,13 +362,8 @@ class User extends MY_Controller {
                             'brand_id' => $brand_id[$i],
                             'brand_name' => $brand_name[$i],
                             'bonus_ratio' => $bonus_ratio[$i],
-                            'start_date' => $start_date[$i],
-                            'end_date' => $end_date[$i],
-                            'generic_id' => $generic_id[$i],
-                            'composition' => $composition[$i],
-                            'is_combination' => $is_combination[$i],
-                            'division' => $division[$i],
-                            'unit' => $unit[$i],
+                            'start_date' => date('Y-m-d', strtotime($start_date[$i])),
+                            'end_date' => date('Y-m-d', strtotime($end_date[$i])),
                             'states' => $finalState,
                             'status' => 1
                         );
@@ -396,28 +405,25 @@ class User extends MY_Controller {
         if ($this->input->post()) {
             $name = $_FILES['file']['name'];
             $tmp = $_FILES['file']['tmp_name'];
-             $file_size = $_FILES['file']['size'];
+            $file_size = $_FILES['file']['size'];
             $date = date('Y-m-d ');
-             if($file_size>=20000){
-                   $this->session->set_userdata('message', $this->Master_Model->DisplayAlert( 'Size Is Too Large.', 'danger'));
-     redirect('User/image_list', 'refresh');
-             } else{ 
-            $image = move_uploaded_file($tmp, "./images/" . $name);
-             
-            $data = array('image_name' => $name,
-                'status' => 1,
-                'company_id' => $this->company_id,
-                'created_at' => $date,
-                'image_path' => "/images/" . $name
-            );
-             
-            $this->Company->image_add($data);
-            redirect('User/image_list', 'refresh');
-       
-        
-         
-             }
-         }
+            if ($file_size >= 20000) {
+                $this->session->set_userdata('message', $this->Master_Model->DisplayAlert('Size Is Too Large.', 'danger'));
+                redirect('User/image_list', 'refresh');
+            } else {
+                $image = move_uploaded_file($tmp, "./images/" . $name);
+
+                $data = array('image_name' => $name,
+                    'status' => 1,
+                    'company_id' => $this->company_id,
+                    'created_at' => $date,
+                    'image_path' => "/images/" . $name
+                );
+
+                $this->Company->image_add($data);
+                redirect('User/image_list', 'refresh');
+            }
+        }
     }
 
     public function active_image() {
@@ -425,7 +431,7 @@ class User extends MY_Controller {
         $id = $_GET['id'];
         $data = array('status' => 1);
         $this->Company->update_image($id, $data);
-       redirect('User/image_list', 'refresh');
+        redirect('User/image_list', 'refresh');
     }
 
     public function inactive_image() {
@@ -433,7 +439,7 @@ class User extends MY_Controller {
         $id = $_GET['id'];
         $data = array('status' => 0);
         $this->Company->update_image($id, $data);
-       redirect('User/image_list', 'refresh');
+        redirect('User/image_list', 'refresh');
     }
 
     public function calculateBonusDays() {

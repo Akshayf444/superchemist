@@ -7,7 +7,7 @@ $('document').ready(function () {
     var dateToday = new Date();
 
     $('.datepicker').datepicker({
-        dateFormat: "yy-mm-dd",
+        dateFormat: "dd-mm-yy",
         minDate: null,
     });
 });
