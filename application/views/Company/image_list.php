@@ -10,7 +10,7 @@
                         ?>
         <div class="col-xs-8 col-sm-6 col-md-3">
           <div class="thumbnail">
-                         <img src="<?php echo base_url() . $row->image_path; ?>" height="150px" width="150px">
+                         <img src="<?php echo base_url() . $row->image_path; ?>" height="260px" width="250px">
               <div class="caption">
      
                 <p>   <?php if($row->status==1){ ?>
