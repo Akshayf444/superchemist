@@ -384,7 +384,7 @@ class User extends MY_Controller {
             redirect('User/addBonus', 'refresh');
         }
 
-        $data = array('title' => 'Login', 'content' => 'Bonus/add', 'page_title' => 'Add Bonus', 'view_data' => $data);
+        $data = array('title' => 'Add Bonus', 'content' => 'Bonus/add', 'page_title' => 'Add Bonus', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
 
