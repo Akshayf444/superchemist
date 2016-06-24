@@ -36,4 +36,18 @@ class Division extends MY_model {
         $this->db->update('divisions', $data);
     }
 
+    public function returnDivision() {
+        $condition = array();
+        if ($this->type == 2) {
+            $id = $this->company_id;
+            $condition = array(
+                'd.company_id=' . $id . '', 'd.status = 1 ', 'cm.status = 1'
+            );
+        } elseif ($this->type == 1) {
+            $condition = array('d.status = 1 ', 'cm.status = 1');
+        }
+        
+        return $this->Division->getDivision($condition);
+    }
+
 }

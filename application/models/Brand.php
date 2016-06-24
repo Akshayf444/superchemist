@@ -49,4 +49,11 @@ class Brand extends MY_model {
         return $this->returnResult($sql);
     }
 
+    function getComposition($condition = array()) {
+        $sql = "SELECT * FROM generic_drugs WHERE is_active = 1 ";
+        $sql .=!empty($condition) ? " AND " . join(" AND ", $condition) : " ";
+        //echo $sql;
+        return $this->returnResult($sql);
+    }
+
 }

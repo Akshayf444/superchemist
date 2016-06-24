@@ -26,12 +26,17 @@ class MY_Controller extends CI_Controller {
     }
 
     function logout() {
+        unset($this->type);
+        unset($this->company_id);
+        unset($this->full_name);
+        $this->session->unset_userdata('type');
+        $this->session->unset_userdata('company_id');
+        $this->session->unset_userdata('full_name');
         redirect('User/index', 'redirect');
     }
 
     function CallAPI($method, $url, $data = false) {
         $curl = curl_init();
-
         switch ($method) {
             case "POST":
                 curl_setopt($curl, CURLOPT_POST, 1);
@@ -48,7 +53,6 @@ class MY_Controller extends CI_Controller {
         }
 
         // Optional Authentication:
-
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 

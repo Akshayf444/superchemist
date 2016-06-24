@@ -11,6 +11,7 @@ class Api extends MY_Controller {
         $this->load->model('User_model');
         $this->load->model('Sms');
         $this->load->model('MobileVerification');
+        $this->load->model('Brand');
     }
 
     public function sendVerification() {
@@ -179,11 +180,10 @@ class Api extends MY_Controller {
             $company_id = $this->input->get('brand_name');
             $condition[] = "name like '" . $company_id . "%'";
         }
-         if((int)$this->input->get('brand_id')>0){
-             $brand_id=  $this->input->get('brand_id');
-             $condition[]="id='".$brand_id."'";
-             
-         }
+        if ((int) $this->input->get('brand_id') > 0) {
+            $brand_id = $this->input->get('brand_id');
+            $condition[] = "id='" . $brand_id . "'";
+        }
 
         ///Paging
         $totalcount = $this->Brand->countBrands($condition);
@@ -203,7 +203,7 @@ class Api extends MY_Controller {
     }
 
     public function getBonusBrandList($page = 1) {
-        $this->load->model('Brand');
+
         $per_page = 500;
 
 
@@ -242,6 +242,29 @@ class Api extends MY_Controller {
         }
     }
 
+    public function getComposition() {
+        $condition = array();
+        if ($this->input->get('composition') != '') {
+            $composition = $this->input->get('composition');
+            $condition[] = "name LIKE '" . $composition . "%'";
+        }
+
+        $brandlist = $this->Brand->getComposition($condition);
+        if (!empty($brandlist)) {
+            $content = array();
+            foreach ($brandlist as $value) {
+                $output[] = array(
+                    'label' => $value->name,
+                    'category' => '',
+                    'id' => $value->id,
+                    'is_combination' => $value->is_combination,
+                );
+            }
+            header('content-type: application/json');
+            echo json_encode($output);
+        }
+    }
+
     function renderOutput($output) {
         if (!is_array($output)) {
             $output = array('status' => 'error', 'message' => 'Oops Something Went Wrong');
@@ -249,7 +272,8 @@ class Api extends MY_Controller {
         header('content-type: application/json');
         echo json_encode($output);
     }
-     public function getcompanyList($page = 1) {
+
+    public function getcompanyList($page = 1) {
         $this->load->model('Company');
         $per_page = 20;
 
@@ -257,9 +281,7 @@ class Api extends MY_Controller {
         $condition = array();
         $condition[] = "status = 1";
 
-       
 
-      
         ///Paging
         $totalcount = $this->Company->countCompany($condition);
 
