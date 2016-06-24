@@ -44,8 +44,9 @@ public function getimage($condition = array()) {
      public function image_add($data){
          $this->db->insert('images',$data);
      }
-      public function update_image($data, $id) {
+      public function update_image($id, $data) {
         $this->db->where('image_id', $id);
-        $this->db->update('images', $data);
+       $query= $this->db->update('images', $data);
+        
     }
 }

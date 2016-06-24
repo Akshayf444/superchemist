@@ -80,15 +80,13 @@
                         <li>
                             <a href="<?php echo site_url('User/Division'); ?>"><i class="fa fa-dashboard"></i> Division</a>
                         </li>
-<<<<<<< HEAD
+
                          <?php   if( $this->type==2){ ?>
                          <li>
                             <a href="<?php echo site_url('User/Image_list'); ?>"><i class="fa fa-file-image-o"></i> Image</a>
                         </li>
                          <?php } ?>
-                     <?php   if( $this->type==1){ ?>
-=======
->>>>>>> fa15824de225434b329e7b6b2aa4e7b27ef7c1f7
+
                         <li>
                             <a href="<?php echo site_url('User/Bonus');         ?>"><i class="fa fa-dashboard"></i> Bonus Offer</a>
                         </li>

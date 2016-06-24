@@ -2,40 +2,37 @@
     <div class="col-lg-12">
         <input type="button"   class="btn btn-primary pull-right " value="Image Upload" data-toggle="modal" data-target="#myModal1">
     </div>
-</div>
+</div> <br>
 <div class="row">
-    <div class="col-lg-12 table-responsive" >
-        <table class="table table-bordered table-hover panel" id="datatable">
-            <thead>
-                <tr>
-                    <th>Sr.</th>
-                    <th>Image</th>
-
-                    <th>Action</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $count = 1;
-                if (!empty($response)) {
+    
+          <?php   if (!empty($response)) {
                     foreach ($response as $row) :
-                        ?><tr>  
-                            <td data-title="Sr"><?php echo $count++; ?></td>
-                            <td data-title="Image"><img src="<?php echo base_url() . $row->image_path; ?>" height="50px" width="50px"></td>
-                            <td data-title="Action">
-                                <a class="btn btn-danger "  onclick="window.location = '<?php // echo site_url('User/inactive_image/' . $row->image_id); ?>';" >Inactive</a> 
-                                <a class=" btn  btn-success " onclick="window.location = '<?php // echo site_url('User/active_image/' . $row->image_id); ?>';">Active</a>
-                            </td>
-                        </tr>
+                        ?>
+        <div class="col-xs-8 col-sm-6 col-md-3">
+          <div class="thumbnail">
+                         <img src="<?php echo base_url() . $row->image_path; ?>" height="150px" width="150px">
+              <div class="caption">
+     
+                <p>   <?php if($row->status==1){ ?>
+                         Active
+                                
+                        <?php    } else{ ?>
+                           InActive
+                       <?php } ?></p>
+                <p>  <?php if($row->status==1){ ?> <a class="btn btn-danger "  onclick="window.location = '<?php  echo site_url('User/inactive_image?id=' . $row->image_id); ?>';" >Inactive</a><?php } else{  ?>
+                <a class=" btn  btn-success " onclick="window.location = '<?php  echo site_url('User/active_image?id=' . $row->image_id); ?>';">Active</a> <?php }?>
+        </div>
+                          </div>
+          </div>
                         <?php
                     endforeach;
                 }
-                ?>
-            </tbody>
-        </table>
-    </div>
-</div>
+                ?></p>
+           
+        </div>
+       
+            
+             
 
 <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
@@ -50,7 +47,7 @@
             echo form_open('User/image_add', $attribute);
             ?>
             <div class="modal-body">
-                <input type="hidden" name="hide" id="csv1" class="form-control" />
+                <h5 style="color: red">Image Size Should Be 20 KB</h5>
 
                 <div class="form_group">
                     Choose your file: <br /> 

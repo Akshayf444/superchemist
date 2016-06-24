@@ -369,7 +369,7 @@ class User extends MY_Controller {
         if ($this->type == 2) {
 
             $id = $this->company_id;
-            $data['response'] = $this->Company->getimage(array('company_id=' . $id . '', 'status = 1 '));
+            $data['response'] = $this->Company->getimage(array('company_id=' . $id . ''));
         }
         $data = array('title' => 'Image List', 'content' => 'Company/image_list', 'page_title' => 'Image List', 'view_data' => $data);
         $this->load->view('template3', $data);
@@ -380,18 +380,28 @@ class User extends MY_Controller {
         if ($this->input->post()) {
             $name = $_FILES['file']['name'];
             $tmp = $_FILES['file']['tmp_name'];
+             $file_size = $_FILES['file']['size'];
             $date = date('Y-m-d ');
+             if($file_size>=20000){
+                   $this->session->set_userdata('message', $this->Master_Model->DisplayAlert( 'Size Is Too Large.', 'danger'));
+     redirect('User/image_list', 'refresh');
+             } else{ 
             $image = move_uploaded_file($tmp, "./images/" . $name);
-
+             
             $data = array('image_name' => $name,
                 'status' => 1,
                 'company_id' => $this->company_id,
                 'created_at' => $date,
                 'image_path' => "/images/" . $name
             );
+             
             $this->Company->image_add($data);
             redirect('User/image_list', 'refresh');
-        }
+       
+        
+         
+             }
+         }
     }
 
     public function active_image() {
@@ -399,7 +409,7 @@ class User extends MY_Controller {
         $id = $_GET['id'];
         $data = array('status' => 1);
         $this->Company->update_image($id, $data);
-        redirect('User/Division', 'refresh');
+       redirect('User/image_list', 'refresh');
     }
 
     public function inactive_image() {
@@ -407,7 +417,7 @@ class User extends MY_Controller {
         $id = $_GET['id'];
         $data = array('status' => 0);
         $this->Company->update_image($id, $data);
-        redirect('User/Division', 'refresh');
+       redirect('User/image_list', 'refresh');
     }
     public function calculateBonusDays() {
         $date = date('Y-m-d');
