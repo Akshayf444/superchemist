@@ -377,14 +377,17 @@ class User extends MY_Controller {
 
     public function image_add() {
         $this->load->model('Company');
+       
         if ($this->input->post()) {
             $name = $_FILES['file']['name'];
             $tmp = $_FILES['file']['tmp_name'];
              $file_size = $_FILES['file']['size'];
             $date = date('Y-m-d ');
+            
              if($file_size>=20000){
                    $this->session->set_userdata('message', $this->Master_Model->DisplayAlert( 'Size Is Too Large.', 'danger'));
      redirect('User/image_list', 'refresh');
+     
              } else{ 
             $image = move_uploaded_file($tmp, "./images/" . $name);
              
