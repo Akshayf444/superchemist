@@ -4,12 +4,6 @@
 $attribute = array('id' => 'valid');
 echo form_open('User/addBonus', $attribute);
 ?>
-<style>
-    .loading{
-        background: url(<?php echo asset_url(); ?>images/38-1.gif) right;
-        background-repeat: no-repeat;
-    }
-</style>
 <div class="row" >
     <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">        
         <div class="row">

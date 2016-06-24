@@ -88,4 +88,12 @@ class Bonus extends MY_model {
         return $this->returnResult($sql, 'row');
     }
 
+    public function bonusExist($condition = array()) {
+        $sql = "SELECT bf.*,bd.name,cm.company_name FROM (SELECT * FROM bonus_info WHERE status = 1 ";
+        $sql .=!empty($condition) ? " AND " . join(" AND ", $condition) : " ";
+        $sql .= " ) as bf INNER JOIN brands bd ON bd.id = bf.brand_id INNER JOIN company_master cm ON cm.company_id = bd.company LIMIT {$limit} OFFSET {$offset}";
+        //echo $sql;
+        return $this->returnResult($sql, 'row');
+    }
+
 }

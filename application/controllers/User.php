@@ -63,8 +63,10 @@ class User extends MY_Controller {
 
         if ($this->type == 2) {
             $response = $this->CallAPI('GET', API_URL . 'getBrandList/' . $page . '?company_id=' . $this->company_id);
-        } else {
+        } elseif ($this->type == 1) {
             $response = $this->CallAPI('GET', API_URL . 'getBrandList/' . $page);
+        } else {
+            $this->logout();
         }
 
         $response = json_decode($response, true);
@@ -87,6 +89,7 @@ class User extends MY_Controller {
         $companyList = $this->Company->get(array('status = 1'));
         $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
         $data['form'] = $this->Master_Model->generateDropdown($this->Brand->getForm(), 'form', 'form');
+        $data['division'] = $this->Master_Model->generateDropdown($this->Division->returnDivision(), 'div_id', 'name');
 
         if ($this->input->post()) {
             $name = $this->input->post('name');
@@ -123,22 +126,21 @@ class User extends MY_Controller {
 
     public function Division() {
         $this->load->model('Division');
-        if ($this->type == 2) {
+        $data['response'] = $this->Division->returnDivision();
 
-            $id = $this->company_id;
-            $data['response'] = $this->Division->getDivision(array('d.company_id=' . $id . '', 'd.status = 1 ', 'cm.status = 1'));
-        } else {
-            $data['response'] = $this->Division->getDivision(array('d.status = 1 ', 'cm.status = 1'));
-        }
         $data = array('title' => 'Login', 'content' => 'Division/list', 'page_title' => 'Division List', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
 
     public function CompanyList() {
-        $this->load->model('Company');
-        $data['response'] = $this->Company->get(array('status = 1'));
-        $data = array('title' => 'Company', 'content' => 'Company/list', 'page_title' => 'Company List', 'view_data' => $data);
-        $this->load->view('template3', $data);
+        if ($this->type == 2) {
+            $this->load->model('Company');
+            $data['response'] = $this->Company->get(array('status = 1'));
+            $data = array('title' => 'Company', 'content' => 'Company/list', 'page_title' => 'Company List', 'view_data' => $data);
+            $this->load->view('template3', $data);
+        } else {
+            $this->logout();
+        }
     }
 
     public function addDivision() {
@@ -329,13 +331,18 @@ class User extends MY_Controller {
             $title = $this->input->post('title');
             $start_date = $this->input->post('start_date');
             $end_date = $this->input->post('end_date');
+            $generic_id = $this->input->post('generic_id');
+            $composition = $this->input->post('composition');
+            $is_combination = $this->input->post('is_combination');
+            $division = $this->input->post('division');
+            $unit = $this->input->post('unit');
 
             for ($i = 0; $i < count($brand_name); $i++) {
                 $state = $this->input->post('state' . $i);
                 if (!empty($state)) {
                     $finalState = join(",", $state);
 
-                    if ($brand_id[$i] > 0 && $brand_name[$i] != '') {
+                    if ($brand_id[$i] > 0 && $brand_name[$i] != '' && $generic_id[$i] > 0) {
                         $field_array = array(
                             'company_id' => $company_id,
                             'brand_id' => $brand_id[$i],
@@ -343,14 +350,25 @@ class User extends MY_Controller {
                             'bonus_ratio' => $bonus_ratio[$i],
                             'start_date' => $start_date[$i],
                             'end_date' => $end_date[$i],
+                            'generic_id' => $generic_id[$i],
+                            'composition' => $composition[$i],
+                            'is_combination' => $is_combination[$i],
+                            'division' => $division[$i],
+                            'unit' => $unit[$i],
                             'states' => $finalState,
                             'status' => 1
                         );
                         //var_dump($field_array);
-                        $bonus_id = $this->Bonus->insert($field_array);
+                        $bonusExist = $this->Bonus->bonusExist(array('brand_id', $brand_id[$i]));
 
-                        foreach ($state as $item) {
-                            $this->db->insert('bonus_state', array('state_id' => $item, 'bonus_id' => $bonus_id, 'created_at' => date('Y-m-d H:i:s')));
+                        if (empty($bonusExist)) {
+                            $bonus_id = $this->Bonus->insert($field_array);
+
+                            foreach ($state as $item) {
+                                $this->db->insert('bonus_state', array('state_id' => $item, 'bonus_id' => $bonus_id, 'created_at' => date('Y-m-d H:i:s')));
+                            }
+                        } else {
+                            $this->session->set_userdata('message', $this->Master_Model->DisplayAlert('Bonus Already Exist For ' . $brand_name[$i], 'error'));
                         }
                     }
                 }
@@ -363,11 +381,9 @@ class User extends MY_Controller {
         $this->load->view('template3', $data);
     }
 
-
     public function Image_list() {
         $this->load->model('Company');
         if ($this->type == 2) {
-
             $id = $this->company_id;
             $data['response'] = $this->Company->getimage(array('company_id=' . $id . '', 'status = 1 '));
         }
@@ -409,6 +425,7 @@ class User extends MY_Controller {
         $this->Company->update_image($id, $data);
         redirect('User/Division', 'refresh');
     }
+
     public function calculateBonusDays() {
         $date = date('Y-m-d');
         $sql = "UPDATE 
@@ -422,7 +439,6 @@ class User extends MY_Controller {
     public function closedBonus() {
         $sql = "UPDATE bonus_info SET status = 0 WHERE ending_days <= 0";
         $this->db->query($sql);
-
     }
 
 }
