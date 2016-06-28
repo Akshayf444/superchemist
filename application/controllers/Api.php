@@ -24,11 +24,10 @@ class Api extends MY_Controller {
             $mobile = $_GET['mobile'];
             $user_type = $_GET['user_type'];
 
-            $this->Sms->sendsms($mobile, $message);
-
             $mobileexist = $this->MobileVerification->mobileexist($mobile);
 
             if (empty($mobileexist)) {
+                $this->Sms->sendsms($mobile, $message);
                 $insertVerification = $this->MobileVerification->creater(array('mobile' => $mobile, 'ver_code' => $ver_code, 'user_type' => $user_type, 'created_at' => date('Y-m-d H:i:s')));
                 if ($insertVerification) {
                     $output = array('status' => 'success', 'message' => array(array('ver_code' => $ver_code)));
@@ -37,10 +36,24 @@ class Api extends MY_Controller {
                 }
             } else {
                 if ($mobileexist->verified == 0) {
-                    $updateVerification = $this->MobileVerification->update(array('mobile' => $mobile, 'ver_code' => $ver_code, 'user_type' => $user_type), $mobile);
+                    $this->Sms->sendsms($mobile, $message);
+                    $updateVerification = $this->MobileVerification->update(
+                            array(
+                                'mobile' => $mobile,
+                                'ver_code' => $ver_code,
+                                'user_type' => $user_type
+                            ), $mobile);
                     $output = array('status' => 'success', 'message' => array(array('ver_code' => $ver_code)));
-                } else {
-                    $output = array('status' => 'error', 'message' => "Already Verified");
+                } elseif ($mobileexist->verified == 1) {
+                    $userexist = $this->User_model->userexist($mobile);
+
+                    if (empty($userexist)) {
+                        $this->Sms->sendsms($mobile, $message);
+                        $updateVerification = $this->MobileVerification->update(array('mobile' => $mobile, 'ver_code' => $ver_code), $mobile);
+                        $output = array('status' => 'success', 'message' => array(array('ver_code' => $ver_code)));
+                    } else {
+                        $output = array('status' => 'error', 'message' => "Already Registered And Verified");
+                    }
                 }
             }
         } else {
@@ -52,9 +65,9 @@ class Api extends MY_Controller {
     }
 
     public function verifyUser() {
-        if ($this->input->post('mobile')) {
-            $mobile = $_POST['mobile'];
-            $ver_code = $_POST['ver_code'];
+        if ($_GET['mobile'] != '' && $_GET['ver_code'] != '') {
+            $mobile = $_GET['mobile'];
+            $ver_code = $_GET['ver_code'];
             $getUser = $this->MobileVerification->mobileexist($mobile);
             if (!empty($getUser)) {
                 if ($getUser->verified == 0) {
@@ -64,14 +77,19 @@ class Api extends MY_Controller {
                     } else {
                         $output = array('status' => 'error', 'message' => "Invalid Code");
                     }
-                } else {
-                    $output = array('status' => 'error', 'message' => "Already Verified");
+                } elseif ($getUser->verified == 1) {
+                    $userexist = $this->User_model->userexist($mobile);
+                    if (empty($userexist)) {
+                        $output = array('status' => 'success', 'message' => array('ver_code' => $ver_code));
+                    } else {
+                        $output = array('status' => 'error', 'message' => "Already Registered And Verified");
+                    }
                 }
             } else {
                 $output = array('status' => 'error', 'message' => "Details Not Found");
             }
         } else {
-            $output = array('status' => 'error', 'message' => "Please Send POST Request");
+            $output = array('status' => 'error', 'message' => "Please Send GET Request");
         }
 
         header('content-type: application/json');
@@ -79,48 +97,96 @@ class Api extends MY_Controller {
     }
 
     public function register() {
-        if ($this->input->post()) {
-            $mobile = $this->input->post('mobile');
+        if (isset($_REQUEST['mobile'])) {
+            $mobile = $_REQUEST['mobile'];
+            $isverified = $this->MobileVerification->mobileexist($mobile);
             $userexist = $this->User_model->userexist($mobile);
-            if (empty($userexist)) {
-                $data = array(
-                    'full_name' => $this->input->post('full_name'),
-                    'address' => $this->input->post('address'),
-                    'city' => $this->input->post('city'),
-                    'state' => $this->input->post('state'),
-                    'mobile' => $this->input->post('mobile'),
-                    'business_name' => $this->input->post('business_name'),
-                    'pincode' => $this->input->post('pincode'),
-                    'password' => $this->input->post('password'),
-                    'email' => $this->input->post('email'),
-                    'device_id' => $this->input->post('device_id'),
-                    'user_type' => $this->input->post('user_type'),
-                    'status' => 1,
-                    'created_at' => date('Y-m-d H:i:s')
-                );
+            if (!empty($isverified) && $isverified->verified == 1) {
+                if (empty($userexist)) {
+                    $data = array(
+                        'full_name' => $_REQUEST['full_name'],
+                        'address' => $_REQUEST['address'],
+                        'city' => $_REQUEST['city'],
+                        'state' => $_REQUEST['state'],
+                        'mobile' => $_REQUEST['mobile'],
+                        'business_name' => $_REQUEST['business_name'],
+                        'pincode' => $_REQUEST['pincode'],
+                        'password' => $_REQUEST['password'],
+                        'email' => $_REQUEST['email'],
+                        'device_id' => $_REQUEST['device_id'],
+                        'user_type' => $_REQUEST['user_type'],
+                        'status' => 1,
+                        'created_at' => date('Y-m-d H:i:s')
+                    );
 
-                $user_id = $this->User_model->create($data);
-                if ($user_id > 0) {
-                    $output = array('status' => 'success', 'message' => "User Added Successfully");
+                    $user_id = $this->User_model->create($data);
+                    if ($user_id > 0) {
+                        $output = array('status' => 'success', 'message' => "User Added Successfully");
+                    } else {
+                        $output = array('status' => 'error', 'message' => "System Erroor");
+                    }
                 } else {
-                    $output = array('status' => 'error', 'message' => "System Erroor");
+                    $output = array('status' => 'error', 'message' => "Already Registered");
                 }
             } else {
-                $output = array('status' => 'error', 'message' => "User Already Exist");
+                $output = array('status' => 'error', 'message' => "User Not Verified");
             }
         } else {
-            $output = array('status' => 'error', 'message' => "Please Send POST Request");
+            $output = array('status' => 'error', 'message' => "Please Send GET Request");
         }
         header('content-type: application/json');
         echo json_encode($output);
     }
 
+    /* public function register() {
+      var_dump($this->input->post());
+      if ($this->input->post('mobile') != '') {
+      $mobile = $this->input->post('mobile');
+      $isverified = $this->MobileVerification->mobileexist($mobile);
+      $userexist = $this->User_model->userexist($mobile);
+      if (!empty($isverified) && $isverified->verified == 1) {
+      if (empty($userexist)) {
+      $data = array(
+      'full_name' => $this->input->post('full_name'),
+      'address' => $this->input->post('address'),
+      'city' => $this->input->post('city'),
+      'state' => $this->input->post('state'),
+      'mobile' => $this->input->post('mobile'),
+      'business_name' => $this->input->post('business_name'),
+      'pincode' => $this->input->post('pincode'),
+      'password' => $this->input->post('password'),
+      'email' => $this->input->post('email'),
+      'device_id' => $this->input->post('device_id'),
+      'user_type' => $this->input->post('user_type'),
+      'status' => 1,
+      'created_at' => date('Y-m-d H:i:s')
+      );
+
+      $user_id = $this->User_model->create($data);
+      if ($user_id > 0) {
+      $output = array('status' => 'success', 'message' => "User Added Successfully");
+      } else {
+      $output = array('status' => 'error', 'message' => "System Erroor");
+      }
+      } else {
+      $output = array('status' => 'error', 'message' => "Already Registered");
+      }
+      } else {
+      $output = array('status' => 'error', 'message' => "User Not Verified");
+      }
+      } else {
+      $output = array('status' => 'error', 'message' => "Please Send GET Request");
+      }
+      header('content-type: application/json');
+      echo json_encode($output);
+      } */
+
     public function login() {
-        if ($this->input->post('mobile') != '' && $this->input->post('password') != '') {
-            $mobile = $this->input->post('mobile');
-            $password = $this->input->post('password');
+        if ($this->input->get('mobile') != '' && $this->input->get('password') != '') {
+            $mobile = $this->input->get('mobile');
+            $password = $this->input->get('password');
             $userexist = $this->User_model->authenticate($mobile, $password);
-            echo $userexist;
+
 
             if (!empty($userexist)) {
                 $output = array('status' => 'success', 'message' => array($userexist));
@@ -206,7 +272,6 @@ class Api extends MY_Controller {
 
         $per_page = 500;
 
-
         $condition = array();
         $condition[] = "status = 1";
 
@@ -277,10 +342,8 @@ class Api extends MY_Controller {
         $this->load->model('Company');
         $per_page = 20;
 
-
         $condition = array();
         $condition[] = "status = 1";
-
 
         ///Paging
         $totalcount = $this->Company->countCompany($condition);
@@ -299,7 +362,7 @@ class Api extends MY_Controller {
         echo json_encode($output);
     }
 
-    function getBonusOffer($page = 1, $perpage = 20) {
+    public function getBonusOffer($page = 1, $perpage = 20) {
         $this->load->model('Bonus');
         $condition = array();
 
@@ -308,9 +371,9 @@ class Api extends MY_Controller {
         if ($type == 'starting') {
             $condition[] = 'starting_days <= 30 AND starting_days >= 0';
         } elseif ($type == 'closing') {
-            $condition[] = 'ending_days < 30';
+            $condition[] = 'ending_days < 30 && ending_days > 0';
         } elseif ($type == 'continuous') {
-            $condition[] = 'starting_days > 0 AND  ending_days > 30';
+            $condition[] = 'starting_days > 0 AND  ending_days < 30 AND ending_days > 0';
         }
 
         if ($this->input->get('brand_name') != '') {
@@ -335,33 +398,39 @@ class Api extends MY_Controller {
                     $available = 'yes';
                     $date = $item->start_date;
                     $bonus_ratio = $item->bonus_ratio;
+                    $bonus_type = 'starting';
                 } elseif ($type == 'closing') {
                     $available = 'yes';
                     $date = $item->end_date;
                     $bonus_ratio = $item->bonus_ratio;
+                    $bonus_type = 'closing';
                 } elseif ($type == 'continuous') {
                     $available = 'yes';
                     $date = 'Till Stock Last';
                     $bonus_ratio = $item->bonus_ratio;
+                    $bonus_type = 'continuous';
                 } else {
                     if ($item->starting_days <= 30 && $item->starting_days > 0) {
                         $available = 'yes';
                         $date = $item->start_date;
                         $bonus_ratio = $item->bonus_ratio;
-                    } elseif ($item->ending_days < 30) {
+                        $bonus_type = 'starting';
+                    } elseif ($item->ending_days < 30 && $item->ending_days > 0) {
                         $available = 'yes';
                         $date = $item->end_date;
                         $bonus_ratio = $item->bonus_ratio;
-                    } elseif ($item->starting_days > 0 && $item->ending_days > 30) {
+                        $bonus_type = 'closing';
+                    } elseif ($item->starting_days > 0 && $item->ending_days < 30 && $item->ending_days > 0) {
                         $available = 'yes';
                         $date = 'Till Stock Last';
                         $bonus_ratio = $item->bonus_ratio;
+                        $bonus_type = 'continuous';
                     } else {
                         $available = 'no';
                         $date = null;
                         $bonus_ratio = null;
+                        $bonus_type = null;
                     }
-                    $type = null;
                 }
 
                 $data[] = array(
@@ -369,7 +438,7 @@ class Api extends MY_Controller {
                     'product_name' => $item->name,
                     'company' => $item->company_name,
                     'bonus_available' => $available,
-                    'bonus_type' => $type,
+                    'bonus_type' => $bonus_type,
                     'bonus_ratio' => $bonus_ratio,
                     'date' => $date,
                     'start_date' => $item->start_date,
@@ -388,6 +457,10 @@ class Api extends MY_Controller {
         $totalpages = ceil($total / $per_page);
         $offset = ($page - 1) * $per_page;
         return array($totalpages, $offset);
+    }
+
+    public function imageList() {
+        
     }
 
 }

@@ -19,8 +19,10 @@
                             <?php } else { ?>
                                 InActive
                             <?php } ?></p>
-                        <p>  <?php if ($row->status == 1) { ?> <a class="btn btn-danger "  onclick="window.location = '<?php echo site_url('User/inactive_image?id=' . $row->image_id); ?>';" >Inactive</a><?php } else { ?>
-                                <a class=" btn  btn-success " onclick="window.location = '<?php echo site_url('User/active_image?id=' . $row->image_id); ?>';">Active</a> <?php } ?>
+                        <p>  <?php if ($row->status == 1) { ?>
+                            <?php } else { ?>
+                                <a class=" btn  btn-success " onclick="window.location = '<?php echo site_url('User/active_image?id=' . $row->image_id); ?>';">Active</a>
+                            <?php } ?>
                     </div>
                 </div>
             </div>
@@ -43,7 +45,7 @@
             echo form_open('User/image_add', $attribute);
             ?>
             <div class="modal-body">
-                <h5 style="color: red">Image Size Should Be less than 20 KB</h5>
+                <h5 style="color: red">Image Size Should Be less than 90 KB</h5>
 
                 <div class="form_group">
                     Choose your file: <br /> 
@@ -72,8 +74,8 @@
         if ((file = this.files[0])) {
             img = new Image();
             img.onload = function () {
-                if (this.width != 102 || this.height != 50) {
-                    alert("Image Dimension Should Be 102 X 50");
+                if (this.width != 1024 || this.height != 500) {
+                    alert("Image Dimension Should Be 1024 X 500");
                     $("#save").attr('type', 'button');
                 } else {
                     $("#save").attr('type', 'submit');
