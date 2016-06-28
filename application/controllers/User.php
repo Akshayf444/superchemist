@@ -205,6 +205,8 @@ class User extends MY_Controller {
             );
 
             $this->Division->insert($data);
+            
+              redirect('User/ Division', 'refresh');
         }
         $data = array('title' => 'Add Division', 'content' => 'Division/add', 'page_title' => 'Add Division', 'view_data' => $data);
         $this->load->view('template3', $data);
