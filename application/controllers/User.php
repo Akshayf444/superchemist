@@ -205,8 +205,8 @@ class User extends MY_Controller {
             );
 
             $this->Division->insert($data);
-            
-              redirect('User/ Division', 'refresh');
+
+            redirect('User/ Division', 'refresh');
         }
         $data = array('title' => 'Add Division', 'content' => 'Division/add', 'page_title' => 'Add Division', 'view_data' => $data);
         $this->load->view('template3', $data);
@@ -380,7 +380,6 @@ class User extends MY_Controller {
             $brand_name = $this->input->post('brand_name');
             $brand_id = $this->input->post('brand_id');
             $bonus_ratio = $this->input->post('bonus_ratio');
-            $title = $this->input->post('title');
             $start_date = $this->input->post('start_date');
             $end_date = $this->input->post('end_date');
 
@@ -401,7 +400,7 @@ class User extends MY_Controller {
                             'status' => 1
                         );
                         //var_dump($field_array);
-                        $bonusExist = $this->Bonus->bonusExist(array('brand_id', $brand_id[$i]));
+                        $bonusExist = $this->Bonus->bonusExist(array('brand_id = ' . $brand_id[$i]));
 
                         if (empty($bonusExist)) {
                             $bonus_id = $this->Bonus->insert($field_array);

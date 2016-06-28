@@ -39,9 +39,9 @@ class Api extends MY_Controller {
                     $this->Sms->sendsms($mobile, $message);
                     $updateVerification = $this->MobileVerification->update(
                             array(
-                                'mobile' => $mobile,
-                                'ver_code' => $ver_code,
-                                'user_type' => $user_type
+                        'mobile' => $mobile,
+                        'ver_code' => $ver_code,
+                        'user_type' => $user_type
                             ), $mobile);
                     $output = array('status' => 'success', 'message' => array(array('ver_code' => $ver_code)));
                 } elseif ($mobileexist->verified == 1) {
@@ -233,7 +233,6 @@ class Api extends MY_Controller {
         $this->load->model('Brand');
         $per_page = 500;
 
-
         $condition = array();
         $condition[] = "status = 1";
 
@@ -260,7 +259,7 @@ class Api extends MY_Controller {
         $brandlist = $this->Brand->getBrands($condition, $per_page, $offset);
 
         if (!empty($brandlist)) {
-            $output = array('status' => 'success', 'message' => $brandlist, 'totalpages' => $totalpages, 'page' => $page);
+            $output = array('status' => 'success', 'message' => array($brandlist), 'totalpages' => $totalpages, 'page' => $page);
         } else {
             $output = array('status' => 'error', 'message' => 'Data Not Found');
         }
@@ -358,6 +357,7 @@ class Api extends MY_Controller {
         } else {
             $output = array('status' => 'error', 'message' => 'Data Not Found');
         }
+        
         header('content-type: application/json');
         echo json_encode($output);
     }
@@ -373,7 +373,7 @@ class Api extends MY_Controller {
         } elseif ($type == 'closing') {
             $condition[] = 'ending_days < 30 && ending_days > 0';
         } elseif ($type == 'continuous') {
-            $condition[] = 'starting_days > 0 AND  ending_days < 30 AND ending_days > 0';
+            $condition[] = 'starting_days < 0 AND  ending_days > 30 AND ending_days > 0';
         }
 
         if ($this->input->get('brand_name') != '') {
@@ -420,7 +420,7 @@ class Api extends MY_Controller {
                         $date = $item->end_date;
                         $bonus_ratio = $item->bonus_ratio;
                         $bonus_type = 'closing';
-                    } elseif ($item->starting_days > 0 && $item->ending_days < 30 && $item->ending_days > 0) {
+                    } elseif ($item->starting_days < 0 && $item->ending_days > 30 && $item->ending_days > 0) {
                         $available = 'yes';
                         $date = 'Till Stock Last';
                         $bonus_ratio = $item->bonus_ratio;
@@ -459,8 +459,16 @@ class Api extends MY_Controller {
         return array($totalpages, $offset);
     }
 
-    public function imageList() {
-        
+    public function getImages() {
+        $this->load->model('Company');
+        $imageList = $this->Company->getimage(array('status = 1', 'ending_days BETWEEN 0 AND 7'));
+        if (!empty($imageList)) {
+            $output = array('status' => 'success', 'message' => $imageList);
+        } else {
+            $output = array('status' => 'error', 'message' => 'Data Not Found');
+        }
+
+        $this->renderOutput($output);
     }
 
 }
