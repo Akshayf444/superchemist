@@ -147,6 +147,8 @@ class User extends MY_Controller {
                     );
 
                     $this->Brand->insert($data);
+                } else {
+                    $this->session->set_userdata('message', $this->Master_Model->DisplayAlert('Please Select Composition From DropDownlist For ' . $name[$i], 'error'));
                 }
             }
 
@@ -344,7 +346,7 @@ class User extends MY_Controller {
         if ($this->type == 2) {
             $response = $this->CallAPI('GET', API_URL . 'getBonusOffer/' . $page . '/500?company_id=' . $this->company_id);
         } else {
-            $response = $this->CallAPI('GET', API_URL . 'getBonusOffer/' . $page . '/500');
+            $response = $this->CallAPI('GET', API_URL . 'getBonusOffer/' . $page . '/500?');
         }
 
         $response = json_decode($response, true);
@@ -389,6 +391,8 @@ class User extends MY_Controller {
                     $finalState = join(",", $state);
 
                     if ($brand_id[$i] > 0 && $brand_name[$i] != '') {
+                        $diff1 = $this->Company->dateDifference(date('Y-m-d'), $start_date[$i]);
+                        $diff2 = $this->Company->dateDifference(date('Y-m-d'), $end_date[$i]);
                         $field_array = array(
                             'company_id' => $company_id,
                             'brand_id' => $brand_id[$i],
@@ -397,7 +401,9 @@ class User extends MY_Controller {
                             'start_date' => date('Y-m-d', strtotime($start_date[$i])),
                             'end_date' => date('Y-m-d', strtotime($end_date[$i])),
                             'states' => $finalState,
-                            'status' => 1
+                            'status' => 1,
+                            'starting_days' => $diff1->d,
+                            'ending_days' => $diff2->d
                         );
                         //var_dump($field_array);
                         $bonusExist = $this->Bonus->bonusExist(array('brand_id = ' . $brand_id[$i]));
@@ -453,13 +459,14 @@ class User extends MY_Controller {
                 $ActiveImageCount = $this->Company->returnEndDate($this->company_id);
 
                 $data = array('image_name' => $name,
-                    'status' => 1,
+                    'status' => $ActiveImageCount[3],
                     'company_id' => $this->company_id,
                     'created_at' => $date,
                     'image_path' => "/images/" . $name,
                     'start_date' => $ActiveImageCount[0],
                     'end_date' => $ActiveImageCount[1],
                     'ending_days' => $ActiveImageCount[2],
+                    'slot_id' => $ActiveImageCount[4],
                 );
 
                 $this->Company->image_add($data);

@@ -259,7 +259,7 @@ class Api extends MY_Controller {
         $brandlist = $this->Brand->getBrands($condition, $per_page, $offset);
 
         if (!empty($brandlist)) {
-            $output = array('status' => 'success', 'message' => array($brandlist), 'totalpages' => $totalpages, 'page' => $page);
+            $output = array('status' => 'success', 'message' => $brandlist, 'totalpages' => $totalpages, 'page' => $page);
         } else {
             $output = array('status' => 'error', 'message' => 'Data Not Found');
         }
@@ -357,7 +357,7 @@ class Api extends MY_Controller {
         } else {
             $output = array('status' => 'error', 'message' => 'Data Not Found');
         }
-        
+
         header('content-type: application/json');
         echo json_encode($output);
     }
@@ -366,7 +366,7 @@ class Api extends MY_Controller {
         $this->load->model('Bonus');
         $condition = array();
 
-        $type = $this->input->get('type');
+        $type = isset($_GET['type']) ? $_GET['type'] : 0;
 
         if ($type == 'starting') {
             $condition[] = 'starting_days <= 30 AND starting_days >= 0';
@@ -385,11 +385,18 @@ class Api extends MY_Controller {
             $condition[] = "company_id = {$brand_name} ";
         }
 
-        $totalCount = $this->Bonus->countBonus($condition);
-        $totalCount = $totalCount->bonusCount;
-        $paging = $this->calculatePaging($perpage, $totalCount, $page);
+        if ($type === '') {
+            $totalCount = $this->Bonus->countBonus($condition);
+            $totalCount = $totalCount->bonusCount;
+            $paging = $this->calculatePaging($perpage, $totalCount, $page);
+            $bonus_info = $this->Bonus->getBonus($condition, $perpage, $paging[1]);
+        } else {
+            $totalCount = $this->Bonus->countBonus2($condition);
+            $totalCount = $totalCount->bonusCount;
+            $paging = $this->calculatePaging($perpage, $totalCount, $page);
+            $bonus_info = $this->Bonus->getBonus2($condition, $perpage, $paging[1]);
+        }
 
-        $bonus_info = $this->Bonus->getBonus($condition, $perpage, $paging[1]);
 
         if (!empty($bonus_info)) {
             $data = array();
@@ -398,38 +405,38 @@ class Api extends MY_Controller {
                     $available = 'yes';
                     $date = $item->start_date;
                     $bonus_ratio = $item->bonus_ratio;
-                    $bonus_type = 'starting';
+                    $bonus_type = 'Starting';
                 } elseif ($type == 'closing') {
                     $available = 'yes';
                     $date = $item->end_date;
                     $bonus_ratio = $item->bonus_ratio;
-                    $bonus_type = 'closing';
+                    $bonus_type = 'Closing';
                 } elseif ($type == 'continuous') {
                     $available = 'yes';
                     $date = 'Till Stock Last';
                     $bonus_ratio = $item->bonus_ratio;
-                    $bonus_type = 'continuous';
+                    $bonus_type = 'Continuous';
                 } else {
                     if ($item->starting_days <= 30 && $item->starting_days > 0) {
                         $available = 'yes';
-                        $date = $item->start_date;
+                        $date = date('d/m/Y', strtotime($item->start_date));
                         $bonus_ratio = $item->bonus_ratio;
-                        $bonus_type = 'starting';
+                        $bonus_type = 'Starting';
                     } elseif ($item->ending_days < 30 && $item->ending_days > 0) {
                         $available = 'yes';
-                        $date = $item->end_date;
+                        $date = date('d/m/Y', strtotime($item->end_date));
                         $bonus_ratio = $item->bonus_ratio;
-                        $bonus_type = 'closing';
+                        $bonus_type = 'Closing';
                     } elseif ($item->starting_days < 0 && $item->ending_days > 30 && $item->ending_days > 0) {
                         $available = 'yes';
                         $date = 'Till Stock Last';
                         $bonus_ratio = $item->bonus_ratio;
-                        $bonus_type = 'continuous';
+                        $bonus_type = 'Continuous';
                     } else {
                         $available = 'no';
-                        $date = null;
-                        $bonus_ratio = null;
-                        $bonus_type = null;
+                        $date = '';
+                        $bonus_ratio = 'No Info';
+                        $bonus_type = 'No Info';
                     }
                 }
 

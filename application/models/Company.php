@@ -55,7 +55,8 @@ class Company extends MY_model {
     }
 
     public function countImageDates($company_id = 0) {
-        $sql = "SELECT COUNT(*) as imageCount FROM images WHERE company_id = {$company_id} AND ending_days BETWEEN 0 AND 7";
+        $sql = "SELECT COUNT(*) as imageCount FROM images WHERE company_id = {$company_id} ";
+        //echo $sql;
         return $this->returnResult($sql, 'row');
     }
 
@@ -67,20 +68,10 @@ class Company extends MY_model {
     public function returnEndDate($company_id) {
         $date = strtotime(date('Y-m-d'));
         $imageCount = $this->countImageDates($company_id);
-        if ($imageCount->imageCount > 10) {
-            $lastImage = $this->getImageDates($company_id);
-            $lastImage = array_shift($lastImage);
-            $date1 = date('Y-m-d', strtotime("+1 days", $lastImage->end_date));
-            $date2 = date('Y-m-d', strtotime("+8 days", $lastImage->end_date));
 
-            $difference = $this->dateDifference($date1, $date2);
+        $slot_id = (int) ($imageCount->imageCount / 2);
 
-            return array(
-                $date1,
-                $date2,
-                $difference->d
-            );
-        } else {
+        if ($slot_id == 0) {
             $date1 = date('Y-m-d');
             $date2 = date('Y-m-d', strtotime("+7 days"));
 
@@ -89,9 +80,61 @@ class Company extends MY_model {
             return array(
                 $date1,
                 $date2,
-                $difference->d
+                $difference->d,
+                1,
+                $slot_id
+            );
+        } else {
+            $searchslot_id = (int) $slot_id - 1;
+            $condition = array(
+                'company_id = ' . $company_id,
+                'slot_id=' . $searchslot_id
+            );
+            $lastImage = $this->getimage($condition);
+            $lastImage = array_shift($lastImage);
+
+            $date1 = date('Y-m-d', date(strtotime("+1 day", strtotime($lastImage->end_date))));
+            $date2 = date('Y-m-d', date(strtotime("+8 day", strtotime($lastImage->end_date))));
+
+            $difference = $this->dateDifference($date1, $date2);
+
+            return array(
+                $date1,
+                $date2,
+                $difference->d,
+                0,
+                $slot_id
             );
         }
+
+        /* if ($imageCount->imageCount > 10) {
+          $lastImage = $this->getImageDates($company_id);
+          $lastImage = array_shift($lastImage);
+          $date1 = new DateTime($lastImage->end_date);
+          $date1->modify("+1 day");
+          $date2 = $date1->modify("+7 day");
+
+          $difference = $this->dateDifference($date1, $date2);
+
+          return array(
+          $date1,
+          $date2,
+          $difference->d,
+          $slot_id
+          );
+          } else {
+          $date1 = date('Y-m-d');
+          $date2 = date('Y-m-d', strtotime("+7 days"));
+
+          $difference = $this->dateDifference($date1, $date2);
+
+          return array(
+          $date1,
+          $date2,
+          $difference->d,
+          $slot_id
+          );
+          } */
     }
 
 }
