@@ -362,7 +362,7 @@ class User extends MY_Controller {
         $this->load->view('template3', $data);
     }
 
-    public function addBonus() {
+    public function editBonus() {
         $this->load->model('Bonus');
         $companyList = $this->Company->get(array('status = 1'));
         if ($this->type == 1) {
@@ -427,6 +427,74 @@ class User extends MY_Controller {
         $data = array('title' => 'Add Bonus', 'content' => 'Bonus/add', 'page_title' => 'Add Bonus', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
+     public function addBonus() {
+        $this->load->model('Bonus');
+        $companyList = $this->Company->get(array('status = 1'));
+        if ($this->type == 1) {
+            $data['disable'] = '';
+            $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
+        } else {
+            $data['disable'] = 'disable="disable"';
+            $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name', $this->company_id);
+        }
+
+        $data['state'] = $this->Master_Model->generateDropdown($this->Bonus->getState(), 'id', 'state');
+
+        if ($this->input->post()) {
+            //var_dump($_POST);
+
+            $company_id = $this->input->post('company_id');
+            $brand_name = $this->input->post('brand_name');
+            $brand_id = $this->input->post('brand_id');
+            $bonus_ratio = $this->input->post('bonus_ratio');
+            $start_date = $this->input->post('start_date');
+            $end_date = $this->input->post('end_date');
+
+            for ($i = 0; $i < count($brand_name); $i++) {
+                $state = $this->input->post('state' . $i);
+                if (!empty($state)) {
+                    $finalState = join(",", $state);
+
+                    if ($brand_id[$i] > 0 && $brand_name[$i] != '') {
+                        $diff1 = $this->Company->dateDifference(date('Y-m-d'), $start_date[$i]);
+                        $diff2 = $this->Company->dateDifference(date('Y-m-d'), $end_date[$i]);
+                        $field_array = array(
+                            'company_id' => $company_id,
+                            'brand_id' => $brand_id[$i],
+                            'brand_name' => $brand_name[$i],
+                            'bonus_ratio' => $bonus_ratio[$i],
+                            'start_date' => date('Y-m-d', strtotime($start_date[$i])),
+                            'end_date' => date('Y-m-d', strtotime($end_date[$i])),
+                            'states' => $finalState,
+                            'status' => 1,
+                            'starting_days' => $diff1->d,
+                            'ending_days' => $diff2->d
+                        );
+                        //var_dump($field_array);
+                        $bonusExist = $this->Bonus->bonusExist(array('brand_id = ' . $brand_id[$i]));
+
+                        if (empty($bonusExist)) {
+                            $bonus_id = $this->Bonus->insert($field_array);
+
+                            foreach ($state as $item) {
+                                $this->db->insert('bonus_state', array('state_id' => $item, 'bonus_id' => $bonus_id, 'created_at' => date('Y-m-d H:i:s')));
+                            }
+                        } else {
+                            $this->session->set_userdata('message', $this->Master_Model->DisplayAlert('Bonus Already Exist For ' . $brand_name[$i], 'error'));
+                        }
+                    }
+                }
+            }
+
+            redirect('User/addBonus', 'refresh');
+        }
+
+        $data = array('title' => 'Add Bonus', 'content' => 'Bonus/add', 'page_title' => 'Add Bonus', 'view_data' => $data);
+        $this->load->view('template3', $data);
+    }
+
+    
+    
 
     public function Image_list() {
         $this->load->model('Company');
