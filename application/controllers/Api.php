@@ -116,9 +116,9 @@ class Api extends MY_Controller {
     }
 
     public function login() {
-        if ($this->input->post('mobile') != '' && $this->input->post('password') != '') {
-            $mobile = $this->input->post('mobile');
-            $password = $this->input->post('password');
+        if ($this->input->get('mobile') != '' && $this->input->get('password') != '') {
+            $mobile = $this->input->get('mobile');
+            $password = $this->input->get('password');
             $userexist = $this->User_model->authenticate($mobile, $password);
             echo $userexist;
 
