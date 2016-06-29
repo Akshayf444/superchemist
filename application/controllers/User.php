@@ -56,7 +56,32 @@ class User extends MY_Controller {
     }
 
     public function dashboard() {
-        
+        $this->load->model('Bonus');
+        $this->load->model('Division');
+        $condition = array('status =  1');
+        $bonusCondition = array('status = 1');
+        $divisionCondition = array('d.status = 1');
+        if ($this->type == 2) {
+            $condition[] = "company = '" . $this->company_id . "'";
+            $bonusCondition[] = "company_id = '" . $this->company_id . "'";
+            $divisionCondition[] = "d.company_id = '" . $this->company_id . "'";
+        } elseif ($this->type == 1) {
+            
+        } else {
+            $this->logout();
+        }
+
+        $brandCount = $this->Brand->countBrands($condition);
+        $bonusCount = $this->Bonus->countBonus($bonusCondition);
+        $countDivision = $this->Division->countDivision($divisionCondition);
+
+        $data['brandcount'] = $brandCount->totalcount;
+        $data['bonuscount'] = $bonusCount->bonusCount;
+        $data['divisioncount'] = $countDivision->divisionCount;
+        $data['ctr'] = 0;
+
+        $data = array('title' => 'Dashboard', 'content' => 'User/dashboard', 'page_title' => 'Dashboard', 'view_data' => $data);
+        $this->load->view('template3', $data);
     }
 
     public function brandList($page = 1) {
@@ -122,12 +147,14 @@ class User extends MY_Controller {
                     );
 
                     $this->Brand->insert($data);
+                } else {
+                    $this->session->set_userdata('message', $this->Master_Model->DisplayAlert('Please Select Composition From DropDownlist For ' . $name[$i], 'error'));
                 }
             }
 
             redirect('User/brandList', 'refresh');
         }
-        
+
         $data = array('title' => 'Add Brand', 'content' => 'User/addBrand', 'page_title' => 'Add Brand', 'view_data' => $data);
         $this->load->view('template3', $data);
     }
@@ -180,8 +207,8 @@ class User extends MY_Controller {
             );
 
             $this->Division->insert($data);
-            
-              redirect('User/ Division', 'refresh');
+
+            redirect('User/ Division', 'refresh');
         }
         $data = array('title' => 'Add Division', 'content' => 'Division/add', 'page_title' => 'Add Division', 'view_data' => $data);
         $this->load->view('template3', $data);
@@ -193,25 +220,25 @@ class User extends MY_Controller {
         $id = $_GET['id'];
         $data['rows'] = $this->Brand->find_by_brand($id);
         $companyList = $this->Company->get(array('status = 1'));
-       
+
         $data['form'] = $this->Master_Model->generateDropdown($this->Brand->getForm(), 'form', 'form', $data['rows']['form']);
         $data['division'] = $this->Master_Model->generateDropdown($this->Division->returnDivision(), 'div_id', 'name', $data['rows']['division']);
         $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name', $data['rows']['company']);
         if ($this->input->post()) {
             $data = array(
-            'name'=>    $this->input->post('name'),
-          'form'=>   $this->input->post('form'),
-          'mrp'=>   $this->input->post('mrp'),
-          'packing'=>  $this->input->post('packing'),
-           'company'=>  $this->input->post('company_id'),
-         'strength'=>   $this->input->post('strength'),
-           'generic_id'=> $this->input->post('generic_id'),
-            'composition'=> $this->input->post('composition'),
-           'is_Combination'=> $this->input->post('is_combination'),
+                'name' => $this->input->post('name'),
+                'form' => $this->input->post('form'),
+                'mrp' => $this->input->post('mrp'),
+                'packing' => $this->input->post('packing'),
+                'company' => $this->input->post('company_id'),
+                'strength' => $this->input->post('strength'),
+                'generic_id' => $this->input->post('generic_id'),
+                'composition' => $this->input->post('composition'),
+                'is_Combination' => $this->input->post('is_combination'),
                 'status' => '1',
-                'is_active'=>'1',
-           'division'=>  $this->input->post('division'),
-        'unit'=>  $this->input->post('unit')
+                'is_active' => '1',
+                'division' => $this->input->post('division'),
+                'unit' => $this->input->post('unit')
             );
             $this->Brand->brand_updation($this->input->post('id'), $data);
             redirect('User/brandList', 'refresh');
@@ -319,7 +346,7 @@ class User extends MY_Controller {
         if ($this->type == 2) {
             $response = $this->CallAPI('GET', API_URL . 'getBonusOffer/' . $page . '/500?company_id=' . $this->company_id);
         } else {
-            $response = $this->CallAPI('GET', API_URL . 'getBonusOffer/' . $page . '/500');
+            $response = $this->CallAPI('GET', API_URL . 'getBonusOffer/' . $page . '/500?');
         }
 
         $response = json_decode($response, true);
@@ -355,7 +382,6 @@ class User extends MY_Controller {
             $brand_name = $this->input->post('brand_name');
             $brand_id = $this->input->post('brand_id');
             $bonus_ratio = $this->input->post('bonus_ratio');
-            $title = $this->input->post('title');
             $start_date = $this->input->post('start_date');
             $end_date = $this->input->post('end_date');
 
@@ -365,6 +391,8 @@ class User extends MY_Controller {
                     $finalState = join(",", $state);
 
                     if ($brand_id[$i] > 0 && $brand_name[$i] != '') {
+                        $diff1 = $this->Company->dateDifference(date('Y-m-d'), $start_date[$i]);
+                        $diff2 = $this->Company->dateDifference(date('Y-m-d'), $end_date[$i]);
                         $field_array = array(
                             'company_id' => $company_id,
                             'brand_id' => $brand_id[$i],
@@ -373,10 +401,12 @@ class User extends MY_Controller {
                             'start_date' => date('Y-m-d', strtotime($start_date[$i])),
                             'end_date' => date('Y-m-d', strtotime($end_date[$i])),
                             'states' => $finalState,
-                            'status' => 1
+                            'status' => 1,
+                            'starting_days' => $diff1->d,
+                            'ending_days' => $diff2->d
                         );
                         //var_dump($field_array);
-                        $bonusExist = $this->Bonus->bonusExist(array('brand_id', $brand_id[$i]));
+                        $bonusExist = $this->Bonus->bonusExist(array('brand_id = ' . $brand_id[$i]));
 
                         if (empty($bonusExist)) {
                             $bonus_id = $this->Bonus->insert($field_array);
@@ -415,20 +445,28 @@ class User extends MY_Controller {
             $name = $_FILES['file']['name'];
             $tmp = $_FILES['file']['tmp_name'];
             $file_size = $_FILES['file']['size'];
-            $date = date('Y-m-d ');
+            $date = date('Y-m-d');
+            $filename = explode(".", $name);
+            $extension = end($filename);
+            $name = time() . "." . $extension;
 
-
-            if ($file_size >= 20000) {
-                $this->session->set_userdata('message', $this->Master_Model->DisplayAlert('Size Is Too Large.', 'danger'));
+            if ($file_size >= (int) (1024 * 100)) {
+                $this->session->set_userdata('message', $this->Master_Model->DisplayAlert('File Size Should Be Less Than 100 KB.', 'danger'));
                 redirect('User/image_list', 'refresh');
             } else {
                 $image = move_uploaded_file($tmp, "./images/" . $name);
 
+                $ActiveImageCount = $this->Company->returnEndDate($this->company_id);
+
                 $data = array('image_name' => $name,
-                    'status' => 1,
+                    'status' => $ActiveImageCount[3],
                     'company_id' => $this->company_id,
                     'created_at' => $date,
-                    'image_path' => "/images/" . $name
+                    'image_path' => "/images/" . $name,
+                    'start_date' => $ActiveImageCount[0],
+                    'end_date' => $ActiveImageCount[1],
+                    'ending_days' => $ActiveImageCount[2],
+                    'slot_id' => $ActiveImageCount[4],
                 );
 
                 $this->Company->image_add($data);
@@ -465,6 +503,21 @@ class User extends MY_Controller {
 
     public function closedBonus() {
         $sql = "UPDATE bonus_info SET status = 0 WHERE ending_days <= 0";
+        $this->db->query($sql);
+    }
+
+    public function calculateImageDays() {
+        $date = date('Y-m-d');
+        $sql = "UPDATE 
+                `images` b1 
+                INNER JOIN `images` b2 
+                  ON b1.`image_id` = b2.`image_id` SET 
+                b1.`ending_days` = DATEDIFF( b2.`end_date`,'$date') ";
+        $this->db->query($sql);
+    }
+
+    public function closedImages() {
+        $sql = "UPDATE images SET status = 0 WHERE ending_days <= 0";
         $this->db->query($sql);
     }
 

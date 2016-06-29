@@ -80,7 +80,7 @@
                     <!-- Sidebar user panel -->
                     <ul class="sidebar-menu">
                         <li>
-                            <a href="<?php //echo site_url('User/brandList');    ?>"><i class="fa fa-dashboard"></i> Dashboard</a>
+                            <a href="<?php echo site_url('User/dashboard'); ?>"><i class="fa fa-dashboard"></i> Dashboard</a>
                         </li>
                         <li>
                             <a href="<?php echo site_url('User/Division'); ?>"><i class="fa fa-dashboard"></i> Division</a>
@@ -101,13 +101,13 @@
                                 <a href="<?php echo site_url('User/CompanyList'); ?>"><i class="fa fa-dashboard"></i> Company</a>
                             </li>
                             <li>
-                                <a href="<?php //echo site_url('User/brandList');             ?>"><i class="fa fa-dashboard"></i> Hot Deal</a>
+                                <a href="<?php //echo site_url('User/brandList');              ?>"><i class="fa fa-dashboard"></i> Hot Deal</a>
                             </li>
                             <li>
-                                <a href="<?php //echo site_url('User/brandList');             ?>"><i class="fa fa-dashboard"></i> Brand Image</a>
+                                <a href="<?php //echo site_url('User/brandList');              ?>"><i class="fa fa-dashboard"></i> Brand Image</a>
                             </li>
                             <li>
-                                <a href="<?php //echo site_url('User/brandList');             ?>"><i class="fa fa-dashboard"></i> Settings</a>
+                                <a href="<?php //echo site_url('User/brandList');              ?>"><i class="fa fa-dashboard"></i> Settings</a>
                             </li>
                         <?php } ?>
 

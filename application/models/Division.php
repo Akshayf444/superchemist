@@ -25,6 +25,13 @@ class Division extends MY_model {
         return $this->returnResult($sql);
     }
 
+    public function countDivision($condition = array()) {
+        $sql = " SELECT COUNT(d.div_id) as divisionCount FROM " . $this->table_name . " d INNER JOIN company_master cm ON d.company_id = cm.company_id ";
+        $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";
+//         echo $sql;
+        return $this->returnResult($sql,'row');
+    }
+
     public function find_by_division($id) {
         $sql = "select d.* from divisions d INNER JOIN company_master cm ON d.company_id = cm.company_id  where d.div_id = $id and d.status='1' ";
         $query = $this->db->query($sql);
@@ -46,7 +53,7 @@ class Division extends MY_model {
         } elseif ($this->type == 1) {
             $condition = array('d.status = 1 ', 'cm.status = 1');
         }
-        
+
         return $this->Division->getDivision($condition);
     }
 

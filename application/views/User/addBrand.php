@@ -115,6 +115,7 @@ echo form_open('User/addBrand', $attribute);
         var $this = $(this);
         var company_id = <?php echo $this->type == 2 ? $this->company_id : ''; ?>;
         $this.addClass('loading');
+        $this.closest('tr').find('.generic_id').val('0');
         $(".composition").catcomplete({
             delay: 1000,
             minLength: 3,
