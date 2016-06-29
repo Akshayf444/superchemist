@@ -168,7 +168,7 @@ class User extends MY_Controller {
     }
 
     public function CompanyList() {
-        if ($this->type == 2) {
+        if ($this->type == 1) {
             $this->load->model('Company');
             $data['response'] = $this->Company->get(array('status = 1'));
             $data = array('title' => 'Company', 'content' => 'Company/list', 'page_title' => 'Company List', 'view_data' => $data);
@@ -471,6 +471,32 @@ class User extends MY_Controller {
 
                 $this->Company->image_add($data);
                 redirect('User/image_list', 'refresh');
+            }
+        }
+    }
+
+    public function UploadImage() {
+        if ($this->input->post()) {
+            $name = $_FILES['file']['name'];
+            $tmp = $_FILES['file']['tmp_name'];
+            $file_size = $_FILES['file']['size'];
+            $date = date('Y-m-d');
+            $filename = explode(".", $name);
+            $extension = end($filename);
+            $name = time() . "." . $extension;
+
+            if ($file_size >= (int) (1024 * 100)) {
+                $this->session->set_userdata('message', $this->Master_Model->DisplayAlert('File Size Should Be Less Than 100 KB.', 'danger'));
+                redirect('User/CompanyList', 'refresh');
+            } else {
+                $image = move_uploaded_file($tmp, "./images/" . $name);
+                $data = array(
+                    'logo' => $name,
+                );
+                $this->db->where('company_id', $this->input->post('company_id'));
+                $this->db->update('company_master', $data);
+                
+                redirect('User/CompanyList', 'refresh');
             }
         }
     }

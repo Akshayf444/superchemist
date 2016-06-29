@@ -369,7 +369,7 @@ class Api extends MY_Controller {
         $type = isset($_GET['type']) ? $_GET['type'] : 0;
 
         if ($type === 'starting') {
-            $condition[] = 'starting_days <= 30 AND ending_days > 30';
+            $condition[] = 'starting_days <= 30 AND starting_days > 0 AND (ending_days - starting_days) > 30 ';
         } elseif ($type === 'closing') {
             $condition[] = 'ending_days < 30 && ending_days > 0';
         } elseif ($type === 'continuous') {
@@ -385,6 +385,11 @@ class Api extends MY_Controller {
             $condition[] = "company_id = {$brand_name} ";
         }
 
+        if ($this->input->get('product_id') > 0) {
+            $product_id = $this->input->get('product_id');
+            $condition[] = "brand_id = {$product_id} ";
+        }
+
         if ($type === '') {
             $totalCount = $this->Bonus->countBonus($condition);
             $totalCount = $totalCount->bonusCount;
@@ -397,51 +402,35 @@ class Api extends MY_Controller {
             $bonus_info = $this->Bonus->getBonus2($condition, $perpage, $paging[1]);
         }
 
-
         if (!empty($bonus_info)) {
             $data = array();
             foreach ($bonus_info as $item) {
-                if ($type === 'starting') {
+                $diff = $item->ending_days - $item->starting_days;
+
+                if ((int) $item->starting_days <= 30 && (int) $item->starting_days > 0 && $diff > 30) {
                     $available = 'yes';
-                    $date = $item->start_date;
+                    $date = date('d/m/Y', strtotime($item->start_date));
                     $bonus_ratio = $item->bonus_ratio;
                     $bonus_type = 'Starting';
-                } elseif ($type === 'closing') {
+                } elseif ((int) $item->ending_days < 30 && (int) $item->ending_days > 0) {
                     $available = 'yes';
-                    $date = $item->end_date;
+                    $date = date('d/m/Y', strtotime($item->end_date));
                     $bonus_ratio = $item->bonus_ratio;
                     $bonus_type = 'Closing';
-                } elseif ($type === 'continuous') {
+                } elseif ((int) $item->starting_days < 0 && (int) $item->ending_days > 30 && (int) $item->ending_days > 0) {
                     $available = 'yes';
                     $date = 'Till Stock Last';
                     $bonus_ratio = $item->bonus_ratio;
-                    $bonus_type = 'Continuous';
+                    $bonus_type = '';
                 } else {
-                    if ((int)$item->starting_days <= 30 && (int)$item->starting_days > 0) {
-                        $available = 'yes';
-                        $date = date('d/m/Y', strtotime($item->start_date));
-                        $bonus_ratio = $item->bonus_ratio;
-                        $bonus_type = 'Starting';
-                    } elseif ((int)$item->ending_days < 30 && (int)$item->ending_days > 0) {
-                        $available = 'yes';
-                        $date = date('d/m/Y', strtotime($item->end_date));
-                        $bonus_ratio = $item->bonus_ratio;
-                        $bonus_type = 'Closing';
-                    } elseif ((int)$item->starting_days < 0 && (int)$item->ending_days > 30 && (int)$item->ending_days > 0) {
-                        $available = 'yes';
-                        $date = 'Till Stock Last';
-                        $bonus_ratio = $item->bonus_ratio;
-                        $bonus_type = 'Continuous';
-                    } else {
-                        $available = 'no';
-                        $date = '';
-                        $bonus_ratio = 'No Info';
-                        $bonus_type = 'No Info';
-                    }
+                    $available = 'no';
+                    $date = '';
+                    $bonus_ratio = 'No Info';
+                    $bonus_type = 'No Info';
                 }
 
                 $data[] = array(
-                    'product_id' => $item->brand_id,                    
+                    'product_id' => $item->brand_id,
                     'product_name' => $item->name,
                     'company' => $item->company_name,
                     'bonus_available' => $available,
@@ -450,7 +439,10 @@ class Api extends MY_Controller {
                     'date' => $date,
                     'start_date' => $item->start_date,
                     'end_date' => $item->end_date,
-                    'bonus_id' => $item->id
+                    'composition' => $item->composition,
+                    'strength' => $item->strength,
+                    'packing' => $item->packing,
+                    'mrp' => $item->mrp,
                 );
             }
 

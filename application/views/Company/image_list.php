@@ -74,8 +74,8 @@
         if ((file = this.files[0])) {
             img = new Image();
             img.onload = function () {
-                if (this.width != 1024 || this.height != 500) {
-                    alert("Image Dimension Should Be 1024 X 500");
+                if (this.width != 480 || this.height != 512) {
+                    alert("Image Dimension Should Be 480 X 512");
                     $("#save").attr('type', 'button');
                 } else {
                     $("#save").attr('type', 'submit');
@@ -86,7 +86,6 @@
                 alert("not a valid file: " + file.type);
             };
             img.src = _URL.createObjectURL(file);
-
 
         }
 
