@@ -368,11 +368,11 @@ class Api extends MY_Controller {
 
         $type = isset($_GET['type']) ? $_GET['type'] : 0;
 
-        if ($type == 'starting') {
-            $condition[] = 'starting_days <= 30 AND starting_days >= 0';
-        } elseif ($type == 'closing') {
+        if ($type === 'starting') {
+            $condition[] = 'starting_days <= 30 AND ending_days > 30';
+        } elseif ($type === 'closing') {
             $condition[] = 'ending_days < 30 && ending_days > 0';
-        } elseif ($type == 'continuous') {
+        } elseif ($type === 'continuous') {
             $condition[] = 'starting_days < 0 AND  ending_days > 30 AND ending_days > 0';
         }
 
@@ -401,33 +401,33 @@ class Api extends MY_Controller {
         if (!empty($bonus_info)) {
             $data = array();
             foreach ($bonus_info as $item) {
-                if ($type == 'starting') {
+                if ($type === 'starting') {
                     $available = 'yes';
                     $date = $item->start_date;
                     $bonus_ratio = $item->bonus_ratio;
                     $bonus_type = 'Starting';
-                } elseif ($type == 'closing') {
+                } elseif ($type === 'closing') {
                     $available = 'yes';
                     $date = $item->end_date;
                     $bonus_ratio = $item->bonus_ratio;
                     $bonus_type = 'Closing';
-                } elseif ($type == 'continuous') {
+                } elseif ($type === 'continuous') {
                     $available = 'yes';
                     $date = 'Till Stock Last';
                     $bonus_ratio = $item->bonus_ratio;
                     $bonus_type = 'Continuous';
                 } else {
-                    if ($item->starting_days <= 30 && $item->starting_days > 0) {
+                    if ((int)$item->starting_days <= 30 && (int)$item->starting_days > 0) {
                         $available = 'yes';
                         $date = date('d/m/Y', strtotime($item->start_date));
                         $bonus_ratio = $item->bonus_ratio;
                         $bonus_type = 'Starting';
-                    } elseif ($item->ending_days < 30 && $item->ending_days > 0) {
+                    } elseif ((int)$item->ending_days < 30 && (int)$item->ending_days > 0) {
                         $available = 'yes';
                         $date = date('d/m/Y', strtotime($item->end_date));
                         $bonus_ratio = $item->bonus_ratio;
                         $bonus_type = 'Closing';
-                    } elseif ($item->starting_days < 0 && $item->ending_days > 30 && $item->ending_days > 0) {
+                    } elseif ((int)$item->starting_days < 0 && (int)$item->ending_days > 30 && (int)$item->ending_days > 0) {
                         $available = 'yes';
                         $date = 'Till Stock Last';
                         $bonus_ratio = $item->bonus_ratio;
@@ -441,7 +441,7 @@ class Api extends MY_Controller {
                 }
 
                 $data[] = array(
-                    'product_id' => $item->brand_id,
+                    'product_id' => $item->brand_id,                    
                     'product_name' => $item->name,
                     'company' => $item->company_name,
                     'bonus_available' => $available,
@@ -450,6 +450,7 @@ class Api extends MY_Controller {
                     'date' => $date,
                     'start_date' => $item->start_date,
                     'end_date' => $item->end_date,
+                    'bonus_id' => $item->id
                 );
             }
 
