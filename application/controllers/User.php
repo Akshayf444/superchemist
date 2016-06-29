@@ -15,10 +15,10 @@ class User extends MY_Controller {
         if ($this->input->post('mobile') != '' && $this->input->post('password') != '') {
             $mobile = $this->input->post('mobile');
             $password = $this->input->post('password');
-            //$context = $this->returnContext();
+//$context = $this->returnContext();
             $response = $this->CallAPI('POST', API_URL . 'companyLogin', array('mobile' => $mobile, 'password' => $password));
             $response = json_decode($response, TRUE);
-            //var_dump($response);
+//var_dump($response);
             if (isset($response['status']) && $response['status'] == 'error') {
                 $data['message'] = $response['message'];
             } elseif (isset($response['status']) && $response['status'] == 'success') {
@@ -362,6 +362,35 @@ class User extends MY_Controller {
         $this->load->view('template3', $data);
     }
 
+    public function editBonus() {
+        $this->load->model('Bonus');
+        $id = $this->input->get('id');
+        $data['row'] = $this->Bonus->getBonusid($id);
+        $data['state'] = $this->Bonus->getState();
+        if ($this->input->post()) {
+            $brand_name = $this->input->post('brand_name');
+           $brand_id = $this->input->post('brand_id');
+            $bonus_ratio = $this->input->post('bonus_ratio');
+            $state = $this->input->post('state1');
+
+            $finalState = join(",",$state);
+            $data = array(
+                'brand_id' => $brand_id,
+                'brand_name' => $brand_name,
+                'bonus_ratio' => $bonus_ratio,
+                'states' => $finalState
+            );
+
+//var_dump($field_array);
+            $this->Bonus->updateBonus($this->input->post('id'), $data);
+
+            redirect('User/bonus', 'refresh');
+        }
+
+        $data = array('title' => 'Update Bonus', 'content' => 'Bonus/edit', 'page_title' => 'EditBonus', 'view_data' => $data);
+        $this->load->view('template3', $data);
+    }
+
     public function addBonus() {
         $this->load->model('Bonus');
         $companyList = $this->Company->get(array('status = 1'));
@@ -376,7 +405,7 @@ class User extends MY_Controller {
         $data['state'] = $this->Master_Model->generateDropdown($this->Bonus->getState(), 'id', 'state');
 
         if ($this->input->post()) {
-            //var_dump($_POST);
+//var_dump($_POST);
 
             $company_id = $this->input->post('company_id');
             $brand_name = $this->input->post('brand_name');
@@ -405,7 +434,7 @@ class User extends MY_Controller {
                             'starting_days' => $diff1->d,
                             'ending_days' => $diff2->d
                         );
-                        //var_dump($field_array);
+//var_dump($field_array);
                         $bonusExist = $this->Bonus->bonusExist(array('brand_id = ' . $brand_id[$i]));
 
                         if (empty($bonusExist)) {

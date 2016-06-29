@@ -138,49 +138,6 @@ class Api extends MY_Controller {
         echo json_encode($output);
     }
 
-    /* public function register() {
-      var_dump($this->input->post());
-      if ($this->input->post('mobile') != '') {
-      $mobile = $this->input->post('mobile');
-      $isverified = $this->MobileVerification->mobileexist($mobile);
-      $userexist = $this->User_model->userexist($mobile);
-      if (!empty($isverified) && $isverified->verified == 1) {
-      if (empty($userexist)) {
-      $data = array(
-      'full_name' => $this->input->post('full_name'),
-      'address' => $this->input->post('address'),
-      'city' => $this->input->post('city'),
-      'state' => $this->input->post('state'),
-      'mobile' => $this->input->post('mobile'),
-      'business_name' => $this->input->post('business_name'),
-      'pincode' => $this->input->post('pincode'),
-      'password' => $this->input->post('password'),
-      'email' => $this->input->post('email'),
-      'device_id' => $this->input->post('device_id'),
-      'user_type' => $this->input->post('user_type'),
-      'status' => 1,
-      'created_at' => date('Y-m-d H:i:s')
-      );
-
-      $user_id = $this->User_model->create($data);
-      if ($user_id > 0) {
-      $output = array('status' => 'success', 'message' => "User Added Successfully");
-      } else {
-      $output = array('status' => 'error', 'message' => "System Erroor");
-      }
-      } else {
-      $output = array('status' => 'error', 'message' => "Already Registered");
-      }
-      } else {
-      $output = array('status' => 'error', 'message' => "User Not Verified");
-      }
-      } else {
-      $output = array('status' => 'error', 'message' => "Please Send GET Request");
-      }
-      header('content-type: application/json');
-      echo json_encode($output);
-      } */
-
     public function login() {
         if ($this->input->get('mobile') != '' && $this->input->get('password') != '') {
             $mobile = $this->input->get('mobile');
@@ -423,10 +380,29 @@ class Api extends MY_Controller {
                     $bonus_ratio = $item->bonus_ratio;
                     $bonus_type = '';
                 } else {
-                    $available = 'no';
-                    $date = '';
-                    $bonus_ratio = 'No Info';
-                    $bonus_type = 'No Info';
+
+                    if ((int) $item->starting_days <= 30 && (int) $item->starting_days > 0) {
+                        $available = 'yes';
+                        $date = date('d/m/Y', strtotime($item->start_date));
+                        $bonus_ratio = $item->bonus_ratio;
+                        $bonus_type = 'Starting';
+                    } elseif ((int) $item->ending_days < 30 && (int) $item->ending_days > 0) {
+                        $available = 'yes';
+                        $date = date('d/m/Y', strtotime($item->end_date));
+                        $bonus_ratio = $item->bonus_ratio;
+                        $bonus_type = 'Closing';
+                    } elseif ((int) $item->starting_days < 0 && (int) $item->ending_days > 30 && (int) $item->ending_days > 0) {
+                        $available = 'yes';
+                        $date = 'Till Stock Last';
+                        $bonus_ratio = $item->bonus_ratio;
+                        $bonus_type = 'Continuous';
+                    } else {
+                        $available = 'no';
+                        $date = '';
+                        $bonus_ratio = 'No Info';
+                        $bonus_type = 'No Info';
+                    }
+
                 }
 
                 $data[] = array(
@@ -469,6 +445,34 @@ class Api extends MY_Controller {
         }
 
         $this->renderOutput($output);
+    }
+
+    function forgotPassword() {
+
+         $mobile = $_REQUEST['mobile'];
+
+
+        $userexist = $this->User_model->userexist($mobile);
+        
+        if (!empty($userexist)) {
+
+            $vercode = rand(0, 9999);
+            $message = 'This Is Your Password is' . $vercode;
+            $this->Sms->sendsms($mobile, $message);
+            $data = array(
+                'password' => $vercode
+            );
+            $data = $this->User_model->update($mobile, $data);
+            
+
+
+                $output = array('status' => 'success', 'message' => 'sucess');
+        } else {
+                $output = array('status' => 'error', 'message' => 'User Not Exit ');
+            }
+        
+        header('content-type: application/json');
+        echo json_encode($output);
     }
 
 }
