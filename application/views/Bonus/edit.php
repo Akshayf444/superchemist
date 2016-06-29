@@ -6,29 +6,37 @@ echo form_open('User/editBonus', $attribute);
 ?>
 <div class="row" >
     <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">        
-        <div class="row">
-            <?php if ($this->type == 2) { ?>
-                <input type="hidden" name="company_id" value="<?php echo $this->company_id; ?>">
-            <?php } else { ?>
-                <div class="col-lg-4">
-                    <label>Company</label>
-                    <select name="company_id" <?php echo $disable; ?> class="chosen-select"> 
-                        <option value="">Select Company</option>
-                        <?php echo $company; ?>
-                    </select>
-                </div>
-            <?php } ?>
-        </div><br/>
-    
+        <input type="hidden" class="rate" value="<?php echo $row['brand_id'] ?>" id="brand" name="brand_id">
+        <input type="hidden" class="form-control" value=" <?php echo $row['id']; ?>"  name="id" >
+
         <div class="form-group">
-            <label>Brand Name</label>  <input type="text" class="form-control brandname" value=" <?php echo $row->brand_name; ?>" name="brand_name" placeholder=" Brand Name "/></td>
-        <label>Brand Ratio</label>     <input type="text" class="form-control" value="<?php echo $row->bonus_ratio; ?>" name="bonus_ratio" placeholder=" Bonus Ratio "/><input type="hidden" class="rate" value="" name="brand_id[]"></td>
-        
-        <label> State</label>   <select name="state<?php echo $i; ?>" multiple id="<?php echo $i; ?>" class="form-control state multiselect"><?php echo $state; ?></select></td>
+            <label>Brand Name</label>  <input type="text" class="form-control brandname" value=" <?php echo $row['brand_name']; ?>" name="brand_name" placeholder=" Brand Name "/>
+        </div>
+        <div class="form-group">  <label>Brand Ratio</label>     <input type="text" class="form-control" value="<?php echo $row['bonus_ratio']; ?>" name="bonus_ratio" placeholder=" Bonus Ratio "/>
 
         </div>
-        <input type="button" class="btn btn-primary btn-xs pull-right" value="Add More" id="addMore">
-        <button class="btn btn-success " type="submit">SAVE</button>
+        <div class="form-group"> <label> State</label>   <select name="state1[]" multiple id="1" class="form-control state multiselect">
+
+                <?php
+                $states2 = explode(',', $row['states']);
+
+                foreach ($state as $states1) {
+                    ?>
+
+
+                    <option value="<?php echo $states1->id ?>" <?php
+                    if (in_array($states1->id, $states2)) {
+                        echo 'selected';
+                    }
+                    ?>><?php
+                                echo $states1->state;
+                                ?> </option>     <?php }
+                            ?>
+            </select>
+        </div>
+
+        <div class="form-group">  <button class="btn btn-success " type="submit">Update</button>
+        </div>
     </div>
 </div>
 </form>
@@ -42,16 +50,7 @@ echo form_open('User/editBonus', $attribute);
 
         $(".chosen-select").attr('disabled', true).trigger("chosen:updated")
 
-        $("#addMore").click(function () {
-            var count = $('.state').length;
-            $("#bonustable").append('<tr><td><input type="text"  class="form-control brandname" value="" name="brand_name[]" placeholder=" Brand Name "/></td><td><input type="text" class="form-control" value="" name="bonus_ratio[]" placeholder=" Bonus Ratio "/><input type="hidden" class="rate" value="" name="brand_id[]"></td><td><input type="text" autocomplete="off" class="form-control datepicker" value="" name="start_date[]" placeholder=" Start Date "/></td><td><input type="text" autocomplete="off"  class="form-control datepicker" value="<?php echo '31-03-' . (date('Y') + 1) ?>" name="end_date[]" placeholder=" End Date "/></td><td><select name="state' + count + '[]" id="' + count + '" multiple class="form-control state multiselect"><?php echo $state; ?></select></td></tr>');
 
-            $("#" + count).multiselect({
-                numberDisplayed: 1,
-                enableFiltering: true,
-                includeSelectAllOption: true
-            });
-        });
     });
 
     $.widget("custom.catcomplete", $.ui.autocomplete, {
@@ -99,7 +98,7 @@ echo form_open('User/editBonus', $attribute);
             },
             select: function (event, ui) {
                 var $this = $(this);
-                $this.closest('tr').find('.rate').val(ui.item.id);
+                $("#brand").val(ui.item.id);
             }
 
         });

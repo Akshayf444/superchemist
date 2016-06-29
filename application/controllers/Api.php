@@ -417,17 +417,17 @@ class Api extends MY_Controller {
                     $bonus_ratio = $item->bonus_ratio;
                     $bonus_type = 'Continuous';
                 } else {
-                    if ((int)$item->starting_days <= 30 && (int)$item->starting_days > 0) {
+                    if ((int) $item->starting_days <= 30 && (int) $item->starting_days > 0) {
                         $available = 'yes';
                         $date = date('d/m/Y', strtotime($item->start_date));
                         $bonus_ratio = $item->bonus_ratio;
                         $bonus_type = 'Starting';
-                    } elseif ((int)$item->ending_days < 30 && (int)$item->ending_days > 0) {
+                    } elseif ((int) $item->ending_days < 30 && (int) $item->ending_days > 0) {
                         $available = 'yes';
                         $date = date('d/m/Y', strtotime($item->end_date));
                         $bonus_ratio = $item->bonus_ratio;
                         $bonus_type = 'Closing';
-                    } elseif ((int)$item->starting_days < 0 && (int)$item->ending_days > 30 && (int)$item->ending_days > 0) {
+                    } elseif ((int) $item->starting_days < 0 && (int) $item->ending_days > 30 && (int) $item->ending_days > 0) {
                         $available = 'yes';
                         $date = 'Till Stock Last';
                         $bonus_ratio = $item->bonus_ratio;
@@ -441,7 +441,7 @@ class Api extends MY_Controller {
                 }
 
                 $data[] = array(
-                    'product_id' => $item->brand_id,                    
+                    'product_id' => $item->brand_id,
                     'product_name' => $item->name,
                     'company' => $item->company_name,
                     'bonus_available' => $available,
@@ -477,6 +477,35 @@ class Api extends MY_Controller {
         }
 
         $this->renderOutput($output);
+    }
+
+    function forgotPassword() {
+
+        $mobile = isset($_REQUEST['mobile']) ;
+
+
+        $userexist = $this->User_model->userexist($mobile);
+        if (!empty($userexist)) {
+
+            $vercode = rand(0, 9999);
+            $message = 'This Is Your Password is' . $pass;
+                $this->Sms->sendsms($mobile, $message);
+            $data = array(
+                'password' => $vercode
+            );
+
+            if ($this->User_model->Update($data, $id)) {
+            
+
+                $output = array('status' => 'success', 'message' => $data);
+            } else {
+                $output = array('status' => 'error', 'message' => 'Error Occured');
+            }
+        } else {
+            $output = array('status' => 'error', 'message' => 'User Not Exit');
+        }
+        header('content-type: application/json');
+        echo json_encode($output);
     }
 
 }

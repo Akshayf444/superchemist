@@ -23,6 +23,9 @@ class User_model extends MY_model {
         $sql = "SELECT * FROM  " . $this->table_name . " WHERE mobile = '" . $mobile . "' AND password = '" . $password . "' AND status = 1 ";
         return $this->returnResult($sql, 'row');
     }
-     
+     public function update($mobile,$data){
+         $this->db->where('mobile',$mobile);
+         $this->db->update('users',$data);
+     } 
 
 }
