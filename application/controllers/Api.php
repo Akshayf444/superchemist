@@ -333,6 +333,8 @@ class Api extends MY_Controller {
         } elseif ($type === 'continuous') {
             $condition[] = 'starting_days < 0 AND  ending_days > 30 AND ending_days > 0';
             $order_by = " ORDER BY bf.ending_days ASC ";
+        } elseif ($type === 'company') {
+            $order_by = " ORDER BY bf.ending_days DESC,cm.company_name ASC ";
         } else {
             $order_by = " ORDER BY bf.ending_days DESC ";
         }
@@ -351,7 +353,7 @@ class Api extends MY_Controller {
             $condition[] = "brand_id = {$product_id} ";
         }
 
-        if ($type === '') {
+        if ($type === '' || $type === 'company') {
             $totalCount = $this->Bonus->countBonus($condition);
             $totalCount = $totalCount->bonusCount;
             $paging = $this->calculatePaging($perpage, $totalCount, $page);
@@ -422,7 +424,11 @@ class Api extends MY_Controller {
                     'strength' => $item->strength,
                     'packing' => $item->packing,
                     'mrp' => $item->mrp,
+<<<<<<< HEAD
                     'bonus_id'=>$item->id
+=======
+                    'bonus_id' => $item->bonus_id,
+>>>>>>> 52226ab150e7dcccc42579fd4aa2644d973d3123
                 );
             }
 
