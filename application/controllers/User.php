@@ -168,7 +168,7 @@ class User extends MY_Controller {
     }
 
     public function CompanyList() {
-        if ($this->type == 2) {
+        if ($this->type == 1) {
             $this->load->model('Company');
             $data['response'] = $this->Company->get(array('status = 1'));
             $data = array('title' => 'Company', 'content' => 'Company/list', 'page_title' => 'Company List', 'view_data' => $data);
