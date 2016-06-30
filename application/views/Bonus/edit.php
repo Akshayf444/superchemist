@@ -10,9 +10,15 @@ echo form_open('User/editBonus', $attribute);
         <input type="hidden" class="form-control" value=" <?php echo $row['id']; ?>"  name="id" >
 
         <div class="form-group">
-            <label>Brand Name</label>  <input type="text" class="form-control brandname" value=" <?php echo $row['brand_name']; ?>" name="brand_name" placeholder=" Brand Name "/>
+            <label>Brand Name</label>  <input type="text" class="form-control brandname" readonly="" value=" <?php echo $row['brand_name']; ?>" name="brand_name" placeholder=" Brand Name "/>
         </div>
         <div class="form-group">  <label>Brand Ratio</label>     <input type="text" class="form-control" value="<?php echo $row['bonus_ratio']; ?>" name="bonus_ratio" placeholder=" Bonus Ratio "/>
+
+        </div>
+        <div class="form-group">  <label>Start Date</label>     <input type="text" readonly="" class="form-control" value="<?php echo $row['start_date']; ?>" name="start_date" placeholder=" Bonus Ratio "/>
+
+        </div>
+        <div class="form-group">  <label>End Date</label>     <input type="text" class="form-control" readonly="" value="<?php echo $row['end_date']; ?>" name="end_date" placeholder=" Bonus Ratio "/>
 
         </div>
         <div class="form-group"> <label> State</label>   <select name="state1[]" multiple id="1" class="form-control state multiselect">

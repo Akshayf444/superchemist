@@ -103,9 +103,7 @@
                             <li>
                                 <a href="<?php //echo site_url('User/brandList');              ?>"><i class="fa fa-dashboard"></i> Hot Deal</a>
                             </li>
-                            <li>
-                                <a href="<?php //echo site_url('User/brandList');              ?>"><i class="fa fa-dashboard"></i> Brand Image</a>
-                            </li>
+                           
                             <li>
                                 <a href="<?php //echo site_url('User/brandList');              ?>"><i class="fa fa-dashboard"></i> Settings</a>
                             </li>

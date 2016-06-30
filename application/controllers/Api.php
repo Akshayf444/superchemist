@@ -451,24 +451,31 @@ class Api extends MY_Controller {
     }
 
     function forgotPassword() {
-        $mobile = $_REQUEST['mobile'];
-        $userexist = $this->User_model->userexist($mobile);
 
-        if (!empty($userexist)) {
-
-            $vercode = rand(0, 9999);
-            $message = 'This Is Your Password is' . $vercode;
-            $this->Sms->sendsms($mobile, $message);
-            $data = array(
-                'password' => $vercode
-            );
-            $data = $this->User_model->update($mobile, $data);
+        if (isset($_REQUEST['mobile'])) {
+            $mobile = $_REQUEST['mobile'];
 
 
+            $userexist = $this->User_model->userexist($mobile);
 
-            $output = array('status' => 'success', 'message' => 'sucess');
+            if (!empty($userexist)) {
+
+                $vercode = rand(0, 9999);
+                $message = 'This Is Your Password is' . $vercode;
+                $this->Sms->sendsms($mobile, $message);
+                $data = array(
+                    'password' => $vercode
+                );
+                $data = $this->User_model->update($mobile, $data);
+
+
+
+                $output = array('status' => 'success', 'message' => $vercode);
+            } else {
+                $output = array('status' => 'error', 'message' => 'User Not Exit ');
+            }
         } else {
-            $output = array('status' => 'error', 'message' => 'User Not Exit ');
+            $output = array('status' => 'error', 'message' => 'Please Enter Mobile  ');
         }
 
         header('content-type: application/json');
