@@ -10,10 +10,10 @@
     if (!empty($response)) {
         foreach ($response as $row) :
             ?>
-                           <?php $filename= base_url(). 'images/' . $row->logo; ?>
+                           <?php // $filename= asset_url(). 'images/' . $row->logo; ?>
             <div class="col-xs-8 col-sm-6 col-md-3">
                 <div class="thumbnail">
-                    <?php if($row->logo==null || $row->logo==''|| !file_exists($filename)){
+                    <?php if($row->logo==null || $row->logo==''){
                         echo $row->company_name;
                     }
                     else{ ?>
@@ -22,8 +22,10 @@
                     <?php } ?>
                     <div class="caption" style="border-top: 1px solid ">
                         
-                        <p> <?php $count=$this->Company->countBonus($row->company_id);
-                       echo $count['count']. 'Offer';
+                        <p> <?php 
+                         $condition[] = "company_id = '" . $row->company_id . "'";
+                        $count=$this->Bonus->countBonus2($condition);
+                       echo $count->bonusCount. 'Offer';
                         ?></p>
                     </div>
                 </div>
