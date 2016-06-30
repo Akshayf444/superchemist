@@ -138,49 +138,6 @@ class Api extends MY_Controller {
         echo json_encode($output);
     }
 
-    /* public function register() {
-      var_dump($this->input->post());
-      if ($this->input->post('mobile') != '') {
-      $mobile = $this->input->post('mobile');
-      $isverified = $this->MobileVerification->mobileexist($mobile);
-      $userexist = $this->User_model->userexist($mobile);
-      if (!empty($isverified) && $isverified->verified == 1) {
-      if (empty($userexist)) {
-      $data = array(
-      'full_name' => $this->input->post('full_name'),
-      'address' => $this->input->post('address'),
-      'city' => $this->input->post('city'),
-      'state' => $this->input->post('state'),
-      'mobile' => $this->input->post('mobile'),
-      'business_name' => $this->input->post('business_name'),
-      'pincode' => $this->input->post('pincode'),
-      'password' => $this->input->post('password'),
-      'email' => $this->input->post('email'),
-      'device_id' => $this->input->post('device_id'),
-      'user_type' => $this->input->post('user_type'),
-      'status' => 1,
-      'created_at' => date('Y-m-d H:i:s')
-      );
-
-      $user_id = $this->User_model->create($data);
-      if ($user_id > 0) {
-      $output = array('status' => 'success', 'message' => "User Added Successfully");
-      } else {
-      $output = array('status' => 'error', 'message' => "System Erroor");
-      }
-      } else {
-      $output = array('status' => 'error', 'message' => "Already Registered");
-      }
-      } else {
-      $output = array('status' => 'error', 'message' => "User Not Verified");
-      }
-      } else {
-      $output = array('status' => 'error', 'message' => "Please Send GET Request");
-      }
-      header('content-type: application/json');
-      echo json_encode($output);
-      } */
-
     public function login() {
         if ($this->input->get('mobile') != '' && $this->input->get('password') != '') {
             $mobile = $this->input->get('mobile');
@@ -369,7 +326,7 @@ class Api extends MY_Controller {
         $type = isset($_GET['type']) ? $_GET['type'] : 0;
 
         if ($type === 'starting') {
-            $condition[] = 'starting_days <= 30 AND ending_days > 30';
+            $condition[] = 'starting_days <= 30 AND starting_days > 0 AND (ending_days - starting_days) > 30 ';
         } elseif ($type === 'closing') {
             $condition[] = 'ending_days < 30 && ending_days > 0';
         } elseif ($type === 'continuous') {
@@ -385,6 +342,11 @@ class Api extends MY_Controller {
             $condition[] = "company_id = {$brand_name} ";
         }
 
+        if ($this->input->get('product_id') > 0) {
+            $product_id = $this->input->get('product_id');
+            $condition[] = "brand_id = {$product_id} ";
+        }
+
         if ($type === '') {
             $totalCount = $this->Bonus->countBonus($condition);
             $totalCount = $totalCount->bonusCount;
@@ -397,26 +359,28 @@ class Api extends MY_Controller {
             $bonus_info = $this->Bonus->getBonus2($condition, $perpage, $paging[1]);
         }
 
-
         if (!empty($bonus_info)) {
             $data = array();
             foreach ($bonus_info as $item) {
-                if ($type === 'starting') {
+                $diff = $item->ending_days - $item->starting_days;
+
+                if ((int) $item->starting_days <= 30 && (int) $item->starting_days > 0 && $diff > 30) {
                     $available = 'yes';
-                    $date = $item->start_date;
+                    $date = date('d/m/Y', strtotime($item->start_date));
                     $bonus_ratio = $item->bonus_ratio;
                     $bonus_type = 'Starting';
-                } elseif ($type === 'closing') {
+                } elseif ((int) $item->ending_days < 30 && (int) $item->ending_days > 0) {
                     $available = 'yes';
-                    $date = $item->end_date;
+                    $date = date('d/m/Y', strtotime($item->end_date));
                     $bonus_ratio = $item->bonus_ratio;
                     $bonus_type = 'Closing';
-                } elseif ($type === 'continuous') {
+                } elseif ((int) $item->starting_days < 0 && (int) $item->ending_days > 30 && (int) $item->ending_days > 0) {
                     $available = 'yes';
                     $date = 'Till Stock Last';
                     $bonus_ratio = $item->bonus_ratio;
-                    $bonus_type = 'Continuous';
+                    $bonus_type = '';
                 } else {
+
                     if ((int) $item->starting_days <= 30 && (int) $item->starting_days > 0) {
                         $available = 'yes';
                         $date = date('d/m/Y', strtotime($item->start_date));
@@ -438,6 +402,7 @@ class Api extends MY_Controller {
                         $bonus_ratio = 'No Info';
                         $bonus_type = 'No Info';
                     }
+
                 }
 
                 $data[] = array(
@@ -450,7 +415,10 @@ class Api extends MY_Controller {
                     'date' => $date,
                     'start_date' => $item->start_date,
                     'end_date' => $item->end_date,
-                    'bonus_id' => $item->id
+                    'composition' => $item->composition,
+                    'strength' => $item->strength,
+                    'packing' => $item->packing,
+                    'mrp' => $item->mrp,
                 );
             }
 

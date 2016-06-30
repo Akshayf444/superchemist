@@ -504,6 +504,32 @@ class User extends MY_Controller {
         }
     }
 
+    public function UploadImage() {
+        if ($this->input->post()) {
+            $name = $_FILES['file']['name'];
+            $tmp = $_FILES['file']['tmp_name'];
+            $file_size = $_FILES['file']['size'];
+            $date = date('Y-m-d');
+            $filename = explode(".", $name);
+            $extension = end($filename);
+            $name = time() . "." . $extension;
+
+            if ($file_size >= (int) (1024 * 100)) {
+                $this->session->set_userdata('message', $this->Master_Model->DisplayAlert('File Size Should Be Less Than 100 KB.', 'danger'));
+                redirect('User/CompanyList', 'refresh');
+            } else {
+                $image = move_uploaded_file($tmp, "./images/" . $name);
+                $data = array(
+                    'logo' => $name,
+                );
+                $this->db->where('company_id', $this->input->post('company_id'));
+                $this->db->update('company_master', $data);
+                
+                redirect('User/CompanyList', 'refresh');
+            }
+        }
+    }
+
     public function active_image() {
         $this->load->model('Company');
         $id = $_GET['id'];

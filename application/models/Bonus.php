@@ -74,7 +74,7 @@ class Bonus extends MY_model {
     }
 
     public function getBonus($condition = array(), $limit, $offset) {
-        $sql = "SELECT bf.*,bd.id as brand_id,bd.name,cm.company_name FROM (SELECT * FROM brands WHERE status = 1 ";
+        $sql = "SELECT bf.*,bd.id as brand_id,bd.name,bd.composition,bd.packing,bd.strength,bd.mrp,cm.company_name FROM (SELECT * FROM brands WHERE status = 1 ";
         $sql .= " ) as bd LEFT JOIN (SELECT * FROM bonus_info WHERE status = 1";
         $sql .=!empty($condition) ? " AND " . join(" AND ", $condition) : " ";
         $sql .= " ) bf ON bd.id = bf.brand_id INNER JOIN company_master cm ON cm.company_id = bd.company  ORDER BY bf.ending_days DESC LIMIT {$limit} OFFSET {$offset}";
@@ -92,7 +92,7 @@ class Bonus extends MY_model {
     }
 
     public function getBonus2($condition = array(), $limit, $offset) {
-        $sql = "SELECT bf.*,bd.name,cm.company_name FROM (SELECT * FROM bonus_info WHERE status = 1 ";
+        $sql = "SELECT bf.*,bd.name,bd.composition,bd.packing,bd.strength,bd.mrp,cm.company_name FROM (SELECT * FROM bonus_info WHERE status = 1 ";
         $sql .=!empty($condition) ? " AND " . join(" AND ", $condition) : " ";
         $sql .= " ) as bf INNER JOIN brands bd ON bd.id = bf.brand_id INNER JOIN company_master cm ON cm.company_id = bd.company LIMIT {$limit} OFFSET {$offset}";
         //echo $sql;

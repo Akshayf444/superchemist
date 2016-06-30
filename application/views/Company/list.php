@@ -18,7 +18,6 @@
                     <th>Email</th>
                     <th>Password</th>
                     <th>Action</th>
-
                 </tr>
             </thead>
             <tbody>
@@ -37,10 +36,10 @@
                             <td data-title="Email"><?php echo $row->email; ?></td> 
                             <td data-title="Password"><?php echo $row->password; ?> </td>
 
-
                             <td data-title="Action">
                                 <a class="fa fa-trash btn-danger btn-xs" onclick=" deletedoc('<?php echo site_url('User/delete_company?id=') . $row->company_id; ?>');"></a> 
                                 <a class="fa fa-pencil btn-success btn-xs" onclick="window.location = '<?php echo site_url('User/editCompany/' . $row->company_id); ?>';"></a>
+                                <button type="button"  data-toggle="modal" data-target="#myModal" data-id="<?php echo $row->company_id; ?>" class="btn-success btn-xs dialog"><i class="fa fa-upload "></i></button>
                             </td>
                         </tr>
                         <?php
@@ -51,6 +50,63 @@
         </table>
     </div>
 </div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Image Upload</h4>
+            </div> 
+            <?php
+            $attribute = array('enctype' => 'multipart/form-data', 'name' => 'form1', 'id' => 'form1');
+            echo form_open('User/UploadImage', $attribute);
+            ?>
+            <div class="modal-body">
+                <h5 style="color: red">Image Size Should Be less than 90 KB</h5>
+
+                <div class="form_group">
+                    Choose your file: <br /> 
+                    <input name="file" type="file" id="file" class="form-control" />
+                    <input type="hidden" name="company_id" id="company_id" value="0">
+                </div>
+                <br>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" id="save"  name="submit" class="btn btn-primary">Save</button>
+
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).on("click", ".dialog", function () {
+        var myBookId = $(this).data('id');
+        //alert(myBookId);
+        $(".modal-body #company_id").val(myBookId);
+    });
+
+    var _URL = window.URL || window.webkitURL;
+
+    $("#file").change(function (e) {
+        var file, img;
+
+        if ((file = this.files[0])) {
+            img = new Image();
+            img.onload = function () {
+
+            };
+            img.onerror = function () {
+                alert("not a valid file: " + file.type);
+            };
+            img.src = _URL.createObjectURL(file);
+
+
+        }
+
+    });
+</script>
 <script>
     function deletedoc(url) {
         var r = confirm("Are you sure you want to delete");

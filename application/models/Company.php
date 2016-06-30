@@ -38,11 +38,20 @@ class Company extends MY_model {
         return $this->returnResult($sql, 'row');
     }
 
-    public function getimage($condition = array()) {
+    public function getimage($condition = array(), $limit = 0, $order_by = "") {
         $sql = " SELECT * FROM images   ";
-        $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";
+        $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";        
+        $sql .=" " . $order_by;
+        $sql .= $limit > 0 ? " LIMIT {$limit} " : " ";
 //         echo $sql;
         return $this->returnResult($sql);
+    }
+
+    public function countimage($condition = array()) {
+        $sql = " SELECT COUNT(*) as imageCount FROM images   ";
+        $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";
+//         echo $sql;
+        return $this->returnResult($sql, 'row');
     }
 
     public function image_add($data) {
@@ -85,12 +94,14 @@ class Company extends MY_model {
                 $slot_id
             );
         } else {
+            $countCurrentSlot = $this->countimage(array('company_id = ' . $company_id, 'slot_id = ' . $slot_id));
             $searchslot_id = (int) $slot_id - 1;
             $condition = array(
                 'company_id = ' . $company_id,
                 'slot_id=' . $searchslot_id
             );
-            $lastImage = $this->getimage($condition);
+
+            $lastImage = $this->getimage($condition, ($countCurrentSlot->imageCount + 1),' ORDER BY image_id DESC ');
             $lastImage = array_shift($lastImage);
 
             $date1 = date('Y-m-d', date(strtotime("+1 day", strtotime($lastImage->end_date))));
