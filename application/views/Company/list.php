@@ -25,8 +25,8 @@
                         <p> <?php 
                          $condition[] = "company_id = '" . $row->company_id . "'";
                         $count=$this->Bonus->countBonus2($condition);
-                       echo $count->bonusCount. 'Offer';
-                        ?></p>
+                       echo $count->bonusCount?> &nbsp Offer
+                       </p>
                     </div>
                 </div>
             </div>
