@@ -167,10 +167,18 @@ class User extends MY_Controller {
         $this->load->view('template3', $data);
     }
 
-    public function CompanyList() {
+    public function CompanyList($page = 1) {
         if ($this->type == 1) {
             $this->load->model('Company');
-            $data['response'] = $this->Company->get(array('status = 1'));
+            $response = $this->CallAPI('GET', API_URL . 'getcompanyList/' . $page);
+            $response = json_decode($response);
+            $data['page'] = $page;
+            if ($response->status == 'success') {
+                $data['total_pages'] = $response->totalpages;
+                $data['response'] = $response->message;
+            } else {
+                $data['message'] = $response->message;
+            }
             $data = array('title' => 'Company', 'content' => 'Company/list', 'page_title' => 'Company List', 'view_data' => $data);
             $this->load->view('template3', $data);
         } else {
@@ -369,11 +377,11 @@ class User extends MY_Controller {
         $data['state'] = $this->Bonus->getState();
         if ($this->input->post()) {
             $brand_name = $this->input->post('brand_name');
-           $brand_id = $this->input->post('brand_id');
+            $brand_id = $this->input->post('brand_id');
             $bonus_ratio = $this->input->post('bonus_ratio');
             $state = $this->input->post('state1');
 
-            $finalState = join(",",$state);
+            $finalState = join(",", $state);
             $data = array(
                 'brand_id' => $brand_id,
                 'brand_name' => $brand_name,
@@ -524,7 +532,7 @@ class User extends MY_Controller {
                 );
                 $this->db->where('company_id', $this->input->post('company_id'));
                 $this->db->update('company_master', $data);
-                
+
                 redirect('User/CompanyList', 'refresh');
             }
         }

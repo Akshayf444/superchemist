@@ -50,6 +50,21 @@
         </table>
     </div>
 </div>
+<div class="row">
+    <div class="col-lg-12">
+        <?php
+        if (isset($total_pages)) {
+            for ($i = 1; $i <= $total_pages; $i++) {
+                if (isset($page) && $page == $i) {
+                    echo '<a href="' . site_url('User/CompanyList/' . $i) . '" name="page" class="btn btn-sm btn-primary" >' . $i . '</a>';
+                } else {
+                    echo '<a href="' . site_url('User/CompanyList/' . $i) . '" name="page" class="btn btn-sm " >' . $i . '</a>';
+                }
+            }
+        }
+        ?>
+    </div>
+</div>
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

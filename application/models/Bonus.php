@@ -73,11 +73,11 @@ class Bonus extends MY_model {
         return $allStates;
     }
 
-    public function getBonus($condition = array(), $limit, $offset) {
+    public function getBonus($condition = array(), $limit, $offset, $order_by = "") {
         $sql = "SELECT bf.*,bd.id as brand_id,bd.name,bd.composition,bd.packing,bd.strength,bd.mrp,cm.company_name FROM (SELECT * FROM brands WHERE status = 1 ";
         $sql .= " ) as bd LEFT JOIN (SELECT * FROM bonus_info WHERE status = 1";
         $sql .=!empty($condition) ? " AND " . join(" AND ", $condition) : " ";
-        $sql .= " ) bf ON bd.id = bf.brand_id INNER JOIN company_master cm ON cm.company_id = bd.company  ORDER BY bf.ending_days DESC LIMIT {$limit} OFFSET {$offset}";
+        $sql .= " ) bf ON bd.id = bf.brand_id INNER JOIN company_master cm ON cm.company_id = bd.company  {$order_by} LIMIT {$limit} OFFSET {$offset}";
         //echo $sql;
         return $this->returnResult($sql);
     }
@@ -91,10 +91,12 @@ class Bonus extends MY_model {
         return $this->returnResult($sql, 'row');
     }
 
-    public function getBonus2($condition = array(), $limit, $offset) {
+    public function getBonus2($condition = array(), $limit, $offset, $order_by = "") {
         $sql = "SELECT bf.*,bd.name,bd.composition,bd.packing,bd.strength,bd.mrp,cm.company_name FROM (SELECT * FROM bonus_info WHERE status = 1 ";
         $sql .=!empty($condition) ? " AND " . join(" AND ", $condition) : " ";
-        $sql .= " ) as bf INNER JOIN brands bd ON bd.id = bf.brand_id INNER JOIN company_master cm ON cm.company_id = bd.company LIMIT {$limit} OFFSET {$offset}";
+        $sql .= " ) as bf INNER JOIN brands bd ON bd.id = bf.brand_id INNER JOIN company_master cm ON cm.company_id = bd.company ";
+        $sql .= " {$order_by}";
+        $sql .= " LIMIT {$limit} OFFSET {$offset}";
         //echo $sql;
         return $this->returnResult($sql);
     }
@@ -113,13 +115,16 @@ class Bonus extends MY_model {
         //echo $sql;
         return $this->returnResult($sql, 'row');
     }
-  public function getBonusid($id) {
-        $sql = " SELECT * FROM bonus_info bn WHERE id='$id'";  
-         $query = $this->db->query($sql);
+
+    public function getBonusid($id) {
+        $sql = " SELECT * FROM bonus_info bn WHERE id='$id'";
+        $query = $this->db->query($sql);
         return $query->row_array();
     }
-     public function updateBonus($id,$data){
-         $this->db->where('id',$id);
-         $this->db->update('bonus_info',$data);
-     }
+
+    public function updateBonus($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('bonus_info', $data);
+    }
+
 }

@@ -294,9 +294,8 @@ class Api extends MY_Controller {
         echo json_encode($output);
     }
 
-    public function getcompanyList($page = 1) {
+    public function getcompanyList($page = 1, $per_page = 20) {
         $this->load->model('Company');
-        $per_page = 20;
 
         $condition = array();
         $condition[] = "status = 1";
@@ -327,10 +326,15 @@ class Api extends MY_Controller {
 
         if ($type === 'starting') {
             $condition[] = 'starting_days <= 30 AND starting_days > 0 AND (ending_days - starting_days) > 30 ';
+            $order_by = " ORDER BY bf.starting_days ASC ";
         } elseif ($type === 'closing') {
             $condition[] = 'ending_days < 30 && ending_days > 0';
+            $order_by = " ORDER BY bf.ending_days ASC ";
         } elseif ($type === 'continuous') {
             $condition[] = 'starting_days < 0 AND  ending_days > 30 AND ending_days > 0';
+            $order_by = " ORDER BY bf.ending_days ASC ";
+        } else {
+            $order_by = " ORDER BY bf.ending_days DESC ";
         }
 
         if ($this->input->get('brand_name') != '') {
@@ -351,12 +355,12 @@ class Api extends MY_Controller {
             $totalCount = $this->Bonus->countBonus($condition);
             $totalCount = $totalCount->bonusCount;
             $paging = $this->calculatePaging($perpage, $totalCount, $page);
-            $bonus_info = $this->Bonus->getBonus($condition, $perpage, $paging[1]);
+            $bonus_info = $this->Bonus->getBonus($condition, $perpage, $paging[1], $order_by);
         } else {
             $totalCount = $this->Bonus->countBonus2($condition);
             $totalCount = $totalCount->bonusCount;
             $paging = $this->calculatePaging($perpage, $totalCount, $page);
-            $bonus_info = $this->Bonus->getBonus2($condition, $perpage, $paging[1]);
+            $bonus_info = $this->Bonus->getBonus2($condition, $perpage, $paging[1], $order_by);
         }
 
         if (!empty($bonus_info)) {
@@ -402,7 +406,6 @@ class Api extends MY_Controller {
                         $bonus_ratio = 'No Info';
                         $bonus_type = 'No Info';
                     }
-
                 }
 
                 $data[] = array(
@@ -448,12 +451,9 @@ class Api extends MY_Controller {
     }
 
     function forgotPassword() {
-
-         $mobile = $_REQUEST['mobile'];
-
-
+        $mobile = $_REQUEST['mobile'];
         $userexist = $this->User_model->userexist($mobile);
-        
+
         if (!empty($userexist)) {
 
             $vercode = rand(0, 9999);
@@ -463,14 +463,14 @@ class Api extends MY_Controller {
                 'password' => $vercode
             );
             $data = $this->User_model->update($mobile, $data);
-            
 
 
-                $output = array('status' => 'success', 'message' => 'sucess');
+
+            $output = array('status' => 'success', 'message' => 'sucess');
         } else {
-                $output = array('status' => 'error', 'message' => 'User Not Exit ');
-            }
-        
+            $output = array('status' => 'error', 'message' => 'User Not Exit ');
+        }
+
         header('content-type: application/json');
         echo json_encode($output);
     }
