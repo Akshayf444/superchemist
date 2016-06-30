@@ -424,11 +424,8 @@ class Api extends MY_Controller {
                     'strength' => $item->strength,
                     'packing' => $item->packing,
                     'mrp' => $item->mrp,
-<<<<<<< HEAD
-                    'bonus_id'=>$item->id
-=======
                     'bonus_id' => $item->bonus_id,
->>>>>>> 52226ab150e7dcccc42579fd4aa2644d973d3123
+
                 );
             }
 
