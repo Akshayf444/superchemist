@@ -7,20 +7,19 @@ echo form_open('User/editBonus', $attribute);
 <div class="row" >
     <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">        
         <input type="hidden" class="rate" value="<?php echo $row['brand_id'] ?>" id="brand" name="brand_id">
-        <input type="hidden" class="form-control" value=" <?php echo $row['id']; ?>"  name="id" >
+        <input type="hidden" class="form-control" value=" <?php echo $row['bonus_id']; ?>"  name="id" >
 
         <div class="form-group">
             <label>Brand Name</label>  <input type="text" class="form-control brandname" readonly="" value=" <?php echo $row['brand_name']; ?>" name="brand_name" placeholder=" Brand Name "/>
         </div>
-        <div class="form-group">  <label>Brand Ratio</label>     <input type="text" class="form-control" value="<?php echo $row['bonus_ratio']; ?>" name="bonus_ratio" placeholder=" Bonus Ratio "/>
+        <div class="form-group">  <label>Brand Ratio</label>     <input type="text"  class="form-control" value="<?php echo $row['bonus_ratio']; ?>" name="bonus_ratio" placeholder=" Bonus Ratio "/>
 
         </div>
-        <div class="form-group">  <label>Start Date</label>     <input type="text" readonly="" class="form-control" value="<?php echo $row['start_date']; ?>" name="start_date" placeholder=" Bonus Ratio "/>
+        <div class="form-group">  <label>Start Date</label>     <input type="text"  class="form-control" readonly="" value="<?php echo $row['start_date']; ?>" name="start_date" placeholder=" start_date "/>
 
         </div>
-        <div class="form-group">  <label>End Date</label>     <input type="text" class="form-control" readonly="" value="<?php echo $row['end_date']; ?>" name="end_date" placeholder=" Bonus Ratio "/>
-
-        </div>
+        <div class="form-group">  <label>End Date</label>     <input type="text"  class="form-control" readonly="" value="<?php echo $row['end_date']; ?>" name="end_date" placeholder=" start_date "/>
+                 </div>
         <div class="form-group"> <label> State</label>   <select name="state1[]" multiple id="1" class="form-control state multiselect">
 
                 <?php
@@ -73,42 +72,5 @@ echo form_open('User/editBonus', $attribute);
         }
     });
 
-    $(document).on("keydown.autocomplete", '.brandname', function () {
-        //var medicine = $(this).val();
-        var $this = $(this);
-        var company_id = <?php echo $this->type == 2 ? $this->company_id : ''; ?>;
-        $this.addClass('loading');
-        $(".brandname").catcomplete({
-            delay: 1000,
-            minLength: 3,
-            //source: data,
-            source: function (request, response) {
-                var medicine = $this.val();
-                $.ajax({
-                    url: "<?php echo site_url('Api/getBonusBrandList'); ?>",
-                    type: 'GET',
-                    data: {
-                        company_id: company_id,
-                        brand_name: medicine
-                    },
-                    success: function (data) {
-                        $this.removeClass('loading');
-                        response(data);
-                    },
-                    error: function (data) {
-                        $this.removeClass('loading');
-                        alert('Details Not Found');
-
-                    }
-                });
-            },
-            select: function (event, ui) {
-                var $this = $(this);
-                $("#brand").val(ui.item.id);
-            }
-
-        });
-
-
-    });
+    
 </script>

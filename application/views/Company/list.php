@@ -5,13 +5,15 @@
 </div>
 
                       <div class="row">
+                         
     <?php
     if (!empty($response)) {
         foreach ($response as $row) :
             ?>
+                           <?php $filename= base_url(). 'images/' . $row->logo; ?>
             <div class="col-xs-8 col-sm-6 col-md-3">
                 <div class="thumbnail">
-                    <?php if($row->logo==null || $row->logo==''){
+                    <?php if($row->logo==null || $row->logo==''|| !file_exists($filename)){
                         echo $row->company_name;
                     }
                     else{ ?>

@@ -117,13 +117,13 @@ class Bonus extends MY_model {
     }
 
     public function getBonusid($id) {
-        $sql = " SELECT * FROM bonus_info bn WHERE id='$id'";
+        $sql = " SELECT * FROM bonus_info  WHERE bonus_id='$id'";
         $query = $this->db->query($sql);
         return $query->row_array();
     }
 
     public function updateBonus($id, $data) {
-        $this->db->where('id', $id);
+        $this->db->where('bonus_id', $id);
         $this->db->update('bonus_info', $data);
     }
 
