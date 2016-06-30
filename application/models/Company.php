@@ -147,5 +147,11 @@ class Company extends MY_model {
           );
           } */
     }
+     public function countBonus($id){
+         $sql=" SELECT COUNT(company_id)as count FROM  bonus_info WHERE company_id='$id'";
+          $query=$this->db->query($sql);
+          return $query->row_array();
+          
+     }
 
 }

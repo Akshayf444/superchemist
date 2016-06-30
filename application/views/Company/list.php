@@ -3,53 +3,42 @@
         <a href="<?php echo site_url('User/addCompany'); ?>" class="btn btn-primary pull-right">Add</a>
     </div>
 </div>
-<div class="row">
-    <div class="col-lg-12 table-responsive" >
-        <table class="table table-bordered table-hover panel" id="datatable">
-            <thead>
-                <tr>
-                    <th>Sr.</th>
-                    <th>Company</th>
-                    <th>Address</th>
-                    <th>City</th>
-                    <th>Pincode</th>
-                    <th>Contact Person</th>
-                    <th>Mobile</th>
-                    <th>Email</th>
-                    <th>Password</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $count = 1;
-                if (!empty($response)) {
-                    foreach ($response as $row) :
-                        ?><tr>  
-                            <td data-title="Sr"><?php echo $count++; ?></td>
-                            <td data-title="Company Name"><?php echo $row->company_name; ?></td>
-                            <td data-title="Address"><?php echo $row->address; ?> </td> 
-                            <td data-title="City"><?php echo $row->city; ?> </td> 
-                            <td data-title="Pincode"><?php echo $row->pin_code; ?> </td> 
-                            <td data-title="Contact Person"><?php echo $row->contact_person_name; ?></td>
-                            <td data-title="Mobile"><?php echo $row->mobile; ?> </td>
-                            <td data-title="Email"><?php echo $row->email; ?></td> 
-                            <td data-title="Password"><?php echo $row->password; ?> </td>
 
-                            <td data-title="Action">
-                                <a class="fa fa-trash btn-danger btn-xs" onclick=" deletedoc('<?php echo site_url('User/delete_company?id=') . $row->company_id; ?>');"></a> 
-                                <a class="fa fa-pencil btn-success btn-xs" onclick="window.location = '<?php echo site_url('User/editCompany/' . $row->company_id); ?>';"></a>
-                                <button type="button"  data-toggle="modal" data-target="#myModal" data-id="<?php echo $row->company_id; ?>" class="btn-success btn-xs dialog"><i class="fa fa-upload "></i></button>
-                            </td>
-                        </tr>
-                        <?php
-                    endforeach;
-                }
-                ?>
-            </tbody>
-        </table>
-    </div>
-</div>
+                      <div class="row">
+    <?php
+    if (!empty($response)) {
+        foreach ($response as $row) :
+            ?>
+            <div class="col-xs-8 col-sm-6 col-md-3">
+                <div class="thumbnail">
+                    <?php if($row->logo==null || $row->logo==''){
+                        echo $row->company_name;
+                    }
+                    else{ ?>
+                     
+                    <img src="<?php echo base_url(). 'images/' . $row->logo; ?>" height="260px" width="250px">
+                    <?php } ?>
+                    <div class="caption" style="border-top: 1px solid ">
+                        
+                        <p> <?php $count=$this->Company->countBonus($row->company_id);
+                       echo $count['count']. 'Offer';
+                        ?></p>
+                    </div>
+                </div>
+            </div>
+            <?php
+        endforeach;
+    }
+    
+    ?>
+
+       
+<!--                                <a class="fa fa-trash btn-danger btn-xs" onclick=" deletedoc('<?php // echo site_url('User/delete_company?id=') . $row->company_id; ?>');"></a> 
+                                <a class="fa fa-pencil btn-success btn-xs" onclick="window.location = '<?php // echo site_url('User/editCompany/' . $row->company_id); ?>';"></a>
+                                <button type="button"  data-toggle="modal" data-target="#myModal" data-id="<?php // echo $row->company_id; ?>" class="btn-success btn-xs dialog"><i class="fa fa-upload "></i></button>
+                      -->
+              
+</div>  
 <div class="row">
     <div class="col-lg-12">
         <?php

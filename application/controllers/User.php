@@ -172,6 +172,7 @@ class User extends MY_Controller {
             $this->load->model('Company');
             $response = $this->CallAPI('GET', API_URL . 'getcompanyList/' . $page);
             $response = json_decode($response);
+           
             $data['page'] = $page;
             if ($response->status == 'success') {
                 $data['total_pages'] = $response->totalpages;
