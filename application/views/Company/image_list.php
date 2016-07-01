@@ -74,7 +74,7 @@
         if ((file = this.files[0])) {
             img = new Image();
             img.onload = function () {
-                if (this.width != 480 || this.height != 512) {
+                if (this.width != 485 || this.height != 512) {
                     alert("Image Dimension Should Be 480 X 512");
                     $("#save").attr('type', 'button');
                 } else {

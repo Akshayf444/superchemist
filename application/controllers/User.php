@@ -137,12 +137,12 @@ class User extends MY_Controller {
                         'status' => '1',
                         'mrp' => $mrp[$i],
                         'packing' => $pack[$i],
-                        'company' => $comp[$i],
-                        'strength' => $strength[$i],
+                        'company' => $comp,
+                        'strength' => $strength[$i] . " " . $unit[$i],
                         'generic_id' => $generic_id[$i],
                         'composition' => $composition[$i],
                         'is_combination' => $is_combination[$i],
-                        'division' => $division[$i],
+                        'division' => $division,
                         'unit' => $unit[$i],
                     );
 
@@ -172,7 +172,7 @@ class User extends MY_Controller {
             $this->load->model('Company');
             $response = $this->CallAPI('GET', API_URL . 'getcompanyList/' . $page);
             $response = json_decode($response);
-           
+
             $data['page'] = $page;
             if ($response->status == 'success') {
                 $data['total_pages'] = $response->totalpages;
@@ -354,8 +354,10 @@ class User extends MY_Controller {
     public function bonus($page = 1) {
         if ($this->type == 2) {
             $response = $this->CallAPI('GET', API_URL . 'getBonusOffer/' . $page . '/500?company_id=' . $this->company_id);
-        } else {
+        } elseif ($this->type == 1) {
             $response = $this->CallAPI('GET', API_URL . 'getBonusOffer/' . $page . '/500?');
+        }  else {
+            $this->logout();
         }
 
         $response = json_decode($response, true);
@@ -406,9 +408,11 @@ class User extends MY_Controller {
         if ($this->type == 1) {
             $data['disable'] = '';
             $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
-        } else {
+        } elseif ($this->type == 2) {
             $data['disable'] = 'disable="disable"';
             $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name', $this->company_id);
+        } else {
+            $this->logout();
         }
 
         $data['state'] = $this->Master_Model->generateDropdown($this->Bonus->getState(), 'id', 'state');
@@ -560,7 +564,7 @@ class User extends MY_Controller {
         $sql = "UPDATE 
                 `bonus_info` b1 
                 INNER JOIN `bonus_info` b2 
-                  ON b1.`id` = b2.`id` SET b1.`starting_days` = DATEDIFF(b2.`start_date`,'$date'),
+                  ON b1.`bonus_id` = b2.`bonus_id` SET b1.`starting_days` = DATEDIFF(b2.`start_date`,'$date'),
                 b1.`ending_days` = DATEDIFF( b2.`end_date`,'$date') ";
         $this->db->query($sql);
     }
@@ -583,6 +587,16 @@ class User extends MY_Controller {
     public function closedImages() {
         $sql = "UPDATE images SET status = 0 WHERE ending_days <= 0";
         $this->db->query($sql);
+    }
+
+    public function notification() {
+        $this->load->model('User_model');
+        if ($this->type == 1) {
+            $result = $this->User_model->getUserState();
+            $data['state'] = $this->Master_Model->generateDropdown($result, 'state', 'state', 0, array('data-count' => 'user_count'));
+            $data = array('title' => 'Notification', 'page_title' => 'Notification', 'view_data' => $data, 'content' => 'User/notification');
+            $this->load->view('template3', $data);
+        }
     }
 
 }

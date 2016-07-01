@@ -32,67 +32,73 @@
 $attribute = array('id' => 'valid');
 echo form_open('User/addBrand', $attribute);
 ?> 
-<table class="table table-bordered">
-    <tr>
-        <th style="width: 20%">Brand Name</th>
-        <th>Strength</th>
-        <th style="width: 28%">Composition</th>
-        <th>Form</th>
-        <th style="width: 7%">MRP</th>
-        <th style="width: 5%">Packing</th>
-        <th>Division</th>
-    </tr>
-    <?php for ($i = 1; $i <= 10; $i++) { ?>
-        <tr>
-            <td>
-                <input type="text"  class="form-control" value="" name="name[]" placeholder="Brand Name" />
-            </td>
-            <td>
-                <input type="number" style="width: 45%"  class="btn btn-default" name="strength[]"  placeholder="Strength" >
-                <select name="unit[]" class="btn btn-default">
-                    <option value="mg">mg</option>
-                    <option value="g">g</option>
-                    <option value="%">%</option>
-                </select>
-            </td>
-            <td><input type="text" class="form-control composition" name="composition[]"  placeholder="composition" ><input type="hidden" class="generic_id" value="0" name="generic_id[]"><input type="hidden" class="is_combination" value="0" name="is_combination[]"></td>
-            <td>
-                <select class="chosen-select" name="form[]">
-                    <option>Select Form</option>
-                    <?php echo $form; ?>
-                </select> 
-            </td>
-            <td>
-                <input type="text" class="form-control" value="" name="mrp[]" placeholder="MRP "/>
-            </td>
-            <td>
-                <input type="text" class="form-control" value="" name="packing[]" placeholder="Packing"/>
-            </td>
-            <?php if ($this->type == 1) { ?>
-                <td>
-                    <select name="company[]" class="chosen-select">
-                        <option>Select Company</option>
-                        <?php echo $company; ?>
-                    </select>
-                </td>
-            <?php } else { ?>
-            <input type="hidden" name="company[]" value="<?php echo $this->company_id; ?>">
+<div class="row">
+    <div class="col-xs-3">
+        <?php if ($this->type == 1) { ?>
+            <select name="company" id="company" class="chosen-select">
+                <option>Select Company</option>
+                <?php echo $company; ?>
+            </select>
+        <?php } else { ?>
+            <input type="hidden" name="company" value="<?php echo $this->company_id; ?>">
 
         <?php } ?>
-        <td>
-            <select name="division[]" class="form-control">
-                <option value="">Select Division</option>
-                <?php echo $division; ?>
-            </select>
-        </td>
-    </tr>
-    <?php
-}
-?>
-</table>
-<button class="btn btn-block btn-success " type="submit">SAVE</button>
-</form>
+    </div>
+    <div class="col-xs-3">
+        <select name="division" class="form-control" id="division">
+            <option value="">Select Division</option>
+            <?php echo $division; ?>
+        </select>
+    </div>
 
+</div><br/>
+<div class="row">
+    <div class="col-xs-12">
+        <table class="table table-bordered">
+            <tr>
+                <th style="width: 20%">Brand Name</th>
+                <th>Strength</th>
+                <th style="width: 28%">Composition</th>
+                <th>Form</th>
+                <th style="width: 7%">MRP</th>
+                <th style="width: 5%">Packing</th>
+            </tr>
+            <?php for ($i = 1; $i <= 10; $i++) { ?>
+                <tr>
+                    <td>
+                        <input type="text"  class="form-control" value="" name="name[]" placeholder="Brand Name" />
+                    </td>
+                    <td>
+                        <input type="number" style="width: 45%"  class="btn btn-default" name="strength[]"  placeholder="Strength" >
+                        <select name="unit[]" class="btn btn-default">
+                            <option value="mg">mg</option>
+                            <option value="g">g</option>
+                            <option value="%">%</option>
+                        </select>
+                    </td>
+                    <td><input type="text" class="form-control composition" name="composition[]"  placeholder="composition" ><input type="hidden" class="generic_id" value="0" name="generic_id[]"><input type="hidden" class="is_combination" value="0" name="is_combination[]"></td>
+                    <td>
+                        <select class="chosen-select" name="form[]">
+                            <option>Select Form</option>
+                            <?php echo $form; ?>
+                        </select> 
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" value="" name="mrp[]" placeholder="MRP "/>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" value="" name="packing[]" placeholder="Packing"/>
+                    </td>
+
+                </tr>
+                <?php
+            }
+            ?>
+        </table>
+        <button class="btn btn-success " type="submit">SAVE</button>
+        </form>
+    </div>
+</div>
 <script src="<?php echo asset_url() ?>js/formValidation.min.js" type="text/javascript"></script>
 <script src="<?php echo asset_url() ?>js/bootstrap.min.js" type="text/javascript"></script>
 <script>
@@ -110,10 +116,25 @@ echo form_open('User/addBrand', $attribute);
         }
     });
 
+    $("#company").change(function () {
+        var company_id = $(this).val();
+        $.ajax({
+            url: '<?php echo site_url('Api/getDivisionDropdown'); ?>',
+            type: 'GET',
+            data: {
+                company_id: company_id
+            },
+            success: function (data) {
+                //alert(data);
+                $("#division").html(data);
+            }
+        });
+    });
+
     $(document).on("keydown.autocomplete", '.composition', function () {
         //var medicine = $(this).val();
         var $this = $(this);
-        var company_id = <?php echo $this->type == 2 ? $this->company_id : ''; ?>;
+        var company_id = <?php echo $this->type == 2 ? $this->company_id : 0; ?>;
         $this.addClass('loading');
         $this.closest('tr').find('.generic_id').val('0');
         $(".composition").catcomplete({

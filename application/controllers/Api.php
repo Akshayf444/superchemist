@@ -144,8 +144,13 @@ class Api extends MY_Controller {
             $password = $this->input->get('password');
             $userexist = $this->User_model->authenticate($mobile, $password);
 
-
             if (!empty($userexist)) {
+                $appVersion = $this->User_model->getAppVersion(); ///GET App Version
+                $userexist->version = $appVersion->version;
+                $userexist->version_date = $appVersion->date;
+                
+                $this->User_model->insertLogin(array('user_id' => $userexist->user_id, 'created_at' => date('Y-m-d H:i:s')));
+                $this->User_model->update(array('last_login' => date('Y-m-d H:i:s')), $userexist->user_id);
                 $output = array('status' => 'success', 'message' => array($userexist));
             } else {
                 $output = array('status' => 'error', 'message' => "Invalid Username/Password");
@@ -286,7 +291,7 @@ class Api extends MY_Controller {
         }
     }
 
-    function renderOutput($output) {
+    public function renderOutput($output) {
         if (!is_array($output)) {
             $output = array('status' => 'error', 'message' => 'Oops Something Went Wrong');
         }
@@ -321,6 +326,7 @@ class Api extends MY_Controller {
     public function getBonusOffer($page = 1, $perpage = 20) {
         $this->load->model('Bonus');
         $condition = array();
+        $brandcondition = array();
 
         $type = isset($_GET['type']) ? $_GET['type'] : 0;
 
@@ -336,7 +342,7 @@ class Api extends MY_Controller {
         } elseif ($type === 'company') {
             $order_by = " ORDER BY bf.ending_days DESC,cm.company_name ASC ";
         } else {
-            $order_by = " ORDER BY bf.ending_days DESC ";
+            $order_by = " ORDER BY bf.ending_days ASC ";
         }
 
         if ($this->input->get('brand_name') != '') {
@@ -353,16 +359,22 @@ class Api extends MY_Controller {
             $condition[] = "brand_id = {$product_id} ";
         }
 
+        if ($this->input->get('composition') != '') {
+            $composition = $this->input->get('composition');
+            $brandcondition[] = "composition = '$composition' ";
+            $order_by = " ORDER BY bf.ending_days ASC ";
+        }
+
         if ($type === '' || $type === 'company') {
-            $totalCount = $this->Bonus->countBonus($condition);
+            $totalCount = $this->Bonus->countBonus($condition, $brandcondition);
             $totalCount = $totalCount->bonusCount;
             $paging = $this->calculatePaging($perpage, $totalCount, $page);
-            $bonus_info = $this->Bonus->getBonus($condition, $perpage, $paging[1], $order_by);
+            $bonus_info = $this->Bonus->getBonus($condition, $perpage, $paging[1], $order_by, $brandcondition);
         } else {
-            $totalCount = $this->Bonus->countBonus2($condition);
+            $totalCount = $this->Bonus->countBonus2($condition, $brandcondition);
             $totalCount = $totalCount->bonusCount;
             $paging = $this->calculatePaging($perpage, $totalCount, $page);
-            $bonus_info = $this->Bonus->getBonus2($condition, $perpage, $paging[1], $order_by);
+            $bonus_info = $this->Bonus->getBonus2($condition, $perpage, $paging[1], $order_by, $brandcondition);
         }
 
         if (!empty($bonus_info)) {
@@ -425,7 +437,6 @@ class Api extends MY_Controller {
                     'packing' => $item->packing,
                     'mrp' => $item->mrp,
                     'bonus_id' => $item->bonus_id,
-
                 );
             }
 
@@ -454,26 +465,18 @@ class Api extends MY_Controller {
         $this->renderOutput($output);
     }
 
-    function forgotPassword() {
-
+    public function forgotPassword() {
         if (isset($_REQUEST['mobile'])) {
             $mobile = $_REQUEST['mobile'];
-
-
             $userexist = $this->User_model->userexist($mobile);
-
             if (!empty($userexist)) {
-
                 $vercode = rand(0, 9999);
                 $message = 'This Is Your Password is' . $vercode;
                 $this->Sms->sendsms($mobile, $message);
                 $data = array(
                     'password' => $vercode
                 );
-                $data = $this->User_model->update($mobile, $data);
-
-
-
+                $data = $this->User_model->updateMobile($mobile, $data);
                 $output = array('status' => 'success', 'message' => $vercode);
             } else {
                 $output = array('status' => 'error', 'message' => 'User Not Exit ');
@@ -484,6 +487,20 @@ class Api extends MY_Controller {
 
         header('content-type: application/json');
         echo json_encode($output);
+    }
+
+    public function getDivisionDropdown() {
+        $this->load->model('Division');
+        $this->load->model('Master_Model');
+        $condition = array('d.status = 1');
+        if ($this->input->get('company_id') > 0) {
+            $company_id = $this->input->get('company_id');
+            $condition[] = 'd.company_id = ' . $company_id;
+        }
+
+        $dropdown = $this->Division->getDivision($condition);
+        $dropdown = $this->Master_Model->generateDropdown($dropdown, 'div_id', 'name');
+        echo $dropdown;
     }
 
 }

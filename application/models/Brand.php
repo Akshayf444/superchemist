@@ -16,6 +16,7 @@ class Brand extends MY_model {
     public function __construct() {
         parent::__construct();
         $this->table_name = 'brands';
+        $this->primary_key = 'id';
     }
 
     public function getBrands($condition = array(), $limit, $offset) {

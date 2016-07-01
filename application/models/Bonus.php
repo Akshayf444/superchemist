@@ -16,6 +16,7 @@ class Bonus extends MY_model {
     public function __construct() {
         parent::__construct();
         $this->table_name = 'bonus_info';
+        $this->primary_key = 'bonus_id';
     }
 
     public function createTitle($data) {
@@ -73,8 +74,9 @@ class Bonus extends MY_model {
         return $allStates;
     }
 
-    public function getBonus($condition = array(), $limit, $offset, $order_by = "") {
+    public function getBonus($condition = array(), $limit, $offset, $order_by = "", $brand_condition = array()) {
         $sql = "SELECT bf.*,bd.id as brand_id,bd.name,bd.composition,bd.packing,bd.strength,bd.mrp,cm.company_name FROM (SELECT * FROM brands WHERE status = 1 ";
+        $sql .=!empty($brand_condition) ? " AND " . join(" AND ", $brand_condition) : " ";
         $sql .= " ) as bd LEFT JOIN (SELECT * FROM bonus_info WHERE status = 1";
         $sql .=!empty($condition) ? " AND " . join(" AND ", $condition) : " ";
         $sql .= " ) bf ON bd.id = bf.brand_id INNER JOIN company_master cm ON cm.company_id = bd.company  {$order_by} LIMIT {$limit} OFFSET {$offset}";
@@ -82,8 +84,9 @@ class Bonus extends MY_model {
         return $this->returnResult($sql);
     }
 
-    public function countBonus($condition = array()) {
+    public function countBonus($condition = array(), $brand_condition = array()) {
         $sql = "SELECT count(bd.id) as bonusCount FROM (SELECT * FROM brands WHERE status = 1 ";
+        $sql .=!empty($brand_condition) ? " AND " . join(" AND ", $brand_condition) : " ";
         $sql .= " ) as bd LEFT JOIN (SELECT * FROM bonus_info WHERE status = 1";
         $sql .=!empty($condition) ? " AND " . join(" AND ", $condition) : " ";
         $sql .= " ) bf ON bd.id = bf.brand_id INNER JOIN company_master cm ON cm.company_id = bd.company  ";
@@ -91,20 +94,22 @@ class Bonus extends MY_model {
         return $this->returnResult($sql, 'row');
     }
 
-    public function getBonus2($condition = array(), $limit, $offset, $order_by = "") {
+    public function getBonus2($condition = array(), $limit, $offset, $order_by = "", $brand_condition = array()) {
         $sql = "SELECT bf.*,bd.name,bd.composition,bd.packing,bd.strength,bd.mrp,cm.company_name FROM (SELECT * FROM bonus_info WHERE status = 1 ";
         $sql .=!empty($condition) ? " AND " . join(" AND ", $condition) : " ";
         $sql .= " ) as bf INNER JOIN brands bd ON bd.id = bf.brand_id INNER JOIN company_master cm ON cm.company_id = bd.company ";
+        $sql .=!empty($brand_condition) ? " AND " . join(" AND ", $brand_condition) : " ";
         $sql .= " {$order_by}";
         $sql .= " LIMIT {$limit} OFFSET {$offset}";
         //echo $sql;
         return $this->returnResult($sql);
     }
 
-    public function countBonus2($condition) {
+    public function countBonus2($condition, $brand_condition = array()) {
         $sql = "SELECT count(bf.bonus_id) as bonusCount FROM (SELECT * FROM bonus_info WHERE status = 1 ";
         $sql .=!empty($condition) ? " AND " . join(" AND ", $condition) : " ";
         $sql .= " ) as bf INNER JOIN brands bd ON bd.id = bf.brand_id INNER JOIN company_master cm ON cm.company_id = bd.company ";
+        $sql .=!empty($brand_condition) ? " AND " . join(" AND ", $brand_condition) : " ";
         return $this->returnResult($sql, 'row');
     }
 

@@ -78,5 +78,5 @@ class Master_model extends MY_model {
                 }, 2000);</script>";
         return $html;
     }
-
+    
 }

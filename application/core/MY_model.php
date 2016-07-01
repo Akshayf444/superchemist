@@ -26,6 +26,11 @@ class MY_model extends CI_Model {
         return $this->db->insert_id();
     }
 
+    public function update($data = array(), $id = 0) {
+        $this->db->where(array($this->primary_key => $id));
+        $this->db->update($this->table_name, $data);
+    }
+
     public function get($condition = array()) {
         $sql = "SELECT * FROM  " . $this->table_name;
         $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";

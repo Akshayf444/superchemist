@@ -3,41 +3,48 @@
         <a href="<?php echo site_url('User/addCompany'); ?>" class="btn btn-primary pull-right">Add</a>
     </div>
 </div>
-
-                      <div class="row">
+<style>
+    .image-box{
+        border: 1px solid #cccccc;
+        padding: 3px;
+    }
+</style>
+<div class="row">
     <?php
     if (!empty($response)) {
         foreach ($response as $row) :
             ?>
-            <div class="col-xs-8 col-sm-6 col-md-3">
-                <div class="thumbnail">
-                    <?php if($row->logo==null || $row->logo==''){
-                        echo $row->company_name;
-                    }
-                    else{ ?>
-                     
-                    <img src="<?php echo base_url(). 'images/' . $row->logo; ?>" height="260px" width="250px">
+            <div class="col-xs-8 col-sm-6 col-md-3 image-box" style="height: 250px">
+                <div class="col-xs-12" align="center" style="height: 210px" >
+                    <?php
+                    if ($row->logo == null || $row->logo == '') {
+                        echo '<h2 style="padding-top : 30px">' . $row->company_name . '</h2>';
+                    } else {
+                        ?>
+                        <img height="200px" width="230px" src="<?php echo 'http://instacom.in/superchem/images/' . $row->logo; ?>"  >
                     <?php } ?>
-                    <div class="caption" style="border-top: 1px solid ">
-                        
-                        <p> <?php $count=$this->Company->countBonus($row->company_id);
-                       echo $count['count']. 'Offer';
-                        ?></p>
-                    </div>
                 </div>
+                <div class="col-xs-12" align="center" style="border-top: 1px solid #cccccc;height: 40px">
+
+                    <p> <?php
+                        $count = $this->Company->countBonus($row->company_id);
+                        echo $count['count'] . ' Offers';
+                        ?>
+                    </p>
+                </div>
+
             </div>
             <?php
         endforeach;
     }
-    
     ?>
 
-       
-<!--                                <a class="fa fa-trash btn-danger btn-xs" onclick=" deletedoc('<?php // echo site_url('User/delete_company?id=') . $row->company_id; ?>');"></a> 
-                                <a class="fa fa-pencil btn-success btn-xs" onclick="window.location = '<?php // echo site_url('User/editCompany/' . $row->company_id); ?>';"></a>
-                                <button type="button"  data-toggle="modal" data-target="#myModal" data-id="<?php // echo $row->company_id; ?>" class="btn-success btn-xs dialog"><i class="fa fa-upload "></i></button>
-                      -->
-              
+
+<!--                                <a class="fa fa-trash btn-danger btn-xs" onclick=" deletedoc('<?php // echo site_url('User/delete_company?id=') . $row->company_id;          ?>');"></a> 
+                         <a class="fa fa-pencil btn-success btn-xs" onclick="window.location = '<?php // echo site_url('User/editCompany/' . $row->company_id);          ?>';"></a>
+                         <button type="button"  data-toggle="modal" data-target="#myModal" data-id="<?php // echo $row->company_id;          ?>" class="btn-success btn-xs dialog"><i class="fa fa-upload "></i></button>
+    -->
+
 </div>  
 <div class="row">
     <div class="col-lg-12">

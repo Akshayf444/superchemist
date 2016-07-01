@@ -2,16 +2,15 @@
 
 class User_model extends MY_model {
 
-    public $table_name;
-
     public function __construct() {
         parent::__construct();
         $this->table_name = 'users';
+        $this->primary_key = 'user_id';
     }
 
     public function userexist($mobile) {
         $sql = "SELECT * FROM " . $this->table_name . " WHERE mobile = '" . $mobile . "'";
-      
+
         return $this->returnResult($sql, 'row');
     }
 
@@ -24,9 +23,27 @@ class User_model extends MY_model {
         $sql = "SELECT * FROM  " . $this->table_name . " WHERE mobile = '" . $mobile . "' AND password = '" . $password . "' AND status = 1 ";
         return $this->returnResult($sql, 'row');
     }
-     public function update($mobile,$data){
-         $this->db->where('mobile',$mobile);
-         $this->db->update('users',$data);
-     } 
+
+    public function updateMobile($mobile, $data) {
+        $this->db->where('mobile', $mobile);
+        $this->db->update('users', $data);
+    }
+
+    public function insertLogin($data) {
+        $this->db->insert('login_history', $data);
+        return $this->db->insert_id();
+    }
+
+    public function getAppVersion() {
+        $sql = "SELECT * FROM app_version WHERE status = 1 ORDER BY version_id DESC LIMIT 1";
+        return $this->returnResult($sql, 'row');
+    }
+
+    public function getUserState($condition = array()) {
+        $sql = "SELECT COUNT(user_id) as user_count,state FROM " . $this->table_name . " WHERE (state IS NOT NULL OR state !='') ";
+        $sql .=!empty($condition) ? " AND " . join(" AND ", $condition) : " ";
+        $sql .= " GROUP BY state ";
+        return $this->returnResult($sql);
+    }
 
 }

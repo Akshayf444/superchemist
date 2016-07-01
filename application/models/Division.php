@@ -16,12 +16,13 @@ class Division extends MY_model {
     public function __construct() {
         parent::__construct();
         $this->table_name = 'divisions';
+        $this->primary_key = 'div_id';
     }
 
     public function getDivision($condition = array()) {
         $sql = " SELECT d.*,cm.company_name FROM " . $this->table_name . " d INNER JOIN company_master cm ON d.company_id = cm.company_id ";
         $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";
-//         echo $sql;
+         //echo $sql;
         return $this->returnResult($sql);
     }
 

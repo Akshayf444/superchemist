@@ -101,11 +101,11 @@
                                 <a href="<?php echo site_url('User/CompanyList'); ?>"><i class="fa fa-dashboard"></i> Company</a>
                             </li>
                             <li>
-                                <a href="<?php //echo site_url('User/brandList');              ?>"><i class="fa fa-dashboard"></i> Hot Deal</a>
+                                <a href="<?php echo site_url('User/notification'); ?>"><i class="fa fa-dashboard"></i>Notification</a>
                             </li>
-                           
+
                             <li>
-                                <a href="<?php //echo site_url('User/brandList');              ?>"><i class="fa fa-dashboard"></i> Settings</a>
+                                <a href="<?php //echo site_url('User/brandList');                ?>"><i class="fa fa-dashboard"></i> Settings</a>
                             </li>
                         <?php } ?>
 

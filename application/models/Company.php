@@ -11,6 +11,7 @@ class Company extends MY_model {
     public function __construct() {
         parent::__construct();
         $this->table_name = 'company_master';
+        $this->primary_key = 'company_id';
     }
 
     public function insert($data) {
@@ -23,7 +24,7 @@ class Company extends MY_model {
         $this->db->update('company_master', $data);
     }
 
-    public function getcompany($condition = array(), $limit, $offset) {
+    public function getcompany($condition = array(), $limit = 0, $offset = 0) {
         $sql = "SELECT * FROM company_master ";
         $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";
         $sql .= " LIMIT {$limit} OFFSET {$offset} ";
@@ -40,7 +41,7 @@ class Company extends MY_model {
 
     public function getimage($condition = array(), $limit = 0, $order_by = "") {
         $sql = " SELECT * FROM images   ";
-        $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";        
+        $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";
         $sql .=" " . $order_by;
         $sql .= $limit > 0 ? " LIMIT {$limit} " : " ";
 //         echo $sql;
@@ -78,7 +79,7 @@ class Company extends MY_model {
         $date = strtotime(date('Y-m-d'));
         $imageCount = $this->countImageDates($company_id);
 
-        $slot_id = (int) ($imageCount->imageCount / 2);
+        $slot_id = (int) ($imageCount->imageCount / 10);
 
         if ($slot_id == 0) {
             $date1 = date('Y-m-d');
@@ -101,7 +102,7 @@ class Company extends MY_model {
                 'slot_id=' . $searchslot_id
             );
 
-            $lastImage = $this->getimage($condition, ($countCurrentSlot->imageCount + 1),' ORDER BY image_id DESC ');
+            $lastImage = $this->getimage($condition, ($countCurrentSlot->imageCount + 1), ' ORDER BY image_id DESC ');
             $lastImage = array_shift($lastImage);
 
             $date1 = date('Y-m-d', date(strtotime("+1 day", strtotime($lastImage->end_date))));
@@ -147,11 +148,11 @@ class Company extends MY_model {
           );
           } */
     }
-     public function countBonus($id){
-         $sql=" SELECT COUNT(company_id)as count FROM  bonus_info WHERE company_id='$id'";
-          $query=$this->db->query($sql);
-          return $query->row_array();
-          
-     }
+
+    public function countBonus($id) {
+        $sql = " SELECT COUNT(company_id)as count FROM  bonus_info WHERE company_id='$id'";
+        $query = $this->db->query($sql);
+        return $query->row_array();
+    }
 
 }

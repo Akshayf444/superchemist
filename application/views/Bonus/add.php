@@ -83,7 +83,7 @@ echo form_open('User/addBonus', $attribute);
     $(document).on("keydown.autocomplete", '.brandname', function () {
         //var medicine = $(this).val();
         var $this = $(this);
-        var company_id = <?php echo $this->type == 2 ? $this->company_id : ''; ?>;
+        var company_id = <?php echo $this->type == 2 ? $this->company_id : 0; ?>;
         $this.addClass('loading');
         $(".brandname").catcomplete({
             delay: 1000,
