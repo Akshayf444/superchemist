@@ -148,7 +148,7 @@ class Api extends MY_Controller {
                 $appVersion = $this->User_model->getAppVersion(); ///GET App Version
                 $userexist->version = $appVersion->version;
                 $userexist->version_date = $appVersion->date;
-                
+
                 $this->User_model->insertLogin(array('user_id' => $userexist->user_id, 'created_at' => date('Y-m-d H:i:s')));
                 $this->User_model->update(array('last_login' => date('Y-m-d H:i:s')), $userexist->user_id);
                 $output = array('status' => 'success', 'message' => array($userexist));
@@ -191,9 +191,8 @@ class Api extends MY_Controller {
         echo json_encode($output);
     }
 
-    public function getBrandList($page = 1) {
+    public function getBrandList($page = 1, $per_page = 10) {
         $this->load->model('Brand');
-        $per_page = 500;
 
         $condition = array();
         $condition[] = "status = 1";
@@ -341,17 +340,19 @@ class Api extends MY_Controller {
             $order_by = " ORDER BY bf.ending_days ASC ";
         } elseif ($type === 'company') {
             $order_by = " ORDER BY bf.ending_days DESC,cm.company_name ASC ";
+        } elseif ($type === '') {
+            $order_by = " ORDER BY bf.ending_days DESC,cm.company_name ASC ";
         } else {
             $order_by = " ORDER BY bf.ending_days ASC ";
         }
 
         if ($this->input->get('brand_name') != '') {
             $brand_name = $this->input->get('brand_name');
-            $condition[] = "brand_name LIKE '" . $brand_name . "%'";
+            $brandcondition[] = "name LIKE '" . $brand_name . "%'";
         }
         if ($this->input->get('company_id') > 0) {
             $brand_name = $this->input->get('company_id');
-            $condition[] = "company_id = {$brand_name} ";
+            $brandcondition[] = "bd.company = {$brand_name} ";
         }
 
         if ($this->input->get('product_id') > 0) {
@@ -365,7 +366,7 @@ class Api extends MY_Controller {
             $order_by = " ORDER BY bf.ending_days ASC ";
         }
 
-        if ($type === '' || $type === 'company') {
+        if (trim($type) === '' || $type === 'company') {
             $totalCount = $this->Bonus->countBonus($condition, $brandcondition);
             $totalCount = $totalCount->bonusCount;
             $paging = $this->calculatePaging($perpage, $totalCount, $page);
@@ -437,6 +438,120 @@ class Api extends MY_Controller {
                     'packing' => $item->packing,
                     'mrp' => $item->mrp,
                     'bonus_id' => $item->bonus_id,
+                );
+            }
+
+            $content = array('status' => 'success', 'message' => $data, 'totalpages' => $paging[0], 'page' => $page);
+        } else {
+            $content = array('status' => 'error', 'message' => 'Data Not Found');
+        }
+        $this->renderOutput($content);
+    }
+
+    public function searchBrand($page = 1, $perpage = 20) {
+        $this->load->model('Bonus');
+        $condition = array();
+        $brandcondition = array();
+
+        $type = isset($_GET['type']) ? $_GET['type'] : 0;
+
+        if ($type === 'starting') {
+            $condition[] = 'starting_days <= 30 AND starting_days > 0 AND (ending_days - starting_days) > 30 ';
+            $order_by = " ORDER BY bf.starting_days ASC ";
+        } elseif ($type === 'closing') {
+            $condition[] = 'ending_days < 30 && ending_days > 0';
+            $order_by = " ORDER BY bf.ending_days ASC ";
+        } elseif ($type === 'continuous') {
+            $condition[] = 'starting_days < 0 AND  ending_days > 30 AND ending_days > 0';
+            $order_by = " ORDER BY bf.ending_days ASC ";
+        } elseif ($type === 'company') {
+            $order_by = " ORDER BY bf.ending_days DESC,cm.company_name ASC ";
+        } elseif ($type === '') {
+            $order_by = " ORDER BY bf.ending_days DESC,cm.company_name ASC ";
+        } else {
+            $order_by = " ORDER BY bf.ending_days ASC ";
+        }
+
+        if ($this->input->get('brand_name') != '') {
+            $brand_name = $this->input->get('brand_name');
+            $brandcondition[] = "name LIKE '" . $brand_name . "%'";
+        }
+        if ($this->input->get('company_id') > 0) {
+            $brand_name = $this->input->get('company_id');
+            $brandcondition[] = "bd.company = {$brand_name} ";
+        }
+
+        if ($this->input->get('product_id') > 0) {
+            $product_id = $this->input->get('product_id');
+            $condition[] = "brand_id = {$product_id} ";
+        }
+
+        if ($this->input->get('composition') != '') {
+            $composition = $this->input->get('composition');
+            $brandcondition[] = "composition = '$composition' ";
+            $order_by = " ORDER BY bf.ending_days ASC ";
+        }
+
+        if (trim($type) === '' || $type === 'company') {
+            $totalCount = $this->Bonus->countBonus($condition, $brandcondition);
+            $totalCount = $totalCount->bonusCount;
+            $paging = $this->calculatePaging($perpage, $totalCount, $page);
+            $bonus_info = $this->Bonus->getBonus($condition, $perpage, $paging[1], $order_by, $brandcondition);
+        } else {
+            $totalCount = $this->Bonus->countBonus2($condition, $brandcondition);
+            $totalCount = $totalCount->bonusCount;
+            $paging = $this->calculatePaging($perpage, $totalCount, $page);
+            $bonus_info = $this->Bonus->getBonus2($condition, $perpage, $paging[1], $order_by, $brandcondition);
+        }
+
+        if (!empty($bonus_info)) {
+            $data = array();
+            foreach ($bonus_info as $item) {
+                $diff = $item->ending_days - $item->starting_days;
+
+                if ((int) $item->starting_days <= 30 && (int) $item->starting_days > 0 && $diff > 30) {
+                    $available = 'yes';
+                    $date = date('d/m/Y', strtotime($item->start_date));
+                    $bonus_ratio = $item->bonus_ratio;
+                    $bonus_type = 'Starting';
+                } elseif ((int) $item->ending_days < 30 && (int) $item->ending_days > 0) {
+                    $available = 'yes';
+                    $date = date('d/m/Y', strtotime($item->end_date));
+                    $bonus_ratio = $item->bonus_ratio;
+                    $bonus_type = 'Closing';
+                } elseif ((int) $item->starting_days < 0 && (int) $item->ending_days > 30 && (int) $item->ending_days > 0) {
+                    $available = 'yes';
+                    $date = 'Till Stock Last';
+                    $bonus_ratio = $item->bonus_ratio;
+                    $bonus_type = '';
+                } else {
+
+                    if ((int) $item->starting_days <= 30 && (int) $item->starting_days > 0) {
+                        $available = 'yes';
+                        $date = date('d/m/Y', strtotime($item->start_date));
+                        $bonus_ratio = $item->bonus_ratio;
+                        $bonus_type = 'Starting';
+                    } elseif ((int) $item->ending_days < 30 && (int) $item->ending_days > 0) {
+                        $available = 'yes';
+                        $date = date('d/m/Y', strtotime($item->end_date));
+                        $bonus_ratio = $item->bonus_ratio;
+                        $bonus_type = 'Closing';
+                    } elseif ((int) $item->starting_days < 0 && (int) $item->ending_days > 30 && (int) $item->ending_days > 0) {
+                        $available = 'yes';
+                        $date = 'Till Stock Last';
+                        $bonus_ratio = $item->bonus_ratio;
+                        $bonus_type = 'Continuous';
+                    } else {
+                        $available = 'no';
+                        $date = '';
+                        $bonus_ratio = 'No Info';
+                        $bonus_type = 'No Info';
+                    }
+                }
+
+                $data[] = array(
+                    'product_id' => $item->brand_id,
+                    'product_name' => $item->name,
                 );
             }
 

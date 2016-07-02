@@ -12,7 +12,7 @@ echo form_open('User/addBonus', $attribute);
             <?php } else { ?>
                 <div class="col-lg-4">
                     <label>Company</label>
-                    <select name="company_id" <?php echo $disable; ?> class="chosen-select"> 
+                    <select name="company_id" class="chosen-select"> 
                         <option value="">Select Company</option>
                         <?php echo $company; ?>
                     </select>
@@ -31,7 +31,7 @@ echo form_open('User/addBonus', $attribute);
                 <tr>
                     <td><input type="text" class="form-control brandname" value="" name="brand_name[]" placeholder=" Brand Name "/></td>
                     <td><input type="text" class="form-control" value="" name="bonus_ratio[]" placeholder=" Bonus Ratio "/><input type="hidden" class="rate" value="" name="brand_id[]"></td>
-                    <td><input type="text" autocomplete="off" class="form-control datepicker" value="" name="start_date[]" placeholder=" Start Date "/></td>
+                    <td><input type="text" autocomplete="off" class="form-control datepicker" value="<?php echo '1-04-' . (date('Y')) ?>" name="start_date[]" placeholder=" Start Date "/></td>
                     <td><input type="text" autocomplete="off"  class="form-control datepicker" value="<?php echo '31-03-' . (date('Y') + 1) ?>" name="end_date[]" placeholder=" End Date "/></td>
                     <td><select name="state<?php echo $i; ?>[]" multiple id="<?php echo $i; ?>" class="form-control state multiselect"><?php echo $state; ?></select></td>
                 </tr>
@@ -47,21 +47,21 @@ echo form_open('User/addBonus', $attribute);
 <script>
     $("document").ready(function () {
         $('.multiselect').multiselect({
+            includeSelectAllOption: true,
             numberDisplayed: 1,
-            enableFiltering: true,
-            includeSelectAllOption: true
-        });
+            enableFiltering: true
 
-        $(".chosen-select").attr('disabled', true).trigger("chosen:updated")
+        });
 
         $("#addMore").click(function () {
             var count = $('.state').length;
             $("#bonustable").append('<tr><td><input type="text"  class="form-control brandname" value="" name="brand_name[]" placeholder=" Brand Name "/></td><td><input type="text" class="form-control" value="" name="bonus_ratio[]" placeholder=" Bonus Ratio "/><input type="hidden" class="rate" value="" name="brand_id[]"></td><td><input type="text" autocomplete="off" class="form-control datepicker" value="" name="start_date[]" placeholder=" Start Date "/></td><td><input type="text" autocomplete="off"  class="form-control datepicker" value="<?php echo '31-03-' . (date('Y') + 1) ?>" name="end_date[]" placeholder=" End Date "/></td><td><select name="state' + count + '[]" id="' + count + '" multiple class="form-control state multiselect"><?php echo $state; ?></select></td></tr>');
 
             $("#" + count).multiselect({
+                includeSelectAllOption: true,
                 numberDisplayed: 1,
-                enableFiltering: true,
-                includeSelectAllOption: true
+                enableFiltering: true
+
             });
         });
     });

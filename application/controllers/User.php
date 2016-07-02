@@ -87,9 +87,9 @@ class User extends MY_Controller {
     public function brandList($page = 1) {
 
         if ($this->type == 2) {
-            $response = $this->CallAPI('GET', API_URL . 'getBrandList/' . $page . '?company_id=' . $this->company_id);
+            $response = $this->CallAPI('GET', API_URL . 'getBrandList/' . $page . '/500?company_id=' . $this->company_id);
         } elseif ($this->type == 1) {
-            $response = $this->CallAPI('GET', API_URL . 'getBrandList/' . $page);
+            $response = $this->CallAPI('GET', API_URL . 'getBrandList/' . $page . '/500');
         } else {
             $this->logout();
         }
@@ -356,7 +356,7 @@ class User extends MY_Controller {
             $response = $this->CallAPI('GET', API_URL . 'getBonusOffer/' . $page . '/500?company_id=' . $this->company_id);
         } elseif ($this->type == 1) {
             $response = $this->CallAPI('GET', API_URL . 'getBonusOffer/' . $page . '/500?');
-        }  else {
+        } else {
             $this->logout();
         }
 
@@ -405,11 +405,11 @@ class User extends MY_Controller {
     public function addBonus() {
         $this->load->model('Bonus');
         $companyList = $this->Company->get(array('status = 1'));
-        if ($this->type == 1) {
+        if ($this->type === 1) {
             $data['disable'] = '';
             $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name');
-        } elseif ($this->type == 2) {
-            $data['disable'] = 'disable="disable"';
+        } elseif ($this->type === 2) {
+            $data['disable'] = '';
             $data['company'] = $this->Master_Model->generateDropdown($companyList, 'company_id', 'company_name', $this->company_id);
         } else {
             $this->logout();
@@ -463,6 +463,8 @@ class User extends MY_Controller {
                 }
             }
 
+            $this->calculateBonusDays();
+            $this->closedBonus();
             redirect('User/addBonus', 'refresh');
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Description of Superadmin
  * This is model class for Superadmin
@@ -10,7 +11,5 @@ class Superadmin extends MY_model {
         parent::__construct();
         $this->table_name = 'superadmin';
     }
-    
-    
 
 }
