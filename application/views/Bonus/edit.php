@@ -15,10 +15,10 @@ echo form_open('User/editBonus', $attribute);
         <div class="form-group">  <label>Brand Ratio</label>     <input type="text"  class="form-control" value="<?php echo $row['bonus_ratio']; ?>" name="bonus_ratio" placeholder=" Bonus Ratio "/>
 
         </div>
-        <div class="form-group">  <label>Start Date</label>     <input type="text"  class="form-control" readonly="" value="<?php echo $row['start_date']; ?>" name="start_date" placeholder=" start_date "/>
+        <div class="form-group">  <label>Start Date</label>     <input type="text"  class="form-control datepicker"  value="<?php echo date('d-m-Y', strtotime($row['start_date'])); ?>" name="start_date" placeholder=" start_date "/>
 
         </div>
-        <div class="form-group">  <label>End Date</label>     <input type="text"  class="form-control" readonly="" value="<?php echo $row['end_date']; ?>" name="end_date" placeholder=" start_date "/>
+        <div class="form-group">  <label>End Date</label>     <input type="text"  class="form-control datepicker"  value="<?php echo date('d-m-Y', strtotime($row['end_date'])); ?>" name="end_date" placeholder=" start_date "/>
         </div>
         <div class="form-group"> <label> State</label>   <select name="state1[]" multiple id="1" class="form-control state multiselect">
 
@@ -49,8 +49,7 @@ echo form_open('User/editBonus', $attribute);
     $("document").ready(function () {
         $('.multiselect').multiselect({
             numberDisplayed: 1,
-            enableFiltering: true,
-            includeSelectAllOption: true
+            enableFiltering: true
         });
 
         $(".chosen-select").attr('disabled', true).trigger("chosen:updated")
