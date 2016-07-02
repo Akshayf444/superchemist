@@ -2,7 +2,7 @@
     <div class="col-lg-12">
         <a href="<?php echo site_url('User/addCompany'); ?>" class="btn btn-primary pull-right">Add</a>
     </div>
-</div>
+</div><br/>
 <style>
     .image-box{
         margin-bottom: 15px;
@@ -30,8 +30,9 @@
                         <a class="fa fa-pencil btn-success btn-xs" onclick="window.location = '<?php echo site_url('User/editCompany/' . $row->company_id); ?>';"></a>
                         <span class="badge label-danger pull-right"><?php
                             $condition[] = "cm.company_id = '" . $row->company_id . "'";
-                            $count = $this->Bonus->countBonus2(array(),$condition);
-                            echo $count->bonusCount
+                            $count = $this->Bonus->countBonus2(array(), $condition);
+                            echo $count->bonusCount;
+                            unset($condition);
                             ?> &nbsp Offers
                         </span>
                     </p>
@@ -44,7 +45,7 @@
     ?>
 
 
-<!--                                <a class="fa fa-trash btn-danger btn-xs" onclick=" deletedoc('<?php // echo site_url('User/delete_company?id=') . $row->company_id;               ?>');"></a> 
+<!--                                <a class="fa fa-trash btn-danger btn-xs" onclick=" deletedoc('<?php // echo site_url('User/delete_company?id=') . $row->company_id;                 ?>');"></a> 
                          
                          
     -->

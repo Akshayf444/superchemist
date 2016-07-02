@@ -383,6 +383,8 @@ class User extends MY_Controller {
             $brand_name = $this->input->post('brand_name');
             $brand_id = $this->input->post('brand_id');
             $bonus_ratio = $this->input->post('bonus_ratio');
+            $start_date = $this->input->post('start_date');
+            $end_date = $this->input->post('end_date');
             $state = $this->input->post('state1');
 
             $finalState = join(",", $state);
@@ -390,6 +392,8 @@ class User extends MY_Controller {
                 'brand_id' => $brand_id,
                 'brand_name' => $brand_name,
                 'bonus_ratio' => $bonus_ratio,
+                'start_date' => $start_date,
+                'end_date' => $end_date,
                 'states' => $finalState
             );
 

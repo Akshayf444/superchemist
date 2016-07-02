@@ -105,11 +105,12 @@ class Bonus extends MY_model {
         return $this->returnResult($sql);
     }
 
-    public function countBonus2($condition=array(), $brand_condition = array()) {
+    public function countBonus2($condition = array(), $brand_condition = array()) {
         $sql = "SELECT count(bf.bonus_id) as bonusCount FROM (SELECT * FROM bonus_info WHERE status = 1 ";
         $sql .=!empty($condition) ? " AND " . join(" AND ", $condition) : " ";
         $sql .= " ) as bf INNER JOIN brands bd ON bd.id = bf.brand_id INNER JOIN company_master cm ON cm.company_id = bd.company ";
         $sql .=!empty($brand_condition) ? " AND " . join(" AND ", $brand_condition) : " ";
+        //echo $sql;
         return $this->returnResult($sql, 'row');
     }
 
@@ -131,10 +132,12 @@ class Bonus extends MY_model {
         $this->db->where('bonus_id', $id);
         $this->db->update('bonus_info', $data);
     }
-public function countBonus3($condition) {
+
+    public function countBonus3($condition) {
         $sql = "SELECT count(bf.bonus_id) as bonusCount FROM (SELECT * FROM bonus_info WHERE status = 1 and company_id=$condition";
-       
+
         $sql .= " ) as bf INNER JOIN brands bd ON bd.id = bf.brand_id INNER JOIN company_master cm ON cm.company_id = bd.company ";
         return $this->returnResult($sql, 'row');
     }
+
 }
