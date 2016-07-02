@@ -46,24 +46,28 @@ echo form_open('User/addBonus', $attribute);
 </form>
 <script>
     $("document").ready(function () {
+        populate();
         $('.multiselect').multiselect({
-            includeSelectAllOption: true,
             numberDisplayed: 1,
             enableFiltering: true
-
         });
 
         $("#addMore").click(function () {
             var count = $('.state').length;
-            $("#bonustable").append('<tr><td><input type="text"  class="form-control brandname" value="" name="brand_name[]" placeholder=" Brand Name "/></td><td><input type="text" class="form-control" value="" name="bonus_ratio[]" placeholder=" Bonus Ratio "/><input type="hidden" class="rate" value="" name="brand_id[]"></td><td><input type="text" autocomplete="off" class="form-control datepicker" value="" name="start_date[]" placeholder=" Start Date "/></td><td><input type="text" autocomplete="off"  class="form-control datepicker" value="<?php echo '31-03-' . (date('Y') + 1) ?>" name="end_date[]" placeholder=" End Date "/></td><td><select name="state' + count + '[]" id="' + count + '" multiple class="form-control state multiselect"><?php echo $state; ?></select></td></tr>');
-
+            $("#bonustable").append('<tr><td><input type="text"  class="form-control brandname" value="" name="brand_name[]" placeholder=" Brand Name "/></td><td><input type="text" class="form-control" value="" name="bonus_ratio[]" placeholder=" Bonus Ratio "/><input type="hidden" class="rate" value="" name="brand_id[]"></td><td><input type="text" autocomplete="off" class="form-control datepicker" value="<?php echo '1-04-' . (date('Y')) ?>" name="start_date[]" placeholder=" Start Date "/></td><td><input type="text" autocomplete="off"  class="form-control datepicker" value="<?php echo '31-03-' . (date('Y') + 1) ?>" name="end_date[]" placeholder=" End Date "/></td><td><select name="state' + count + '[]" id="' + count + '" multiple class="form-control state multiselect"><?php echo $state; ?></select></td></tr>');
+            populate();
             $("#" + count).multiselect({
-                includeSelectAllOption: true,
                 numberDisplayed: 1,
                 enableFiltering: true
 
             });
         });
+
+        function populate() {
+            $('.multiselect option').each(function () {
+                $(this).attr('selected', 'selected')
+            });
+        }
     });
 
     $.widget("custom.catcomplete", $.ui.autocomplete, {
@@ -115,7 +119,6 @@ echo form_open('User/addBonus', $attribute);
             }
 
         });
-
 
     });
 </script>

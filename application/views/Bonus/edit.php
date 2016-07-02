@@ -19,7 +19,7 @@ echo form_open('User/editBonus', $attribute);
 
         </div>
         <div class="form-group">  <label>End Date</label>     <input type="text"  class="form-control" readonly="" value="<?php echo $row['end_date']; ?>" name="end_date" placeholder=" start_date "/>
-                 </div>
+        </div>
         <div class="form-group"> <label> State</label>   <select name="state1[]" multiple id="1" class="form-control state multiselect">
 
                 <?php
@@ -72,5 +72,5 @@ echo form_open('User/editBonus', $attribute);
         }
     });
 
-    
+
 </script>
