@@ -5,7 +5,6 @@
 </div>
 <style>
     .image-box{
-        border: 1px solid #cccccc;
         padding: 3px;
     }
 </style>
@@ -14,8 +13,8 @@
     if (!empty($response)) {
         foreach ($response as $row) :
             ?>
-            <div class="col-xs-8 col-sm-6 col-md-3 image-box" style="height: 250px">
-                <div class="col-xs-12" align="center" style="height: 210px" >
+            <div class="col-xs-8 col-sm-6 col-md-3 image-box" style="height: 210px">
+                <div class="col-xs-12" align="center" style="height: 180px" >
                     <?php
                     if ($row->logo == null || $row->logo == '') {
                         echo '<h2 style="padding-top : 30px">' . $row->company_name . '</h2>';
@@ -23,13 +22,16 @@
                         ?>
                         <img height="200px" width="230px" src="<?php echo 'http://instacom.in/superchem/images/' . $row->logo; ?>"  >
                     <?php } ?>
+
                 </div>
                 <div class="col-xs-12" align="center" style="border-top: 1px solid #cccccc;height: 40px">
 
                     <p> <?php
-                        $count = $this->Company->countBonus($row->company_id);
-                        echo $count['count'] . ' Offers';
-                        ?>
+                        $condition[] = "company_id = '" . $row->company_id . "'";
+                        $count = $this->Bonus->countBonus2($condition);
+                        echo $count->bonusCount
+                        ?> &nbsp Offer
+
                     </p>
                 </div>
 
@@ -40,9 +42,9 @@
     ?>
 
 
-<!--                                <a class="fa fa-trash btn-danger btn-xs" onclick=" deletedoc('<?php // echo site_url('User/delete_company?id=') . $row->company_id;          ?>');"></a> 
-                         <a class="fa fa-pencil btn-success btn-xs" onclick="window.location = '<?php // echo site_url('User/editCompany/' . $row->company_id);          ?>';"></a>
-                         <button type="button"  data-toggle="modal" data-target="#myModal" data-id="<?php // echo $row->company_id;          ?>" class="btn-success btn-xs dialog"><i class="fa fa-upload "></i></button>
+<!--                                <a class="fa fa-trash btn-danger btn-xs" onclick=" deletedoc('<?php // echo site_url('User/delete_company?id=') . $row->company_id;           ?>');"></a> 
+                         <a class="fa fa-pencil btn-success btn-xs" onclick="window.location = '<?php // echo site_url('User/editCompany/' . $row->company_id);           ?>';"></a>
+                         <button type="button"  data-toggle="modal" data-target="#myModal" data-id="<?php // echo $row->company_id;           ?>" class="btn-success btn-xs dialog"><i class="fa fa-upload "></i></button>
     -->
 
 </div>  

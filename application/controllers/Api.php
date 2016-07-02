@@ -437,6 +437,7 @@ class Api extends MY_Controller {
                     'strength' => $item->strength,
                     'packing' => $item->packing,
                     'mrp' => $item->mrp,
+
                     'bonus_id' => $item->bonus_id,
                 );
             }

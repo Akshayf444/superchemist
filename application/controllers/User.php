@@ -170,6 +170,7 @@ class User extends MY_Controller {
     public function CompanyList($page = 1) {
         if ($this->type == 1) {
             $this->load->model('Company');
+             $this->load->model('Bonus');
             $response = $this->CallAPI('GET', API_URL . 'getcompanyList/' . $page);
             $response = json_decode($response);
 

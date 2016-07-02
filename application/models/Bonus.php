@@ -122,14 +122,19 @@ class Bonus extends MY_model {
     }
 
     public function getBonusid($id) {
-        $sql = " SELECT * FROM bonus_info bn WHERE id='$id'";
+        $sql = " SELECT * FROM bonus_info  WHERE bonus_id='$id'";
         $query = $this->db->query($sql);
         return $query->row_array();
     }
 
     public function updateBonus($id, $data) {
-        $this->db->where('id', $id);
+        $this->db->where('bonus_id', $id);
         $this->db->update('bonus_info', $data);
     }
-
+public function countBonus3($condition) {
+        $sql = "SELECT count(bf.bonus_id) as bonusCount FROM (SELECT * FROM bonus_info WHERE status = 1 and company_id=$condition";
+       
+        $sql .= " ) as bf INNER JOIN brands bd ON bd.id = bf.brand_id INNER JOIN company_master cm ON cm.company_id = bd.company ";
+        return $this->returnResult($sql, 'row');
+    }
 }
