@@ -403,6 +403,18 @@ class User extends MY_Controller {
         $this->load->view('template3', $data);
     }
 
+    
+     public function del_bonus(){
+         $this->load->model('Bonus');
+         $data = array(
+                
+                'status' => 0
+            );
+
+//var_dump($field_array);
+            $this->Bonus->updateBonus($this->input->get('id'), $data);
+        redirect('User/bonus', 'refresh');
+        }
     public function addBonus() {
         $this->load->model('Bonus');
         $companyList = $this->Company->get(array('status = 1'));

@@ -29,7 +29,9 @@
                             <td data-title="Region"><?php echo $row['bonus_ratio']; ?></td>
                             <td data-title="Doctor Name"><?php echo $row['start_date']; ?></td>  
                             <td data-title="MSL Code"><?php echo $row['end_date']; ?> </td> 
-                              <td> <a class="fa fa-pencil btn-success btn-xs" onclick="window.location = '<?php echo site_url('User/editBonus?id='.$row['bonus_id']); ?>';"></a>
+                            <td> <a class="fa fa-trash-o btn-danger btn-xs" class=""  onclick="deletedoc('<?php echo site_url('User/del_bonus?id='.$row['bonus_id']); ?>')"></a>
+                         <a class="fa fa-pencil btn-success btn-xs" onclick="window.location = '<?php echo site_url('User/editBonus?id='.$row['bonus_id']); ?>';"></a>
+                              </td>
                          
                         </tr>
                         <?php
