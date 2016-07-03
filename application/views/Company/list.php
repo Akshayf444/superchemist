@@ -13,7 +13,7 @@
     if (!empty($response)) {
         foreach ($response as $row) :
             ?>
-            <div class="col-xs-8 col-sm-6 col-md-3 image-box" style="height: 150px;">
+            <div class="col-xs-12 col-md-3 col-sm-4 image-box" style="height: 150px;">
                 <div class="col-xs-12" align="center" style="height: 110px;border: 1px solid #cccccc;padding-top: 5px" >
                     <?php
                     if ($row->logo == null || $row->logo == '') {
@@ -28,7 +28,7 @@
                     <p>
                         <button type="button"  data-toggle="modal" data-target="#myModal" data-id="<?php echo $row->company_id; ?>" class="btn-success btn-xs dialog"><i class="fa fa-upload "></i></button>
                         <a class="fa fa-pencil btn-success btn-xs" onclick="window.location = '<?php echo site_url('User/editCompany/' . $row->company_id); ?>';"></a>
-                        <span class="badge label-danger pull-right"><?php
+                        <span class="badge label-danger pull-right" onclick="window.location = '<?php echo site_url('User/Bonus?company_id=' . $row->company_id); ?>';" ><?php
                             $condition[] = "cm.company_id = '" . $row->company_id . "'";
                             $count = $this->Bonus->countBonus2(array(), $condition);
                             echo $count->bonusCount;
@@ -43,11 +43,9 @@
         endforeach;
     }
     ?>
-
-
-<!--                                <a class="fa fa-trash btn-danger btn-xs" onclick=" deletedoc('<?php // echo site_url('User/delete_company?id=') . $row->company_id;                 ?>');"></a> 
-                         
-                         
+<!--                                <a class="fa fa-trash btn-danger btn-xs" onclick=" deletedoc('<?php // echo site_url('User/delete_company?id=') . $row->company_id;                    ?>');"></a> 
+ 
+ 
     -->
 
 </div>  

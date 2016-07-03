@@ -96,11 +96,11 @@ class User extends MY_Controller {
 
         $response = json_decode($response, true);
         $data['page'] = $page;
-        if ($response['status'] == 'success') {
+        if (isset($response['status']) && $response['status'] == 'success') {
             $data['total_pages'] = $response['totalpages'];
             $data['response'] = $response['message'];
         } else {
-            $data['message'] = $response['message'];
+            $data['message'] = isset($response['status']) ? $response['message'] : '';
         }
 
         $data = array('title' => 'Brand List', 'content' => 'User/view_brand', 'page_title' => 'Brand List', 'view_data' => $data);
@@ -170,16 +170,16 @@ class User extends MY_Controller {
     public function CompanyList($page = 1) {
         if ($this->type == 1) {
             $this->load->model('Company');
-             $this->load->model('Bonus');
+            $this->load->model('Bonus');
             $response = $this->CallAPI('GET', API_URL . 'getcompanyList/' . $page);
             $response = json_decode($response);
 
             $data['page'] = $page;
-            if ($response->status == 'success') {
+            if (isset($response->status) && $response->status == 'success') {
                 $data['total_pages'] = $response->totalpages;
                 $data['response'] = $response->message;
             } else {
-                $data['message'] = $response->message;
+                $data['message'] = isset($response->status) ? $response->message : '';
             }
             $data = array('title' => 'Company', 'content' => 'Company/list', 'page_title' => 'Company List', 'view_data' => $data);
             $this->load->view('template3', $data);
@@ -353,13 +353,22 @@ class User extends MY_Controller {
     }
 
     public function bonus($page = 1) {
+        $condition = array();
         if ($this->type == 2) {
-            $response = $this->CallAPI('GET', API_URL . 'getBonusOffer/' . $page . '/500?company_id=' . $this->company_id);
+            $condition[] = 'company_id=' . $this->company_id;
         } elseif ($this->type == 1) {
-            $response = $this->CallAPI('GET', API_URL . 'getBonusOffer/' . $page . '/500?');
+            $condition[] = NULL;
         } else {
             $this->logout();
         }
+
+        if ((int) $this->input->get('company_id') > 0) {
+            $company_id = $this->input->get('company_id');
+            $condition[] = 'company_id=' . $company_id;
+        }
+
+        $condition = !empty($condition) ? join("&", $condition) : '';
+        $response = $this->CallAPI('GET', API_URL . 'getBonusOffer/' . $page . '/500?' . $condition);
 
         $response = json_decode($response, true);
         $data['page'] = $page;
@@ -407,18 +416,17 @@ class User extends MY_Controller {
         $this->load->view('template3', $data);
     }
 
-    
-     public function del_bonus(){
-         $this->load->model('Bonus');
-         $data = array(
-                
-                'status' => 0
-            );
+    public function del_bonus() {
+        $this->load->model('Bonus');
+        $data = array(
+            'status' => 0
+        );
 
 //var_dump($field_array);
-            $this->Bonus->updateBonus($this->input->get('id'), $data);
+        $this->Bonus->updateBonus($this->input->get('id'), $data);
         redirect('User/bonus', 'refresh');
-        }
+    }
+
     public function addBonus() {
         $this->load->model('Bonus');
         $companyList = $this->Company->get(array('status = 1'));

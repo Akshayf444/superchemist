@@ -10,6 +10,7 @@
                 <tr>
                     <th>Sr.</th>
                     <th>Brand Name</th>
+                    <th>Company Name</th>
                     <th>Bonus Ratio</th>
                     <th>Start Date</th>
                     <th>End Date</th>
@@ -21,11 +22,11 @@
                 $count = 1;
                 if (isset($response) && !empty($response)) {
                     foreach ($response as $row) :
-                        ?><tr>  
-                            
+                        ?><tr>                       
                             
                             <td data-title="Sr"><?php echo $count++; ?></td>
                             <td data-title="State"><?php echo $row['product_name']; ?></td>
+                            <td data-title="State"><?php echo $row['company']; ?></td>
                             <td data-title="Region"><?php echo $row['bonus_ratio']; ?></td>
                             <td data-title="Doctor Name"><?php echo $row['start_date']; ?></td>  
                             <td data-title="MSL Code"><?php echo $row['end_date']; ?> </td> 
