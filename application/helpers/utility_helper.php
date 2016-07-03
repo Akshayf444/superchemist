@@ -7,7 +7,7 @@ function asset_url() {
 function pushNotification($message, $registrationIds) {
 
 // API access key from Google API's Console
-    define('API_ACCESS_KEY', 'AIzaSyCIdHKsvTN0Q9ERnXU7Wuf7hmV_kRMuhL8');
+    define('API_ACCESS_KEY', 'AIzaSyAUdcVH7w8_OJh64ILuGIWiwLSSJ7niNgI');
 
 // prep the bundle
     $msg = array(
@@ -42,10 +42,4 @@ function pushNotification($message, $registrationIds) {
     curl_close($ch);
 
     echo $result;
-    $field_array = array(
-        'id' => '',
-        'message' => $message,
-    );
-    //$notification = new Notification();
-    //$notification->create($field_array);
 }

@@ -3,25 +3,25 @@
         text-align: center;
         padding: 20px;
         font-weight: bold;
-        border-bottom: 2px solid #FFC107;
+        border-bottom: 2px solid #00c0ef;
     }
 
 </style>
 <div class="row">
-    <div class="col-xs-6" style="border-right: 2px solid #FFC107">
+    <div class="col-xs-6" style="border-right: 2px solid #00c0ef">
         <?php echo form_open('User/notification'); ?>
         <div class="form-group">
             <label>Select State</label>
-            <select class="chosen-select" multiple name="state" >
+            <select class="chosen-select" id="state" multiple name="state[]" >
                 <?php echo $state; ?>
             </select> 
         </div>
         <div class="form-group">
             <label>User Type </label>
-            <select class="form-control">
+            <select class="form-control" name="user_type" id="user_type">
                 <option value="1">Chemist</option>
                 <option value="2">Distributor</option>
-                <option value="Both">Both</option>
+                <option value="1,2">Both</option>
             </select>
         </div>
         <div class="form-group">
@@ -30,7 +30,7 @@
         </div>
         <div class="form-group">
             SMS <input type="checkbox" name="sms">
-            Email <input type="checkbox" name="email">
+<!--            Email <input type="checkbox" name="email">-->
             Notification <input type="checkbox" name="notification">
         </div>
         <div class="form-group">
@@ -60,3 +60,33 @@
         </div>
     </div>
 </div>
+<script>
+    $('document').ready(function () {
+        var audiance = 0;
+        $("#state").change(function () {
+            var option = $("#user_type").val();
+            calculateAudiance(option);
+        });
+
+        $("#user_type").change(function () {
+            var option = $(this).val();
+            calculateAudiance(option);
+        });
+
+        function calculateAudiance(option) {
+            if (option == '1') {
+                $("#state option:selected").each(function () {
+                    audiance += parseInt($(this).attr('data-count1').val());
+                });
+            } else if (option == '2') {
+                $("#state option:selected").each(function () {
+                    audiance += parseInt($(this).attr('data-count2').val());
+                });
+            } else {
+                $("#state option:selected").each(function () {
+                    audiance += parseInt($(this).attr('data-count1').val()) + parseInt($(this).attr('data-count2').val());
+                });
+            }
+        }
+    });
+</script>
