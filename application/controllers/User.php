@@ -32,7 +32,7 @@ class User extends MY_Controller {
                     $this->session->set_userdata('company_id', $response['message']['company_id']);
                     $this->session->set_userdata('type', 2);
                 }
-                redirect('User/brandList', 'refresh');
+                redirect('User/dashboard', 'refresh');
             }
         }
 
@@ -71,14 +71,17 @@ class User extends MY_Controller {
             $this->logout();
         }
 
+
         $brandCount = $this->Brand->countBrands($condition);
-        $bonusCount = $this->Bonus->countBonus($bonusCondition);
+        $bonusCount = $this->Bonus->countBonus2($bonusCondition);
         $countDivision = $this->Division->countDivision($divisionCondition);
+        $countCompany = $this->Company->countCompany($bonusCondition);
 
         $data['brandcount'] = $brandCount->totalcount;
         $data['bonuscount'] = $bonusCount->bonusCount;
         $data['divisioncount'] = $countDivision->divisionCount;
         $data['ctr'] = 0;
+        $data['countCompany'] = $countCompany->totalcount;
 
         $data = array('title' => 'Dashboard', 'content' => 'User/dashboard', 'page_title' => 'Dashboard', 'view_data' => $data);
         $this->load->view('template3', $data);
@@ -618,9 +621,31 @@ class User extends MY_Controller {
 
     public function notification() {
         $this->load->model('User_model');
+        $this->load->model('Communication');
+        $this->load->model('Sms');
         if ($this->type == 1) {
             $result = $this->User_model->getUserState();
             $data['state'] = $this->Master_Model->generateDropdown($result, 'state', 'state', 0, array('data-count' => 'user_count'));
+
+            $message = $this->input->post('message');
+
+            if (isset($this->input->post('notification'))) {
+                $deviceId = $this->User_model->getColumn(array("device_id IS NOT NULL ", "device_id != '' "), 'device_id');
+                if (!empty($deviceId)) {
+                    $registrationIds = join(",", $deviceId);
+                    pushNotification($message, $deviceId);
+                    $this->Communication->insert(array('message' => $message, 'to' => $registrationIds, 'count' => count($deviceId), 'created_at' => date('Y-m-d H:i:s'), 'type' => 'notification'));
+                }
+            }
+            if (isset($this->input->post('sms'))) {
+                $deviceId = $this->User_model->getColumn(array("mobile IS NOT NULL ", "mobile != '' "), 'mobile');
+                if (!empty($deviceId)) {
+                    $registrationIds = join(",", $deviceId);
+                    $this->Sms->sendsms($registrationIds, $message);
+                    $this->Communication->insert(array('message' => $message, 'to' => $registrationIds, 'count' => count($deviceId), 'created_at' => date('Y-m-d H:i:s'), 'type' => 'sms'));
+                }
+            }
+
             $data = array('title' => 'Notification', 'page_title' => 'Notification', 'view_data' => $data, 'content' => 'User/notification');
             $this->load->view('template3', $data);
         }

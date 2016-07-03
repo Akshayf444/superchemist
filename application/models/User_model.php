@@ -46,4 +46,11 @@ class User_model extends MY_model {
         return $this->returnResult($sql);
     }
 
+    public function getColumn($conditions = array(), $column = 'device_id') {
+        $sql = "SELECT DISTINCT(" . $column . ") as " . $column . " FROM users " . $this->table_name;
+        $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
 }

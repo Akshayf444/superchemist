@@ -82,20 +82,13 @@
                         <li>
                             <a href="<?php echo site_url('User/dashboard'); ?>"><i class="fa fa-dashboard"></i> Dashboard</a>
                         </li>
+
                         <li>
                             <a href="<?php echo site_url('User/Division'); ?>"><i class="fa fa-dashboard"></i> Division</a>
                         </li>
                         <li>
                             <a href="<?php echo site_url('User/brandList'); ?>"><i class="fa fa-dashboard"></i> Brand List</a>
                         </li>
-                        <li>
-                            <a href="<?php echo site_url('User/Bonus'); ?>"><i class="fa fa-dashboard"></i> Bonus Offer</a>
-                        </li>               
-                        <?php if ($this->type == 2) { ?>
-                            <li>
-                                <a href="<?php echo site_url('User/Image_list'); ?>"><i class="fa fa-file-image-o"></i>Brand Image</a>
-                            </li>
-                        <?php } ?>                            
                         <?php if ($this->type == 1) { ?>
                             <li>
                                 <a href="<?php echo site_url('User/CompanyList'); ?>"><i class="fa fa-dashboard"></i> Company</a>
@@ -105,9 +98,18 @@
                             </li>
 
                             <li>
-                                <a href="<?php //echo site_url('User/brandList');                ?>"><i class="fa fa-dashboard"></i> Settings</a>
+                                <a href="<?php //echo site_url('User/brandList');                  ?>"><i class="fa fa-dashboard"></i> Settings</a>
                             </li>
                         <?php } ?>
+                        <li>
+                            <a href="<?php echo site_url('User/Bonus'); ?>"><i class="fa fa-dashboard"></i> Bonus Offer</a>
+                        </li>               
+                        <?php if ($this->type == 2) { ?>
+                            <li>
+                                <a href="<?php echo site_url('User/Image_list'); ?>"><i class="fa fa-file-image-o"></i>Brand Image</a>
+                            </li>
+                        <?php } ?>                            
+
 
                     </ul>
                 </section>

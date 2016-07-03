@@ -28,9 +28,8 @@
                 <i class="fa  fa-4x fa-building-o"></i>
             </div>
             <div class="col-xs-9" align="right">
-                <h2 style="margin-top: 0px"><b><?php echo $divisioncount; ?></b></h2>
-                <h4 style="margin-top: 0px">Divisions</h4>   
-
+                <h2 style="margin-top: 0px"><b><?php echo $this->type == 1 ? $countCompany : $divisioncount; ?></b></h2>
+                <h4 style="margin-top: 0px"><?php echo $this->type == 1 ? 'Companies' : 'Divisions'; ?></h4>   
             </div><!-- /.info-box -->
         </div>
     </div>
