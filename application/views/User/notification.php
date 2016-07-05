@@ -41,7 +41,7 @@
     <div class="col-xs-6">        
         <div class="audience">
             <h2>Target Audience</h2>
-            <h1>85654</h1>
+            <h1 id="audiance">85654</h1>
         </div>
         <div class="" align="center">
             <h3>Your Account Balance</h3>
@@ -63,9 +63,12 @@
 <script>
     $('document').ready(function () {
         var audiance = 0;
+        calculateAudiance('none');
+        
         $("#state").change(function () {
             var option = $("#user_type").val();
             calculateAudiance(option);
+
         });
 
         $("#user_type").change(function () {
@@ -73,20 +76,21 @@
             calculateAudiance(option);
         });
 
-        function calculateAudiance(option) {
+        function calculateAudiance(option,selector) {
             if (option == '1') {
                 $("#state option:selected").each(function () {
-                    audiance += parseInt($(this).attr('data-count1').val());
+                    audiance += parseInt($(this).attr('data-count1'));
                 });
             } else if (option == '2') {
                 $("#state option:selected").each(function () {
-                    audiance += parseInt($(this).attr('data-count2').val());
+                    audiance += parseInt($(this).attr('data-count2'));
                 });
             } else {
                 $("#state option:selected").each(function () {
-                    audiance += parseInt($(this).attr('data-count1').val()) + parseInt($(this).attr('data-count2').val());
+                    audiance += parseInt($(this).attr('data-count1')) + parseInt($(this).attr('data-count2'));
                 });
             }
+            $("#audiance").html(audiance);
         }
     });
 </script>
