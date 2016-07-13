@@ -431,6 +431,12 @@ class Api extends MY_Controller {
                     }
                 }
 
+                if (!is_null($item->user_id) && $item->user_id > 0) {
+                    $isfav = 1;
+                } else {
+                    $isfav = 0;
+                }
+
                 $data[] = array(
                     'product_id' => $item->brand_id,
                     'product_name' => $item->name,
@@ -446,6 +452,7 @@ class Api extends MY_Controller {
                     'packing' => $item->packing,
                     'mrp' => $item->mrp,
                     'bonus_id' => $item->bonus_id,
+                    'favourite' => $isfav
                 );
             }
 
