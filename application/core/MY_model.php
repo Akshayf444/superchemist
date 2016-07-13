@@ -31,10 +31,11 @@ class MY_model extends CI_Model {
         $this->db->update($this->table_name, $data);
     }
 
-    public function get($condition = array()) {
-        $sql = "SELECT * FROM  " . $this->table_name;
+    public function get($condition = array(), $limit = "", $offset = "", $columns = "*") {
+        $col = is_array($columns) && !empty($columns) ? join(",", $columns) : $columns;
+        $sql = "SELECT " . $col . " FROM  " . $this->table_name;
         $sql .=!empty($condition) ? " WHERE " . join(" AND ", $condition) : " ";
-
+        $sql .= " LIMIT {$limit} OFFSET {$offset} ";
         //echo $sql;
         return $this->returnResult($sql);
     }

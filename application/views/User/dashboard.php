@@ -45,3 +45,54 @@
         </div>
     </div>
 </div>
+<br/>
+<div class="row">
+    <div class="col-xs-6" >
+        <div class=" box box-success">
+            <div class="box-header with-border"><h3 class="box-title">Bonus Offer Trend</h3></div>
+            <div class="box-body" id="container2">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('document').ready(function () {
+        $('#container2').highcharts({
+            chart: {
+                type: 'xy'
+            },
+            title: {
+                text: '',
+                x: -20 //center
+            },
+            xAxis: {
+                categories: <?php echo json_encode($companies) ?>,
+                crosshair: true
+            },
+            yAxis: {
+                plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+            },  
+            credits: {
+                enabled: false,
+                text: 'Techvertica.com',
+                href: 'http://www.techvertica.com'
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0,
+                floating:true
+            },
+            series: [{
+                    type: 'column',
+                    name: 'Bonus Offer',
+                    data: <?php echo json_encode($bonus, JSON_NUMERIC_CHECK) ?>
+                }]
+        });
+    });
+</script>

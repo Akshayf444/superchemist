@@ -110,8 +110,20 @@ class Bonus extends MY_model {
         $sql .=!empty($condition) ? " AND " . join(" AND ", $condition) : " ";
         $sql .= " ) as bf INNER JOIN brands bd ON bd.id = bf.brand_id INNER JOIN company_master cm ON cm.company_id = bd.company ";
         $sql .=!empty($brand_condition) ? " AND " . join(" AND ", $brand_condition) : " ";
+
         //echo $sql;
         return $this->returnResult($sql, 'row');
+    }
+
+    public function groupBonus($condition = array(), $brand_condition = array(), $group_by = "", $order_by = "") {
+        $sql = "SELECT count(bf.bonus_id) as bonusCount,cm.company_name FROM (SELECT * FROM bonus_info WHERE status = 1 ";
+        $sql .=!empty($condition) ? " AND " . join(" AND ", $condition) : " ";
+        $sql .= " ) as bf INNER JOIN brands bd ON bd.id = bf.brand_id INNER JOIN company_master cm ON cm.company_id = bd.company ";
+        $sql .=!empty($brand_condition) ? " AND " . join(" AND ", $brand_condition) : " ";
+        $sql .= " " . $group_by;
+        $sql .= " " . $order_by;
+        //echo $sql;
+        return $this->returnResult($sql);
     }
 
     public function bonusExist($condition = array()) {

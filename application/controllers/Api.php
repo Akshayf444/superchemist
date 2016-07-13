@@ -143,14 +143,16 @@ class Api extends MY_Controller {
             $mobile = $this->input->get('mobile');
             $password = $this->input->get('password');
             $userexist = $this->User_model->authenticate($mobile, $password);
-
+            $device_id = $this->input->get('device_id');
             if (!empty($userexist)) {
                 $appVersion = $this->User_model->getAppVersion(); ///GET App Version
                 $userexist->version = $appVersion->version;
                 $userexist->version_date = $appVersion->date;
-
+                if (trim($device_id) === '') {
+                    $device_id = $userexist->device_id;
+                }
                 $this->User_model->insertLogin(array('user_id' => $userexist->user_id, 'created_at' => date('Y-m-d H:i:s')));
-                $this->User_model->update(array('last_login' => date('Y-m-d H:i:s')), $userexist->user_id);
+                $this->User_model->update(array('last_login' => date('Y-m-d H:i:s'), 'device_id' => $device_id), $userexist->user_id);
                 $output = array('status' => 'success', 'message' => array($userexist));
             } else {
                 $output = array('status' => 'error', 'message' => "Invalid Username/Password");
@@ -547,6 +549,28 @@ class Api extends MY_Controller {
         $dropdown = $this->Division->getDivision($condition);
         $dropdown = $this->Master_Model->generateDropdown($dropdown, 'div_id', 'name');
         echo $dropdown;
+    }
+
+    public function getVersion() {
+        $user_id = $_REQUEST['user_id'];
+        $this->User_model->insertLogin(array('user_id' => $user_id, 'created_at' => date('Y-m-d H:i:s')));
+        $this->User_model->update(array('last_login' => date('Y-m-d H:i:s')), $user_id);
+        $appVersion = $this->User_model->getAppVersion(); ///GET App Version
+
+        $output = array('status' => 'success', 'message' => array(array('version' => $appVersion->version)));
+        $this->renderOutput($output);
+    }
+
+    public function getNotification($page = 1, $perpage = 20) {
+        $this->load->model('Communication');
+
+        $totalCount = $this->Communication->allCount();
+        $totalCount = $totalCount->count;
+        $paging = $this->calculatePaging($perpage, $totalCount, $page);
+        $notification = $this->Communication->get(array("type = 'notification'"), $perpage, $paging[1], array('com_id', 'message'));
+        
+        $output = array('status' => 'success', 'message' => $notification, 'totalpages' => $paging[0], 'page' => $page);
+        $this->renderOutput($output);
     }
 
 }

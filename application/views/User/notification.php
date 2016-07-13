@@ -41,30 +41,26 @@
     <div class="col-xs-6">        
         <div class="audience">
             <h2>Target Audience</h2>
-            <h1 id="audiance">85654</h1>
+            <h1 id="audiance"></h1>
         </div>
         <div class="" align="center">
             <h3>Your Account Balance</h3>
             <dl class="dl-horizontal">
                 <dt>SMS</dt>
-                <dd> : 2000</dd>
-            </dl>
-            <dl class="dl-horizontal">
-                <dt>Email</dt>
-                <dd> : 2000</dd>
+                <dd> : <?php echo $smscount ?></dd>
             </dl>
             <dl class="dl-horizontal">
                 <dt>Notification</dt>
-                <dd> : 2000</dd>
+                <dd> : <?php echo $notificationcount ?></dd>
             </dl>
         </div>
     </div>
 </div>
 <script>
     $('document').ready(function () {
-        var audiance = 0;
+
         calculateAudiance('none');
-        
+
         $("#state").change(function () {
             var option = $("#user_type").val();
             calculateAudiance(option);
@@ -76,7 +72,8 @@
             calculateAudiance(option);
         });
 
-        function calculateAudiance(option,selector) {
+        function calculateAudiance(option, selector) {
+            var audiance = 0;
             if (option == '1') {
                 $("#state option:selected").each(function () {
                     audiance += parseInt($(this).attr('data-count1'));

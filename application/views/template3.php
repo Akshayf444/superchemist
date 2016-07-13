@@ -29,6 +29,7 @@
         <script src="<?php echo asset_url(); ?>js/chosen.jquery.min.js" type="text/javascript"></script>
         <script src="<?php echo asset_url(); ?>js/chosen.proto.js" type="text/javascript"></script>
         <link href="<?php echo asset_url(); ?>css/responsiveTable.css" rel="stylesheet" type="text/css"/>
+        <script src="<?php echo asset_url(); ?>js/highcharts.js" type="text/javascript"></script>
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
