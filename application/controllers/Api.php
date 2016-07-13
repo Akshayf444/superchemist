@@ -328,6 +328,7 @@ class Api extends MY_Controller {
         $this->load->model('Bonus');
         $condition = array();
         $brandcondition = array();
+        $favourite = array();
 
         $type = isset($_GET['type']) ? $_GET['type'] : 0;
 
@@ -362,6 +363,11 @@ class Api extends MY_Controller {
             $brandcondition[] = "id = {$product_id} ";
         }
 
+        if ($this->input->get('user_id') > 0) {
+            $product_id = $this->input->get('user_id');
+            $favourite[] = "user_id = {$product_id} ";
+        }
+
         if ($this->input->get('composition') != '') {
             $composition = $this->input->get('composition');
             $brandcondition[] = "composition = '$composition' ";
@@ -372,12 +378,12 @@ class Api extends MY_Controller {
             $totalCount = $this->Bonus->countBonus($condition, $brandcondition);
             $totalCount = $totalCount->bonusCount;
             $paging = $this->calculatePaging($perpage, $totalCount, $page);
-            $bonus_info = $this->Bonus->getBonus($condition, $perpage, $paging[1], $order_by, $brandcondition);
+            $bonus_info = $this->Bonus->getBonus($condition, $perpage, $paging[1], $order_by, $brandcondition, $favourite);
         } else {
             $totalCount = $this->Bonus->countBonus2($condition, $brandcondition);
             $totalCount = $totalCount->bonusCount;
             $paging = $this->calculatePaging($perpage, $totalCount, $page);
-            $bonus_info = $this->Bonus->getBonus2($condition, $perpage, $paging[1], $order_by, $brandcondition);
+            $bonus_info = $this->Bonus->getBonus2($condition, $perpage, $paging[1], $order_by, $brandcondition, $favourite);
         }
 
         if (!empty($bonus_info)) {
@@ -516,8 +522,8 @@ class Api extends MY_Controller {
     public function forgotPassword() {
         if (isset($_REQUEST['mobile'])) {
             $mobile = $_REQUEST['mobile'];
-                     
-            $userexist = $this->User_model->userexist($mobile );
+
+            $userexist = $this->User_model->userexist($mobile);
             if (!empty($userexist)) {
                 $vercode = rand(0, 9999);
                 $message = 'This Is Your Password is' . $vercode;
@@ -537,36 +543,38 @@ class Api extends MY_Controller {
         header('content-type: application/json');
         echo json_encode($output);
     }
-function change_pass() {
+
+    function change_pass() {
         $user_id = ($_REQUEST['user_id']);
         $old_pass = ($_REQUEST['old_pass']);
-       
+
         if (isset($_REQUEST['user_id']) && !empty($_REQUEST['user_id']) && isset($_REQUEST['old_pass']) && isset($_REQUEST['new_pass']) && $_REQUEST['old_pass'] != '' && $_REQUEST['new_pass'] != '') {
-          $userexist = $this->User_model->userexistid($user_id);
+            $userexist = $this->User_model->userexistid($user_id);
 
             if ($userexist != false) {
-                if (!empty($_REQUEST['old_pass']) &&  $userexist->password == $old_pass) {
-                 
+                if (!empty($_REQUEST['old_pass']) && $userexist->password == $old_pass) {
+
                     $new_pass = ($_REQUEST['new_pass']);
-                    $data = array('user_id'=>$user_id, 'password' => $new_pass);
-                    
-                    $this->User_model->updatePassword($user_id,$data); 
-                        $output = array('status' => 'success', 'message' => 'Record update Successfully');
-                }else {
-                        $output = array('status' => 'error', 'message' => ' Old Password Not Match');
-                    }
+                    $data = array('user_id' => $user_id, 'password' => $new_pass);
+
+                    $this->User_model->updatePassword($user_id, $data);
+                    $output = array('status' => 'success', 'message' => 'Record update Successfully');
                 } else {
-                    $output = array('status' => 'error', 'message' => 'User Does Not Exit');
+                    $output = array('status' => 'error', 'message' => ' Old Password Not Match');
                 }
             } else {
-                $output = array('stataus' => 'error', 'message' => ' Provide The Details');
+                $output = array('status' => 'error', 'message' => 'User Does Not Exit');
             }
-         
-        
+        } else {
+            $output = array('stataus' => 'error', 'message' => ' Provide The Details');
+        }
+
+
 
         header('content-type: application/json');
         echo json_encode($output);
     }
+
     public function getDivisionDropdown() {
         $this->load->model('Division');
         $this->load->model('Master_Model');
@@ -597,8 +605,8 @@ function change_pass() {
         $totalCount = $this->Communication->allCount();
         $totalCount = $totalCount->count;
         $paging = $this->calculatePaging($perpage, $totalCount, $page);
-        $notification = $this->Communication->get(array("type = 'notification'"), $perpage, $paging[1], array('com_id', 'message','created_at'));
-        
+        $notification = $this->Communication->get(array("type = 'notification'"), $perpage, $paging[1], array('com_id', 'message', 'created_at'));
+
         $output = array('status' => 'success', 'message' => $notification, 'totalpages' => $paging[0], 'page' => $page);
         $this->renderOutput($output);
     }
