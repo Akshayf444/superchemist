@@ -514,6 +514,8 @@ class Api extends MY_Controller {
     public function forgotPassword() {
         if (isset($_REQUEST['mobile'])) {
             $mobile = $_REQUEST['mobile'];
+            $user_id = ($_REQUEST['user_id']);
+            $old_pass = ($_REQUEST['old_pass']);
             $userexist = $this->User_model->userexist($mobile);
             if (!empty($userexist)) {
                 $vercode = rand(0, 9999);
