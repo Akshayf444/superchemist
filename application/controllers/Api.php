@@ -516,9 +516,8 @@ class Api extends MY_Controller {
     public function forgotPassword() {
         if (isset($_REQUEST['mobile'])) {
             $mobile = $_REQUEST['mobile'];
-            $user_id = ($_REQUEST['user_id']);
-            $old_pass = ($_REQUEST['old_pass']);
-            $userexist = $this->User_model->userexist($mobile);
+                     
+            $userexist = $this->User_model->userexist($mobile );
             if (!empty($userexist)) {
                 $vercode = rand(0, 9999);
                 $message = 'This Is Your Password is' . $vercode;
@@ -538,7 +537,36 @@ class Api extends MY_Controller {
         header('content-type: application/json');
         echo json_encode($output);
     }
+function change_pass() {
+        $user_id = ($_REQUEST['user_id']);
+        $old_pass = ($_REQUEST['old_pass']);
+       
+        if (isset($_REQUEST['user_id']) && !empty($_REQUEST['user_id']) && isset($_REQUEST['old_pass']) && isset($_REQUEST['new_pass']) && $_REQUEST['old_pass'] != '' && $_REQUEST['new_pass'] != '') {
+          $userexist = $this->User_model->userexistid($user_id);
 
+            if ($userexist != false) {
+                if (!empty($_REQUEST['old_pass']) &&  $userexist->password == $old_pass) {
+                 
+                    $new_pass = ($_REQUEST['new_pass']);
+                    $data = array('user_id'=>$user_id, 'password' => $new_pass);
+                    
+                    $this->User_model->updatePassword($user_id,$data); 
+                        $output = array('status' => 'success', 'message' => 'Record update Successfully');
+                }else {
+                        $output = array('status' => 'error', 'message' => ' Old Password Not Match');
+                    }
+                } else {
+                    $output = array('status' => 'error', 'message' => 'User Does Not Exit');
+                }
+            } else {
+                $output = array('stataus' => 'error', 'message' => ' Provide The Details');
+            }
+         
+        
+
+        header('content-type: application/json');
+        echo json_encode($output);
+    }
     public function getDivisionDropdown() {
         $this->load->model('Division');
         $this->load->model('Master_Model');

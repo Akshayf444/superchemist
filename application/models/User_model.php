@@ -12,7 +12,10 @@ class User_model extends MY_model {
         $sql = "SELECT * FROM " . $this->table_name . " WHERE mobile = '" . $mobile . "'";
         return $this->returnResult($sql, 'row');
     }
-
+public function userexistid($id) {
+        $sql = "SELECT * FROM " . $this->table_name . " WHERE user_id= '" . $id. "'";
+        return $this->returnResult($sql, 'row');
+    }
     public function create($data) {
         $this->db->insert('users', $data);
         return $this->db->insert_id();
@@ -53,5 +56,8 @@ class User_model extends MY_model {
         $query = $this->db->query($sql);
         return $query->result_array();
     }
-
+   public function updatePassword($id, $data) {
+        $this->db->where('user_id', $id);
+        $this->db->update('users', $data);
+    }
 }
