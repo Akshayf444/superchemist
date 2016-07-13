@@ -10,7 +10,6 @@ class User_model extends MY_model {
 
     public function userexist($mobile) {
         $sql = "SELECT * FROM " . $this->table_name . " WHERE mobile = '" . $mobile . "'";
-
         return $this->returnResult($sql, 'row');
     }
 

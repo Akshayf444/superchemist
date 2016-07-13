@@ -76,6 +76,16 @@ class User extends MY_Controller {
         $bonusCount = $this->Bonus->countBonus2($bonusCondition);
         $countDivision = $this->Division->countDivision($divisionCondition);
         $countCompany = $this->Company->countCompany($bonusCondition);
+        $topTen = $this->Bonus->groupBonus(array(), array(), ' GROUP BY cm.company_id ', ' ORDER BY bonusCount DESC LIMIT 10 ');
+
+        $companies = array();
+        $bonus = array();
+        foreach ($topTen as $company) {
+            $companies[] = $company->company_name;
+            $bonus[] = $company->bonusCount;
+        }
+        $data['companies'] = $companies;
+        $data['bonus'] = $bonus;
 
         $data['brandcount'] = $brandCount->totalcount;
         $data['bonuscount'] = $bonusCount->bonusCount;
@@ -372,8 +382,9 @@ class User extends MY_Controller {
 
         $condition = !empty($condition) ? join("&", $condition) : '';
         $response = $this->CallAPI('GET', API_URL . 'getBonusOffer/' . $page . '/500?' . $condition);
-
+        //echo $response;
         $response = json_decode($response, true);
+
         $data['page'] = $page;
         if ($response['status'] == 'success') {
             $data['total_pages'] = $response['totalpages'];
@@ -472,6 +483,8 @@ class User extends MY_Controller {
                             'end_date' => date('Y-m-d', strtotime($end_date[$i])),
                             'states' => $finalState,
                             'status' => 1,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'status' => $brand_id[$i] . "_" . '1',
                             'starting_days' => $diff1->d,
                             'ending_days' => $diff2->d
                         );
@@ -481,9 +494,9 @@ class User extends MY_Controller {
                         if (empty($bonusExist)) {
                             $bonus_id = $this->Bonus->insert($field_array);
 
-                            foreach ($state as $item) {
-                                $this->db->insert('bonus_state', array('state_id' => $item, 'bonus_id' => $bonus_id, 'created_at' => date('Y-m-d H:i:s')));
-                            }
+                            /*foreach ($state as $item) {
+                                //$this->db->insert('bonus_state', array('state_id' => $item, 'bonus_id' => $bonus_id, 'created_at' => date('Y-m-d H:i:s')));
+                            }*/
                         } else {
                             $this->session->set_userdata('message', $this->Master_Model->DisplayAlert('Bonus Already Exist For ' . $brand_name[$i], 'error'));
                         }
@@ -627,8 +640,10 @@ class User extends MY_Controller {
         $condition = array();
         if ($this->type == 1) {
             $result = $this->User_model->getUserState();
+            $result2 = $this->Communication->getCount();
             $data['state'] = $this->Master_Model->generateDropdown($result, 'state', 'state', 0, array('data-count' => 'user_count', 'data-count1' => 'count1', 'data-count2' => 'count2'));
-
+            $data['smscount'] = $result2->smscount;
+            $data['notificationcount'] = $result2->notificationcount;
             if ($this->input->post('message') != '') {
                 $message = $this->input->post('message');
 
@@ -645,7 +660,6 @@ class User extends MY_Controller {
 
                 if ($this->input->post('notification')) {
                     $condition[] = "( device_id != '' OR device_id IS NOT NULL )";
-     
                     $finalValue = $this->User_model->getColumn($condition, 'device_id');
 
                     foreach ($finalValue as $value) {
