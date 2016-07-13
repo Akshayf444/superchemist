@@ -567,7 +567,7 @@ class Api extends MY_Controller {
         $totalCount = $this->Communication->allCount();
         $totalCount = $totalCount->count;
         $paging = $this->calculatePaging($perpage, $totalCount, $page);
-        $notification = $this->Communication->get(array("type = 'notification'"), $perpage, $paging[1], array('com_id', 'message'));
+        $notification = $this->Communication->get(array("type = 'notification'"), $perpage, $paging[1], array('com_id', 'message','created_at'));
         
         $output = array('status' => 'success', 'message' => $notification, 'totalpages' => $paging[0], 'page' => $page);
         $this->renderOutput($output);
