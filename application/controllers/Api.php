@@ -277,18 +277,27 @@ class Api extends MY_Controller {
         }
 
         $brandlist = $this->Brand->getComposition($condition);
-        if (!empty($brandlist)) {
-            $content = array();
-            foreach ($brandlist as $value) {
-                $output[] = array(
-                    'label' => $value->name,
-                    'category' => '',
-                    'id' => $value->id,
-                    'is_combination' => $value->is_combination,
-                );
+        $type = $this->input->get('type');
+        if ($type === '1') {
+            if (!empty($brandlist)) {
+                $output = array('status' => 'success', 'message' => $brandlist);
+                header('content-type: application/json');
+                echo json_encode($output);
             }
-            header('content-type: application/json');
-            echo json_encode($output);
+        } else {
+            if (!empty($brandlist)) {
+                $content = array();
+                foreach ($brandlist as $value) {
+                    $output[] = array(
+                        'label' => $value->name,
+                        'category' => '',
+                        'id' => $value->id,
+                        'is_combination' => $value->is_combination,
+                    );
+                }
+                header('content-type: application/json');
+                echo json_encode($output);
+            }
         }
     }
 
@@ -329,7 +338,7 @@ class Api extends MY_Controller {
         $condition = array();
         $brandcondition = array();
         $favourite = array();
-
+        $where = array();
         $type = isset($_GET['type']) ? $_GET['type'] : 0;
 
         if ($type === 'starting') {
@@ -374,16 +383,20 @@ class Api extends MY_Controller {
             $order_by = " ORDER BY bf.ending_days ASC ";
         }
 
+        if ($this->input->get('favourite') == 'true') {
+            $where[] = "fv.bonus_id IS NOT NULL ";
+        }
+
         if (trim($type) === '' || $type === 'company') {
-            $totalCount = $this->Bonus->countBonus($condition, $brandcondition);
+            $totalCount = $this->Bonus->countBonus($condition, $brandcondition, $favourite, $where);
             $totalCount = $totalCount->bonusCount;
             $paging = $this->calculatePaging($perpage, $totalCount, $page);
-            $bonus_info = $this->Bonus->getBonus($condition, $perpage, $paging[1], $order_by, $brandcondition, $favourite);
+            $bonus_info = $this->Bonus->getBonus($condition, $perpage, $paging[1], $order_by, $brandcondition, $favourite, $where);
         } else {
-            $totalCount = $this->Bonus->countBonus2($condition, $brandcondition);
+            $totalCount = $this->Bonus->countBonus2($condition, $brandcondition, $favourite, $where);
             $totalCount = $totalCount->bonusCount;
             $paging = $this->calculatePaging($perpage, $totalCount, $page);
-            $bonus_info = $this->Bonus->getBonus2($condition, $perpage, $paging[1], $order_by, $brandcondition, $favourite);
+            $bonus_info = $this->Bonus->getBonus2($condition, $perpage, $paging[1], $order_by, $brandcondition, $favourite, $where);
         }
 
         if (!empty($bonus_info)) {
@@ -551,7 +564,7 @@ class Api extends MY_Controller {
         echo json_encode($output);
     }
 
-    function change_pass() {
+    public function change_pass() {
         $user_id = ($_REQUEST['user_id']);
         $old_pass = ($_REQUEST['old_pass']);
 
@@ -616,6 +629,19 @@ class Api extends MY_Controller {
 
         $output = array('status' => 'success', 'message' => $notification, 'totalpages' => $paging[0], 'page' => $page);
         $this->renderOutput($output);
+    }
+
+    public function addFavourite() {
+        $this->load->model('Favourite');
+        $user_id = $_REQUEST['user_id'];
+        $bonus_id = $_REQUEST['bonus_id'];
+        $bonusExist = $this->Favourite->get(array('bonus_id = ' . $bonus_id, 'user_id =' . $user_id), 1, 0, array('bonus_id'));
+        if (empty($bonusExist)) {
+            $this->Favourite->insert(array('user_id' => $user_id, 'bonus_id' => $bonus_id, 'date' => date('Y-m-d H:i:s')));
+            $this->renderOutput(array('status' => 'success', 'message' => 'Added'));
+        } else {
+            $this->renderOutput(array('status' => 'error', 'message' => 'Already Added'));
+        }
     }
 
 }
